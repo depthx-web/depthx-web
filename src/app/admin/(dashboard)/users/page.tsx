@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { requireProfile } from "@/lib/admin/auth";
 import { createClient } from "@/lib/supabase/server";
 import { RoleSelect } from "@/components/admin/role-select";
+import { AddUserForm } from "@/components/admin/add-user-form";
 
 export const metadata: Metadata = { title: "Users & Roles" };
 
@@ -22,6 +23,7 @@ export default async function UsersPage() {
       <p className="mb-8 text-sm text-muted">
         Admins can edit content and Site Settings. Editors can edit content only (spec §6).
       </p>
+      <AddUserForm />
       <div className="overflow-hidden rounded-lg border border-line">
         <table className="w-full border-collapse text-sm">
           <thead>

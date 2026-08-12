@@ -227,10 +227,16 @@ write:
 - **editor** — full CRUD on every content table.
 - **admin** — everything an editor can do, plus Site Settings
   (`/admin/site-settings`, including the section-visibility grid) and user
-  role management (`/admin/users`).
+  management (`/admin/users`) — both creating new users and changing roles.
 
-New signups default to `editor` (via a Postgres trigger, see "Connecting
-the real CMS" step 4) — promote the first user to `admin` manually.
+New users no longer need to be created in the Supabase dashboard: any admin
+can add one directly from `/admin/users` (email, password, role) — it calls
+Supabase's Auth admin API via a service-role client
+(`src/lib/supabase/admin.ts`), which needs `SUPABASE_SERVICE_ROLE_KEY` set
+(Project Settings -> API -> "service_role" secret — **not** the anon/publishable
+key). Without it, the Add User form shows a clear inline error instead of
+failing silently. Users created this way default to `editor` (same
+`handle_new_user` trigger as before) unless `admin` is picked at creation.
 
 Beyond the content CRUD, the panel also has: **Messages** (contact form
 inbox with reply-by-email, any signed-in user), **Newsletter** (subscriber
@@ -383,6 +389,12 @@ regardless of domain — no separate hosting needed.
   unguessable uuid that only that person's inbox ever receives, so allowing
   delete-by-exact-id for anon is a deliberate, low-risk trade-off (see
   `migrations/0005_newsletter_unsubscribe.sql`), not an oversight.
+- **The service-role Supabase client (`src/lib/supabase/admin.ts`) is
+  guarded with `import "server-only"`.** That key bypasses RLS entirely —
+  the package makes any accidental import from a Client Component a build
+  error instead of a leaked secret at runtime. The client itself trusts
+  whatever calls it, so every call site (`createUserAction`) gates on
+  `requireAdmin()` first; the client has no notion of who's asking.
 - **The portfolio-summary PDF is generated with `pdf-lib`, not
   `@react-pdf/renderer`.** For a single fixed-layout page (title + a table),
   drawing text/lines directly with `pdf-lib` avoids pulling in a React PDF

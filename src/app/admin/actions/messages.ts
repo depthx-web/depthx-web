@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requireProfile, requireAdmin } from "@/lib/admin/auth";
 import { createClient } from "@/lib/supabase/server";
 import { sendEmail } from "@/lib/email/send";
+import { appendEmailFooter } from "@/lib/email/template";
 
 export type ReplyActionState = { error: string | null; success?: boolean };
 
@@ -27,7 +28,7 @@ export async function replyToMessageAction(
   const result = await sendEmail({
     to: message.email,
     subject: "Re: your message to Depth X",
-    text: body,
+    text: appendEmailFooter(body),
   });
   if (!result.ok) return { error: result.error };
 

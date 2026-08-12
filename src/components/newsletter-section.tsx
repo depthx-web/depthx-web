@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import Link from "next/link";
 import { subscribeNewsletterAction, type NewsletterActionState } from "@/app/actions/newsletter";
 import { Reveal } from "@/components/ui/reveal";
 
@@ -37,25 +38,41 @@ export function NewsletterSection() {
                 Thanks for signing up — watch your inbox for updates.
               </div>
             ) : (
-              <form action={formAction} className="flex flex-col gap-3 sm:flex-row">
-                <label className="sr-only" htmlFor="newsletter-email">
-                  Email address
+              <form action={formAction} className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <label className="sr-only" htmlFor="newsletter-email">
+                    Email address
+                  </label>
+                  <input
+                    id="newsletter-email"
+                    type="email"
+                    name="email"
+                    required
+                    placeholder="you@company.com"
+                    className="w-full flex-1 rounded-md border border-line bg-bg px-3.5 py-3 text-sm text-text transition-colors focus:border-transparent focus:outline focus:outline-2 focus:outline-blue"
+                  />
+                  <button
+                    type="submit"
+                    disabled={pending}
+                    className="shrink-0 rounded-md bg-green px-6 py-3 text-sm font-semibold text-[#06140F] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#5EE6B4] hover:shadow-[0_8px_24px_-8px_rgba(62,214,160,0.55)] active:translate-y-0 active:scale-[0.97] disabled:opacity-60"
+                  >
+                    {pending ? "Subscribing…" : "Subscribe"}
+                  </button>
+                </div>
+                <label className="flex items-start gap-2 text-xs leading-5 text-muted">
+                  <input
+                    type="checkbox"
+                    name="consent"
+                    required
+                    className="mt-0.5 h-3.5 w-3.5 shrink-0 accent-green"
+                  />
+                  I agree to receive marketing emails from Depth X about IP milestones and
+                  research updates. You can unsubscribe at any time — see our{" "}
+                  <Link href="/legal/privacy-policy" className="underline hover:text-text">
+                    Privacy Policy
+                  </Link>
+                  .
                 </label>
-                <input
-                  id="newsletter-email"
-                  type="email"
-                  name="email"
-                  required
-                  placeholder="you@company.com"
-                  className="w-full flex-1 rounded-md border border-line bg-bg px-3.5 py-3 text-sm text-text transition-colors focus:border-transparent focus:outline focus:outline-2 focus:outline-blue"
-                />
-                <button
-                  type="submit"
-                  disabled={pending}
-                  className="shrink-0 rounded-md bg-green px-6 py-3 text-sm font-semibold text-[#06140F] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#5EE6B4] hover:shadow-[0_8px_24px_-8px_rgba(62,214,160,0.55)] active:translate-y-0 active:scale-[0.97] disabled:opacity-60"
-                >
-                  {pending ? "Subscribing…" : "Subscribe"}
-                </button>
               </form>
             )}
             {state.error && (

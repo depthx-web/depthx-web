@@ -103,6 +103,27 @@ What's here:
   (`src/components/ui/reveal.tsx`, IntersectionObserver-based), and an
   animated underline on nav links. Respects `prefers-reduced-motion`
   throughout.
+- **Automated newsletter welcome/farewell email**, a UK-PECR-aware
+  marketing-email footer, and campaign scheduling:
+  - Subscribing sends a welcome email; unsubscribing sends a farewell
+    confirmation (`src/app/actions/newsletter.ts`,
+    `src/app/api/newsletter/unsubscribe/route.ts`).
+  - Every outgoing email (replies, welcome/farewell, campaigns) gets a
+    shared signature + confidentiality notice via
+    `src/lib/email/template.ts`; marketing email (welcome messages,
+    campaigns) additionally gets the sender-identification + unsubscribe
+    paragraph required for UK marketing email under PECR. Same caveat as
+    the /legal pages: a solid, researched starting point, not legal advice.
+  - The homepage newsletter form now has a required consent checkbox
+    ("I agree to receive marketing emails…") before it'll submit —
+    server-validated, not just a UI nicety.
+  - Campaigns can be scheduled for a future send (`scheduled_at` on
+    `email_campaigns`) instead of only "send now". A Vercel Cron job
+    (`vercel.json` -> `src/app/api/cron/send-scheduled-campaigns/route.ts`,
+    hourly, protected by `CRON_SECRET`) picks up anything due. **Vercel's
+    Hobby plan caps cron jobs to roughly once a day** regardless of the
+    schedule configured — treat scheduling as "send around this day," not
+    to-the-minute, unless you're on a paid Vercel plan.
 - **Dark and light mode**, toggleable site-wide (nav, mobile menu, and the
   admin panel header) via `src/components/theme-toggle.tsx`. Choice persists
   in `localStorage`; first visit falls back to the OS's `prefers-color-scheme`.
@@ -206,6 +227,7 @@ supabase/
   migrations/0004_email_conversations_and_campaigns.sql  message_replies + email_campaigns
   migrations/0005_newsletter_unsubscribe.sql  public delete-by-id policy for self-service unsubscribe
   migrations/0006_branding.sql  site_settings.logo_url
+  migrations/0007_campaign_scheduling.sql  email_campaigns.scheduled_at + 'scheduled' status
   seed.sql                   placeholder content matching lib/mock-data/
 src/proxy.ts             Next.js 16's renamed middleware.ts — gates /admin/**
 ```
@@ -325,7 +347,9 @@ whatever keys `SECTION_KEYS` currently lists.)
 Framework is zero-config on [Vercel](https://vercel.com/new). Set the env
 vars from `.env.local.example` in the Vercel project settings. `/admin`
 ships as part of the same deployment and is protected by `src/proxy.ts`
-regardless of domain — no separate hosting needed.
+regardless of domain — no separate hosting needed. `vercel.json` declares
+the scheduled-campaigns cron job — Vercel picks it up automatically on
+deploy, no separate setup.
 
 ## Notable implementation notes
 
@@ -381,14 +405,28 @@ regardless of domain — no separate hosting needed.
   render-then-immediately-setState-in-an-effect pattern the project's ESLint
   config (`react-hooks/set-state-in-effect`) flags as an anti-pattern.
 - **`newsletter_subscribers` allows public `delete`, not just `insert`.**
-  The one-click unsubscribe link in campaign emails calls
-  `/api/newsletter/unsubscribe?id=<uuid>` with the anon key — there's no
-  Supabase service-role key configured in this project, so an authenticated
-  server-side delete isn't available for a route with no logged-in admin
-  behind it. A subscriber's row id is treated as a capability token: it's an
+  A subscriber's row id is treated as a capability token: it's an
   unguessable uuid that only that person's inbox ever receives, so allowing
   delete-by-exact-id for anon is a deliberate, low-risk trade-off (see
-  `migrations/0005_newsletter_unsubscribe.sql`), not an oversight.
+  `migrations/0005_newsletter_unsubscribe.sql`), not an oversight. (The
+  unsubscribe route now uses the service-role client to read the email back
+  for the farewell message — see the RLS note below — but the underlying
+  anon delete policy is still what makes unsubscribing work at all if
+  `SUPABASE_SERVICE_ROLE_KEY` is ever unset.)
+- **`INSERT ... RETURNING` (i.e. Supabase's `.select()` after `.insert()`/
+  `.delete()`) needs its own passing `SELECT` RLS policy, not just the
+  `INSERT`/`DELETE` policy.** Found the hard way: the anon role can insert
+  into `newsletter_subscribers` (and delete-by-id, per above) but has no
+  `SELECT` policy at all — deliberately, so the whole subscriber list can't
+  be read with the public API key. Chaining `.select()` onto a public
+  insert/delete to read the affected row back fails under RLS even though
+  the write itself succeeds, because Postgres evaluates `RETURNING` as a
+  read against the row. Fixed by generating the subscriber's `id` in
+  application code before inserting (`src/app/actions/newsletter.ts`, no
+  `.select()` needed) and by using the service-role client for the
+  unsubscribe route's read-then-delete (`src/app/api/newsletter/unsubscribe/route.ts`)
+  instead of trying to grant public `SELECT`, which would've let anyone
+  dump every subscriber's email in one request.
 - **The service-role Supabase client (`src/lib/supabase/admin.ts`) is
   guarded with `import "server-only"`.** That key bypasses RLS entirely —
   the package makes any accidental import from a Client Component a build

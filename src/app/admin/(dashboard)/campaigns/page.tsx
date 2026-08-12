@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { requireProfile } from "@/lib/admin/auth";
 import { createClient } from "@/lib/supabase/server";
-import { sendCampaignAction, deleteCampaignAction } from "@/app/admin/actions/campaigns";
+import {
+  sendCampaignAction,
+  deleteCampaignAction,
+  cancelScheduledCampaignAction,
+} from "@/app/admin/actions/campaigns";
 import { SuccessBanner } from "@/components/admin/success-banner";
 import { SendCampaignButton } from "@/components/admin/send-campaign-button";
 import { DeleteButton } from "@/components/admin/delete-button";
@@ -14,6 +18,7 @@ const STATUS_STYLE: Record<string, string> = {
   draft: "border-line text-muted",
   sent: "border-green/40 bg-green/10 text-green",
   failed: "border-amber/40 bg-amber/10 text-amber",
+  scheduled: "border-blue/40 bg-blue/10 text-blue",
 };
 
 export default async function CampaignsPage(props: PageProps<"/admin/campaigns">) {
@@ -79,7 +84,9 @@ export default async function CampaignsPage(props: PageProps<"/admin/campaigns">
                 <div className="mt-2 font-mono text-[11px] text-muted">
                   {c.status === "sent"
                     ? `Sent to ${c.recipient_count} · ${new Date(c.sent_at!).toLocaleString()}`
-                    : `Drafted ${new Date(c.created_at).toLocaleString()}`}
+                    : c.status === "scheduled"
+                      ? `Scheduled for ${new Date(c.scheduled_at!).toLocaleString()}`
+                      : `Drafted ${new Date(c.created_at).toLocaleString()}`}
                 </div>
               </div>
               <div className="flex items-center gap-4 font-mono text-xs">
@@ -88,6 +95,13 @@ export default async function CampaignsPage(props: PageProps<"/admin/campaigns">
                     action={sendCampaignAction.bind(null, c.id)}
                     recipientCount={subscriberCount ?? 0}
                   />
+                )}
+                {c.status === "scheduled" && profile.role === "admin" && (
+                  <form action={cancelScheduledCampaignAction.bind(null, c.id)}>
+                    <button type="submit" className="text-blue hover:text-text">
+                      Cancel schedule
+                    </button>
+                  </form>
                 )}
                 {profile.role === "admin" && (
                   <DeleteButton

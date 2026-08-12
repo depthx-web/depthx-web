@@ -12,7 +12,7 @@
 export type UserRole = "admin" | "editor";
 export type ProjectStatus = "granted" | "pending" | "licensing";
 export type FaqCategory = "licensing" | "general";
-export type EmailCampaignStatus = "draft" | "sent" | "failed";
+export type EmailCampaignStatus = "draft" | "sent" | "failed" | "scheduled";
 
 type NoRelationships = { Relationships: [] };
 
@@ -220,15 +220,17 @@ export interface Database {
           created_by: string | null;
           created_at: string;
           sent_at: string | null;
+          scheduled_at: string | null;
         };
         Insert: Omit<
           Database["public"]["Tables"]["email_campaigns"]["Row"],
-          "id" | "created_at" | "status" | "recipient_count" | "sent_at"
+          "id" | "created_at" | "status" | "recipient_count" | "sent_at" | "scheduled_at"
         > & {
           id?: string;
           status?: EmailCampaignStatus;
           recipient_count?: number;
           sent_at?: string | null;
+          scheduled_at?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["email_campaigns"]["Row"]>;
       } & NoRelationships;

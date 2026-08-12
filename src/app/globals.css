@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+/* Depth X brand palette. Dark is the default/brand-native look; the
+   [data-theme="light"] block below is the only place the light variant is
+   defined. The attribute is set on <html> before paint by the inline script
+   in layout.tsx (reading localStorage, falling back to the OS preference) —
+   see components/theme-toggle.tsx — so there's no flash of the wrong theme. */
+:root {
+  --color-bg: #0a1220;
+  --color-bg-2: #0f1c30;
+  --color-bg-3: #142440;
+  --color-line: rgba(140, 168, 195, 0.16);
+  --color-line-2: rgba(140, 168, 195, 0.28);
+  --color-text: #e8edf4;
+  --color-muted: #8ca0b8;
+  --color-amber: #e8a33d;
+  --color-green: #3ed6a0;
+  --color-blue: #5b9dff;
+  --color-hover: rgba(255, 255, 255, 0.035);
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --color-bg: #f6f8fb;
+  --color-bg-2: #ffffff;
+  --color-bg-3: #eef2f7;
+  --color-line: rgba(15, 32, 54, 0.1);
+  --color-line-2: rgba(15, 32, 54, 0.18);
+  --color-text: #0c1622;
+  --color-muted: #56677c;
+  --color-amber: #a15c00;
+  --color-green: #067a53;
+  --color-blue: #1d5fd1;
+  --color-hover: rgba(10, 21, 36, 0.045);
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-bg-2: var(--color-bg-2);
+  --color-bg-3: var(--color-bg-3);
+  --color-line: var(--color-line);
+  --color-line-2: var(--color-line-2);
+  --color-text: var(--color-text);
+  --color-muted: var(--color-muted);
+  --color-amber: var(--color-amber);
+  --color-green: var(--color-green);
+  --color-blue: var(--color-blue);
+  --color-hover: var(--color-hover);
+
+  --font-display: var(--font-space-grotesk), sans-serif;
+  --font-body: var(--font-inter), sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+::selection {
+  background: var(--color-green);
+  color: #06140f;
+}
+
+/* Baseline interaction feel — every link/button gets a smooth, snappy
+   transition by default so hover/press states never feel abrupt, even on
+   elements that don't declare their own transition-* utility. */
+a,
+button {
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.25s ease,
+    transform 0.15s ease,
+    opacity 0.2s ease;
+}
+
+/* Scroll-reveal: elements start hidden/offset and animate in once the
+   Reveal component (IntersectionObserver) adds .reveal-visible. */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+.reveal-visible {
+  animation: reveal-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes reveal-up {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  body,
+  a,
+  button {
+    transition: none;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .reveal-visible {
+    animation: none;
+  }
+}

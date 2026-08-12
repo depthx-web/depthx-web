@@ -166,6 +166,7 @@ function mapSiteSettings(row: Record<string, unknown>): SiteSettings {
     heroHeadline: String(row.hero_headline ?? ""),
     heroHeadlineAccent: String(row.hero_headline_accent ?? ""),
     heroSubtext: String(row.hero_subtext ?? ""),
+    logoUrl: row.logo_url ? String(row.logo_url) : undefined,
     stats: (row.stats as SiteSettings["stats"]) ?? [],
     trustBarLogos: (row.trust_bar_logos as SiteSettings["trustBarLogos"]) ?? [],
     footerText: String(row.footer_text ?? ""),

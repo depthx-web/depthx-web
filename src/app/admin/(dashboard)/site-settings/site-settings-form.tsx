@@ -18,9 +18,22 @@ const inputClass =
 export function SiteSettingsForm({ settings }: { settings: SiteSettingsRow }) {
   const [state, formAction, pending] = useActionState(updateSiteSettingsAction, initialState);
   const stats = settings.stats ?? [];
+  const trustBarLogos = settings.trust_bar_logos ?? [];
 
   return (
     <form action={formAction} className="flex max-w-3xl flex-col gap-8">
+      <Section title="Branding">
+        <TextField
+          name="logo_url"
+          label="Site Logo URL"
+          defaultValue={settings.logo_url ?? ""}
+        />
+        <p className="text-xs text-muted">
+          Shown in the nav bar and footer in place of the &quot;DepthX&quot; text wordmark. Leave
+          empty to keep the text version.
+        </p>
+      </Section>
+
       <Section title="Hero">
         <TextField name="hero_headline" label="Hero Headline" defaultValue={settings.hero_headline} />
         <TextField
@@ -53,17 +66,28 @@ export function SiteSettingsForm({ settings }: { settings: SiteSettingsRow }) {
       </Section>
 
       <Section title="Trust Bar Logos">
-        <label className="flex flex-col gap-2">
-          <span className="font-mono text-[11px] tracking-wide text-muted">
-            ONE NAME PER LINE
-          </span>
-          <textarea
-            name="trust_bar_logos"
-            rows={4}
-            defaultValue={(settings.trust_bar_logos ?? []).map((l) => l.name).join("\n")}
-            className={`${inputClass} resize-y`}
-          />
-        </label>
+        <p className="text-xs text-muted">
+          Shown in the homepage &quot;Validated With&quot; strip. Add a logo image URL to show the
+          actual logo instead of a text badge with the name.
+        </p>
+        <div className="flex flex-col gap-4">
+          {[0, 1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+              <input
+                name={`trust_bar_logo_${i + 1}_name`}
+                defaultValue={trustBarLogos[i]?.name ?? ""}
+                placeholder="Name"
+                className={inputClass}
+              />
+              <input
+                name={`trust_bar_logo_${i + 1}_url`}
+                defaultValue={trustBarLogos[i]?.logoUrl ?? ""}
+                placeholder="Logo image URL (optional)"
+                className={`${inputClass} sm:col-span-2`}
+              />
+            </div>
+          ))}
+        </div>
       </Section>
 
       <Section title="Footer & Contact">

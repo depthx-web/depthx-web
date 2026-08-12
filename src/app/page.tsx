@@ -72,14 +72,24 @@ export default async function HomePage() {
             VALIDATED WITH
           </span>
           <div className="flex flex-1 flex-wrap gap-4">
-            {settings.trustBarLogos.map((logo) => (
-              <div
-                key={logo.name}
-                className="rounded-md border border-line px-4.5 py-2.5 font-display text-sm font-semibold text-muted transition-all duration-200 hover:-translate-y-0.5 hover:border-line-2 hover:text-text"
-              >
-                {logo.name}
-              </div>
-            ))}
+            {settings.trustBarLogos.map((logo) =>
+              logo.logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element -- arbitrary admin-supplied URL
+                <img
+                  key={logo.name}
+                  src={logo.logoUrl}
+                  alt={logo.name}
+                  className="h-8 w-auto opacity-70 grayscale transition-all duration-200 hover:opacity-100 hover:grayscale-0"
+                />
+              ) : (
+                <div
+                  key={logo.name}
+                  className="rounded-md border border-line px-4.5 py-2.5 font-display text-sm font-semibold text-muted transition-all duration-200 hover:-translate-y-0.5 hover:border-line-2 hover:text-text"
+                >
+                  {logo.name}
+                </div>
+              ),
+            )}
           </div>
         </div>
       )}

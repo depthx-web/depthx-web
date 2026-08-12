@@ -39,8 +39,15 @@ export function Footer({
     <footer className="border-t border-line px-8 pt-16 pb-10 md:px-25">
       <div className="flex flex-wrap justify-between gap-10 pb-11">
         <div className="max-w-70">
-          <Link href="/" className="mb-3.5 inline-block font-display text-lg font-bold">
-            Depth<span className="text-amber">X</span>
+          <Link href="/" className="mb-3.5 inline-flex items-center font-display text-lg font-bold">
+            {settings.logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element -- arbitrary admin-supplied URL
+              <img src={settings.logoUrl} alt="Depth X" className="h-7 w-auto" />
+            ) : (
+              <>
+                Depth<span className="text-amber">X</span>
+              </>
+            )}
           </Link>
           <p className="text-[13.5px] leading-7 text-muted">{settings.footerText}</p>
         </div>

@@ -87,6 +87,11 @@ What's here:
   `home.newsletter`), storing emails in `newsletter_subscribers`. Manage the
   list at `/admin/newsletter` — view, delete (admin-only), or download a CSV
   to import into whatever email tool you actually send from.
+- **Configurable branding** — Site Settings has a "Branding" section for a
+  site-wide logo image URL (replaces the "DepthX" text wordmark in the nav
+  and footer when set) and per-entry logo images for the homepage trust bar
+  (previously name-only text badges despite the data model already having a
+  `logoUrl` field nothing populated).
 - **Per-item show/hide now covers every content type**, not just Projects
   and News. Research Domains, Publications, Team Members, Testimonials, FAQ
   Items, and Partnership Types all got a `visible` column, RLS policy, and
@@ -200,6 +205,7 @@ supabase/
   migrations/0003_visibility_and_newsletter.sql  per-item visible column (6 more tables) + newsletter_subscribers
   migrations/0004_email_conversations_and_campaigns.sql  message_replies + email_campaigns
   migrations/0005_newsletter_unsubscribe.sql  public delete-by-id policy for self-service unsubscribe
+  migrations/0006_branding.sql  site_settings.logo_url
   seed.sql                   placeholder content matching lib/mock-data/
 src/proxy.ts             Next.js 16's renamed middleware.ts — gates /admin/**
 ```

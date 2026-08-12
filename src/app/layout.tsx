@@ -89,7 +89,7 @@ export default async function RootLayout({
         />
         <SectionVisibilityProvider visibility={settings.sectionVisibility}>
           <DepthGauge />
-          <Nav sectionVisibility={settings.sectionVisibility} />
+          <Nav sectionVisibility={settings.sectionVisibility} logoUrl={settings.logoUrl} />
           <main>{children}</main>
           <Footer settings={settings} legalPages={legalPages} />
         </SectionVisibilityProvider>

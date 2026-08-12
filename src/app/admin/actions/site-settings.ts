@@ -18,11 +18,12 @@ export async function updateSiteSettingsAction(
     value: String(formData.get(`stat_${n}_value`) || ""),
   }));
 
-  const trustBarLogos = String(formData.get("trust_bar_logos") || "")
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((name) => ({ name }));
+  const trustBarLogos = [1, 2, 3, 4, 5, 6]
+    .map((n) => ({
+      name: String(formData.get(`trust_bar_logo_${n}_name`) || "").trim(),
+      logoUrl: String(formData.get(`trust_bar_logo_${n}_url`) || "").trim() || undefined,
+    }))
+    .filter((logo) => logo.name);
 
   const sectionVisibility = Object.fromEntries(
     SECTION_KEYS.map((key) => [key, formData.get(`section_${key}`) === "on"]),
@@ -35,6 +36,7 @@ export async function updateSiteSettingsAction(
       hero_headline: String(formData.get("hero_headline") || ""),
       hero_headline_accent: String(formData.get("hero_headline_accent") || ""),
       hero_subtext: String(formData.get("hero_subtext") || ""),
+      logo_url: String(formData.get("logo_url") || "").trim() || null,
       footer_text: String(formData.get("footer_text") || ""),
       contact_email_investor: String(formData.get("contact_email_investor") || ""),
       contact_email_researcher: String(formData.get("contact_email_researcher") || ""),

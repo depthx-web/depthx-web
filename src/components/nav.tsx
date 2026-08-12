@@ -22,8 +22,10 @@ const SECONDARY_LINKS = [
 
 export function Nav({
   sectionVisibility,
+  logoUrl,
 }: {
   sectionVisibility: Record<string, boolean>;
+  logoUrl?: string;
 }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
@@ -89,8 +91,15 @@ export function Nav({
           scrolled ? "border-line bg-bg/80" : "border-transparent bg-bg/80"
         }`}
       >
-        <Link href="/" className="font-display text-lg font-bold tracking-wide">
-          Depth<span className="text-amber">X</span>
+        <Link href="/" className="flex items-center font-display text-lg font-bold tracking-wide">
+          {logoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element -- arbitrary admin-supplied URL
+            <img src={logoUrl} alt="Depth X" className="h-7 w-auto" />
+          ) : (
+            <>
+              Depth<span className="text-amber">X</span>
+            </>
+          )}
         </Link>
 
         <div className="hidden gap-7.5 text-[13.5px] text-muted lg:flex">

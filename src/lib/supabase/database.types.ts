@@ -146,6 +146,7 @@ export interface Database {
           hero_headline: string;
           hero_headline_accent: string;
           hero_subtext: string;
+          logo_url: string | null;
           stats: { label: string; value: string }[];
           trust_bar_logos: { name: string; logoUrl?: string; link?: string }[];
           footer_text: string;

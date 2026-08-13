@@ -80,7 +80,7 @@ export default async function ProjectDetailPage(props: PageProps<"/projects/[slu
         <div className="sticky top-25 flex h-fit flex-col gap-4 rounded-xl border border-line bg-bg-2 p-6.5">
           <StatusBadge status={project.status} />
           <SpecRow
-            k={project.status === "granted" ? "PATENT NO." : "APPLICATION NO."}
+            k={project.patentNumberKind === "patent" ? "PATENT NO." : "APPLICATION NO."}
             v={project.patentNumber ?? "Application filed"}
           />
           <SpecRow k="FILED" v={project.filedDate ? formatDate(project.filedDate) : "—"} />

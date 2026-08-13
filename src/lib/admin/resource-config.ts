@@ -67,7 +67,17 @@ export const RESOURCE_CONFIGS: ResourceConfig[] = [
         name: "patent_number",
         label: "Patent / Application Number",
         type: "text",
-        helpText: "Shown publicly as \"Application No.\" until Status is set to Patent Granted.",
+      },
+      {
+        name: "patent_number_kind",
+        label: "Number Type",
+        type: "select",
+        required: true,
+        options: [
+          { label: "Filing / Application Number", value: "application" },
+          { label: "Granted Patent Number", value: "patent" },
+        ],
+        helpText: "Controls whether the public page labels it \"Application No.\" or \"Patent No.\"",
       },
       { name: "filed_date", label: "Filed Date", type: "date" },
       { name: "granted_date", label: "Granted Date", type: "date" },

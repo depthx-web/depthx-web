@@ -11,6 +11,7 @@
 
 export type UserRole = "admin" | "editor";
 export type ProjectStatus = "granted" | "pending" | "licensing";
+export type PatentNumberKind = "application" | "patent";
 export type FaqCategory = "licensing" | "general";
 export type EmailCampaignStatus = "draft" | "sent" | "failed" | "scheduled";
 
@@ -50,6 +51,7 @@ export interface Database {
           short_description: string;
           overview: string;
           patent_number: string | null;
+          patent_number_kind: PatentNumberKind;
           filed_date: string | null;
           granted_date: string | null;
           readiness_stage: number;

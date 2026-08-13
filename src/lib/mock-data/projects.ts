@@ -18,6 +18,7 @@ export const projects: Project[] = [
     overview:
       "This system was developed to close the gap between physical retail environments and digital decision engines. It combines sensor fusion with real-time behavioral modeling to adapt commercial spaces to visitor context, validated across three pilot deployments.",
     patentNumber: "GB2024-0091X",
+    patentNumberKind: "patent",
     filedDate: "2024-01-15",
     grantedDate: "2024-11-01",
     readinessStage: 3,
@@ -37,6 +38,7 @@ export const projects: Project[] = [
       "A coordination system for distributed aerial platforms capable of operating safely and efficiently within complex urban and public environments.",
     overview:
       "The platform coordinates multiple semi-autonomous aerial units using a shared decision layer, allowing safe operation in constrained urban airspace. Current work focuses on failure-mode validation ahead of full patent grant.",
+    patentNumberKind: "application",
     filedDate: "2026-03-01",
     readinessStage: 2,
     relatedPublications: publications.filter(
@@ -57,6 +59,7 @@ export const projects: Project[] = [
     overview:
       "A granted, production-validated engine for interpreting behavioral and environmental signals in real time. Already integrated in two pilot deployments and open for licensing by qualified commercial partners.",
     patentNumber: "GB2023-0044P",
+    patentNumberKind: "patent",
     filedDate: "2023-06-01",
     grantedDate: "2024-02-01",
     readinessStage: 3,

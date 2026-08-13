@@ -7,7 +7,7 @@ import { formatDate } from "@/components/ui/project-card";
 export function FlagshipCard({ project }: { project: Project }) {
   const c = STATUS_CLASSES[project.status];
   const meta = project.patentNumber
-    ? `${project.status === "granted" ? "Patent No." : "Application No."} ${project.patentNumber}`
+    ? `${project.patentNumberKind === "patent" ? "Patent No." : "Application No."} ${project.patentNumber}`
     : project.filedDate
       ? `Filed: ${formatDate(project.filedDate)}`
       : "";

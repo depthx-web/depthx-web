@@ -79,6 +79,7 @@ function mapProject(row: Record<string, unknown>): Project {
     shortDescription: String(row.short_description ?? ""),
     overview: String(row.overview ?? ""),
     patentNumber: row.patent_number ? String(row.patent_number) : undefined,
+    patentNumberKind: row.patent_number_kind === "patent" ? "patent" : "application",
     filedDate: row.filed_date ? String(row.filed_date) : undefined,
     grantedDate: row.granted_date ? String(row.granted_date) : undefined,
     readinessStage: Number(row.readiness_stage) as Project["readinessStage"],

@@ -448,17 +448,13 @@ deploy, no separate setup.
   — puts the embed in a unique opaque origin with no access to this site's
   cookies, DOM, or the logged-in admin's session, regardless of what the
   pasted HTML tries to do.
-- **Vercel's Hobby plan blocks auto-deploy for commits whose author email
-  isn't a recognized team member — this only started biting once the
-  GitHub repo went private.** While the repo was public, Vercel deployed
-  every push regardless of commit author. After switching the repo to
-  private, a push authored as `office@depthx.co.uk` (a business address
-  with no GitHub account behind it) was silently rejected with "attempted
-  to deploy a commit ... but they're not a member of the team." The local
-  commit identity (`git config user.email`, repo-local, not global) needs
-  to match whichever email is actually connected to the GitHub account
-  that's a member of the Vercel team — see Vercel's own suggested fixes in
-  that error message (Authentication Settings → confirm the GitHub
-  connection, or the GitHub App's repository-access list under
-  github.com/settings/installations) if changing the commit email alone
-  doesn't resolve it.
+- **Vercel's Hobby (free) plan has no concept of collaborators on a
+  private repo — deploys are blocked outright, for everyone but the sole
+  account owner, the moment the GitHub repo goes private.** This isn't a
+  misconfiguration to fix by changing the git commit author email (tried
+  that, twice — it's not email-based); Vercel's own "Upgrade to Pro"
+  dialog literally gates "Unlock collaboration" behind the paid plan. The
+  two real options are (a) pay for Pro, or (b) keep the repo public. This
+  project uses (b): the GitHub repo is public (no secrets in it —
+  `.env.local` is gitignored and was never committed), which is why
+  deploys work without a Pro subscription.

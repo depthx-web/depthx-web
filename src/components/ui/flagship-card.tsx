@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Project } from "@/lib/types";
 import { STATUS_CLASSES } from "@/lib/project-display";
 import { ReadinessBar, StatusBadge } from "@/components/ui/status-badge";
+import { ClampedText } from "@/components/ui/clamped-text";
 import { formatDate } from "@/lib/format-date";
 
 export function FlagshipCard({ project }: { project: Project }) {
@@ -29,7 +30,9 @@ export function FlagshipCard({ project }: { project: Project }) {
         <div className="font-mono text-[11px] tracking-wide text-muted">
           {project.researchDomain.name.toUpperCase()}
         </div>
-        <p className="my-3.5 text-sm leading-7 text-muted">{project.overview}</p>
+        <div className="my-3.5">
+          <ClampedText text={project.overview} lines={4} className="text-sm leading-7 text-muted" />
+        </div>
         <div className="mb-4">
           <ReadinessBar readiness={project.readinessStage} status={project.status} />
         </div>

@@ -34,7 +34,9 @@ export function PublicationList({ publications }: { publications: Publication[] 
               </button>
             </div>
             {open && (
-              <p className="max-w-2xl pt-4 text-sm leading-7 text-muted">{pub.abstract}</p>
+              <p className="max-w-2xl whitespace-pre-line pt-4 text-sm leading-7 text-muted">
+                {pub.abstract}
+              </p>
             )}
           </div>
         );

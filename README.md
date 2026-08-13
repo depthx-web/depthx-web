@@ -448,3 +448,14 @@ deploy, no separate setup.
   — puts the embed in a unique opaque origin with no access to this site's
   cookies, DOM, or the logged-in admin's session, regardless of what the
   pasted HTML tries to do.
+- **Vercel's Hobby plan blocks auto-deploy for commits whose author email
+  isn't a recognized team member — this only started biting once the
+  GitHub repo went private.** While the repo was public, Vercel deployed
+  every push regardless of commit author. After switching the repo to
+  private, a push authored as `office@depthx.co.uk` (a business address
+  with no GitHub account behind it) was silently rejected with "attempted
+  to deploy a commit ... but they're not a member of the team." Fixed by
+  setting the local commit identity (`git config user.email`, repo-local,
+  not global) to the email that actually owns the GitHub/Vercel accounts —
+  Vercel matches by that email, not by whichever GitHub session performed
+  the `git push`.

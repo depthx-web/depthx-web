@@ -45,9 +45,9 @@ export function CampaignForm() {
           className="w-full rounded-md border border-line bg-bg-2 px-3.5 py-3 text-sm text-text focus:border-transparent focus:outline focus:outline-2 focus:outline-blue"
         />
         <span className="text-xs text-muted">
-          Leave blank to save as a draft you send manually later. If set, a background job
-          checks for due campaigns periodically — exact timing depends on your hosting plan&apos;s
-          cron frequency, so treat this as &quot;send around this time,&quot; not to-the-minute.
+          Leave blank to save as a draft you send manually later. If set, a background job checks
+          for due campaigns once a day (Vercel&apos;s free plan only allows daily cron jobs) — so
+          treat this as &quot;send on this day,&quot; not to-the-minute.
         </span>
       </label>
       {state.error && (

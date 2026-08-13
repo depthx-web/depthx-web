@@ -120,10 +120,12 @@ What's here:
   - Campaigns can be scheduled for a future send (`scheduled_at` on
     `email_campaigns`) instead of only "send now". A Vercel Cron job
     (`vercel.json` -> `src/app/api/cron/send-scheduled-campaigns/route.ts`,
-    hourly, protected by `CRON_SECRET`) picks up anything due. **Vercel's
-    Hobby plan caps cron jobs to roughly once a day** regardless of the
-    schedule configured — treat scheduling as "send around this day," not
-    to-the-minute, unless you're on a paid Vercel plan.
+    protected by `CRON_SECRET`) picks up anything due. **Vercel's Hobby
+    plan only allows daily cron jobs** — `vercel.json` is set to run once a
+    day (`0 9 * * *`, 9am UTC) rather than hourly, since Vercel rejects an
+    hourly schedule on Hobby at deploy time. Treat scheduling as "send on
+    this day," not to-the-minute, unless you're on a paid Vercel plan
+    (where the schedule could be tightened).
 - **Dark and light mode**, toggleable site-wide (nav, mobile menu, and the
   admin panel header) via `src/components/theme-toggle.tsx`. Choice persists
   in `localStorage`; first visit falls back to the OS's `prefers-color-scheme`.

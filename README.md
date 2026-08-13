@@ -454,8 +454,11 @@ deploy, no separate setup.
   every push regardless of commit author. After switching the repo to
   private, a push authored as `office@depthx.co.uk` (a business address
   with no GitHub account behind it) was silently rejected with "attempted
-  to deploy a commit ... but they're not a member of the team." Fixed by
-  setting the local commit identity (`git config user.email`, repo-local,
-  not global) to the email that actually owns the GitHub/Vercel accounts —
-  Vercel matches by that email, not by whichever GitHub session performed
-  the `git push`.
+  to deploy a commit ... but they're not a member of the team." The local
+  commit identity (`git config user.email`, repo-local, not global) needs
+  to match whichever email is actually connected to the GitHub account
+  that's a member of the Vercel team — see Vercel's own suggested fixes in
+  that error message (Authentication Settings → confirm the GitHub
+  connection, or the GitHub App's repository-access list under
+  github.com/settings/installations) if changing the commit email alone
+  doesn't resolve it.

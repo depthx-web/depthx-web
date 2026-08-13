@@ -63,7 +63,12 @@ export const RESOURCE_CONFIGS: ResourceConfig[] = [
       },
       { name: "short_description", label: "Short Description", type: "textarea", required: true },
       { name: "overview", label: "Overview", type: "textarea", required: true },
-      { name: "patent_number", label: "Patent Number", type: "text" },
+      {
+        name: "patent_number",
+        label: "Patent / Application Number",
+        type: "text",
+        helpText: "Shown publicly as \"Application No.\" until Status is set to Patent Granted.",
+      },
       { name: "filed_date", label: "Filed Date", type: "date" },
       { name: "granted_date", label: "Granted Date", type: "date" },
       {

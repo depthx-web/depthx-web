@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getNewsPosts, getSiteSettings } from "@/lib/content";
 import { isSectionVisible } from "@/lib/section-visibility";
 import { Breadcrumb, PageHero } from "@/components/ui/page-hero";
-import { formatDate } from "@/components/ui/project-card";
+import { formatDate } from "@/lib/format-date";
 import { mergeKeywords, pageMetadata } from "@/lib/page-metadata";
 
 export async function generateMetadata(): Promise<Metadata> {

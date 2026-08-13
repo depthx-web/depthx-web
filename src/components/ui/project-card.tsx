@@ -1,15 +1,26 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import type { Project } from "@/lib/types";
 import { STATUS_CLASSES } from "@/lib/project-display";
 import { ReadinessBar, StatusBadge } from "@/components/ui/status-badge";
+import { formatDate } from "@/lib/format-date";
+
+// Rough heuristic for "would this wrap past 3 lines at card width" — good
+// enough to decide whether the toggle is worth showing without measuring
+// the actual rendered DOM.
+const CLAMP_THRESHOLD = 130;
 
 export function ProjectCard({ project }: { project: Project }) {
+  const [expanded, setExpanded] = useState(false);
   const c = STATUS_CLASSES[project.status];
   const meta = project.patentNumber
     ? `${project.patentNumberKind === "patent" ? "Patent No." : "Application No."} ${project.patentNumber}`
     : project.filedDate
       ? `Filed: ${formatDate(project.filedDate)}`
       : "";
+  const canClamp = project.shortDescription.length > CLAMP_THRESHOLD;
 
   return (
     <Link
@@ -22,7 +33,32 @@ export function ProjectCard({ project }: { project: Project }) {
         {project.researchDomain.name.toUpperCase()}
       </div>
       <div className="font-display text-xl font-semibold leading-tight">{project.title}</div>
-      <p className="flex-grow text-sm leading-7 text-muted">{project.shortDescription}</p>
+      <div className="flex-grow">
+        <p className={`text-sm leading-7 text-muted ${expanded ? "" : "line-clamp-3"}`}>
+          {project.shortDescription}
+        </p>
+        {canClamp && (
+          <span
+            role="button"
+            tabIndex={0}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setExpanded((v) => !v);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                e.stopPropagation();
+                setExpanded((v) => !v);
+              }
+            }}
+            className="mt-1.5 inline-block font-mono text-[11px] font-semibold text-blue hover:text-text"
+          >
+            {expanded ? "Show less" : "Show more"}
+          </span>
+        )}
+      </div>
       <ReadinessBar readiness={project.readinessStage} status={project.status} />
       <div className="flex items-center justify-between border-t border-line pt-3.5 font-mono text-[11px] text-muted">
         <span>{meta}</span>
@@ -35,8 +71,4 @@ export function ProjectCard({ project }: { project: Project }) {
       </div>
     </Link>
   );
-}
-
-export function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-GB", { month: "short", year: "numeric" });
 }

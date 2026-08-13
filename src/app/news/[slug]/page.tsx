@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getNewsPost, getNewsPosts } from "@/lib/content";
 import { Breadcrumb } from "@/components/ui/page-hero";
-import { formatDate } from "@/components/ui/project-card";
+import { formatDate } from "@/lib/format-date";
 import { pageMetadata } from "@/lib/page-metadata";
 
 export async function generateStaticParams() {

@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Project } from "@/lib/types";
 import { STATUS_CLASSES } from "@/lib/project-display";
 import { ReadinessBar, StatusBadge } from "@/components/ui/status-badge";
-import { formatDate } from "@/components/ui/project-card";
+import { formatDate } from "@/lib/format-date";
 
 export function FlagshipCard({ project }: { project: Project }) {
   const c = STATUS_CLASSES[project.status];

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getProject, getProjects } from "@/lib/content";
 import { Breadcrumb } from "@/components/ui/page-hero";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { formatDate } from "@/components/ui/project-card";
+import { formatDate } from "@/lib/format-date";
 import { ProductSimulator } from "@/components/ui/product-simulator";
 import { pageMetadata } from "@/lib/page-metadata";
 

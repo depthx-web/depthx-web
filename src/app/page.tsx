@@ -9,7 +9,8 @@ import {
 } from "@/lib/content";
 import { isSectionVisible } from "@/lib/section-visibility";
 import { StatGrid } from "@/components/ui/stat-grid";
-import { ProjectCard, formatDate } from "@/components/ui/project-card";
+import { ProjectCard } from "@/components/ui/project-card";
+import { formatDate } from "@/lib/format-date";
 import { FlagshipCard } from "@/components/ui/flagship-card";
 import { RoleToggle } from "@/components/contact/role-toggle";
 import { SectionHead } from "@/components/ui/page-hero";

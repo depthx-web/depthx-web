@@ -135,7 +135,7 @@ export default async function HomePage() {
               </Link>
             }
           />
-          <Reveal className="grid grid-cols-1 gap-5.5 md:grid-cols-3">
+          <Reveal className="grid grid-cols-1 gap-5.5 sm:grid-cols-2 lg:grid-cols-4">
             {domains.map((domain, i) => (
               <Link
                 href="/research"

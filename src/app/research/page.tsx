@@ -15,6 +15,8 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
+const NUMBER_WORDS = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
+
 const TIMELINE = [
   {
     title: "Scientific Research",
@@ -43,12 +45,12 @@ export default async function ResearchPage() {
       <Breadcrumb trail={[{ label: "Home", href: "/" }, { label: "Research" }]} />
       <PageHero
         eyebrow="// CORE RESEARCH FOCUS"
-        title="Three domains. One method: depth before deployment."
+        title={`${NUMBER_WORDS[domains.length] ?? domains.length} domain${domains.length === 1 ? "" : "s"}. One method: depth before deployment.`}
         description="We build scientific foundations first, then translate them into applied systems and protected intellectual property."
       />
       {isSectionVisible(visibility, "research.domains") && (
         <section className="px-8 pb-25 md:px-25">
-          <div className="grid grid-cols-1 gap-5.5 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5.5 sm:grid-cols-2 lg:grid-cols-4">
             {domains.map((domain, i) => (
               <div
                 key={domain._id}

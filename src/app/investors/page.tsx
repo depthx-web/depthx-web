@@ -63,7 +63,7 @@ export default async function InvestorsPage() {
               <table className="w-full border-collapse text-sm">
                 <thead>
                   <tr>
-                    {["Project", "Domain", "Status", "Patent No.", "Readiness"].map((h) => (
+                    {["Project", "Domain", "Status", "Patent / App. No.", "Readiness"].map((h) => (
                       <th
                         key={h}
                         className="border-b border-line-2 px-3 py-3.5 text-left font-mono text-[11px] tracking-wide text-muted"

@@ -60,7 +60,7 @@ export async function GET() {
     { label: "PROJECT", width: 170 },
     { label: "DOMAIN", width: 130 },
     { label: "STATUS", width: 90 },
-    { label: "PATENT NO.", width: 90 },
+    { label: "PATENT/APP NO.", width: 90 },
     { label: "READINESS", width: 60 },
   ];
   let x = margin;

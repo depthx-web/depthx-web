@@ -11,6 +11,8 @@ import { SuccessBanner } from "@/components/admin/success-banner";
 import { SendCampaignButton } from "@/components/admin/send-campaign-button";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { hasSmtpConfig } from "@/lib/email/env";
+import { NEWSLETTER_INTERESTS } from "@/lib/newsletter-interests";
+import type { NewsletterInterest } from "@/lib/supabase/database.types";
 
 export const metadata: Metadata = { title: "Campaigns" };
 
@@ -25,16 +27,23 @@ export default async function CampaignsPage(props: PageProps<"/admin/campaigns">
   const searchParams = await props.searchParams;
   const profile = await requireProfile();
   const supabase = await createClient();
-  const [{ data: campaigns }, { count: subscriberCount }] = await Promise.all([
+  const [{ data: campaigns }, { data: subscribers }] = await Promise.all([
     supabase.from("email_campaigns").select("*").order("created_at", { ascending: false }),
-    supabase.from("newsletter_subscribers").select("*", { count: "exact", head: true }),
+    supabase.from("newsletter_subscribers").select("interests"),
   ]);
+  const subscriberCount = subscribers?.length ?? 0;
+  const recipientCountFor = (audience: NewsletterInterest | null) =>
+    audience
+      ? (subscribers ?? []).filter((s) => s.interests.includes(audience)).length
+      : subscriberCount;
 
   const status = typeof searchParams.created !== "undefined"
     ? "created"
-    : typeof searchParams.sent !== "undefined"
-      ? "sent"
-      : undefined;
+    : typeof searchParams.updated !== "undefined"
+      ? "updated"
+      : typeof searchParams.sent !== "undefined"
+        ? "sent"
+        : undefined;
 
   return (
     <div>
@@ -81,19 +90,31 @@ export default async function CampaignsPage(props: PageProps<"/admin/campaigns">
                   </span>
                 </div>
                 <p className="max-w-xl truncate text-[13px] text-muted">{c.body}</p>
-                <div className="mt-2 font-mono text-[11px] text-muted">
-                  {c.status === "sent"
-                    ? `Sent to ${c.recipient_count} · ${new Date(c.sent_at!).toLocaleString()}`
-                    : c.status === "scheduled"
-                      ? `Scheduled for ${new Date(c.scheduled_at!).toLocaleString()}`
-                      : `Drafted ${new Date(c.created_at).toLocaleString()}`}
+                <div className="mt-2 flex flex-wrap items-center gap-2 font-mono text-[11px] text-muted">
+                  <span>
+                    {c.status === "sent"
+                      ? `Sent to ${c.recipient_count} · ${new Date(c.sent_at!).toLocaleString()}`
+                      : c.status === "scheduled"
+                        ? `Scheduled for ${new Date(c.scheduled_at!).toLocaleString()}`
+                        : `Drafted ${new Date(c.created_at).toLocaleString()}`}
+                  </span>
+                  <span className="rounded border border-line px-1.5 py-0.5 uppercase">
+                    {c.audience_interest
+                      ? NEWSLETTER_INTERESTS.find((i) => i.value === c.audience_interest)?.label
+                      : "All subscribers"}
+                  </span>
                 </div>
               </div>
               <div className="flex items-center gap-4 font-mono text-xs">
+                {c.status !== "sent" && (
+                  <Link href={`/admin/campaigns/${c.id}/edit`} className="text-blue hover:text-text">
+                    Edit
+                  </Link>
+                )}
                 {c.status !== "sent" && profile.role === "admin" && (
                   <SendCampaignButton
                     action={sendCampaignAction.bind(null, c.id)}
-                    recipientCount={subscriberCount ?? 0}
+                    recipientCount={recipientCountFor(c.audience_interest)}
                   />
                 )}
                 {c.status === "scheduled" && profile.role === "admin" && (

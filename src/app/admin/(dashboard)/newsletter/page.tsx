@@ -3,6 +3,8 @@ import { requireProfile } from "@/lib/admin/auth";
 import { createClient } from "@/lib/supabase/server";
 import { deleteSubscriberAction } from "@/app/admin/actions/newsletter";
 import { DeleteButton } from "@/components/admin/delete-button";
+import { AddSubscriberForm } from "@/components/admin/add-subscriber-form";
+import { NEWSLETTER_INTERESTS } from "@/lib/newsletter-interests";
 
 export const metadata: Metadata = { title: "Newsletter" };
 
@@ -36,14 +38,16 @@ export default async function NewsletterPage() {
         )}
       </div>
       <p className="mb-8 text-sm text-muted">
-        Signups from the homepage newsletter form. Download the CSV to import into your email
-        sending tool of choice.
+        Signups from the homepage newsletter form, plus anyone added manually below. Download
+        the CSV to import into your email sending tool of choice.
       </p>
+      {profile.role === "admin" && <AddSubscriberForm />}
       <div className="overflow-x-auto rounded-lg border border-line">
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="border-b border-line bg-bg-2">
               <th className="px-4 py-3 text-left font-mono text-[11px] text-muted">Email</th>
+              <th className="px-4 py-3 text-left font-mono text-[11px] text-muted">Interests</th>
               <th className="px-4 py-3 text-left font-mono text-[11px] text-muted">
                 Subscribed
               </th>
@@ -53,7 +57,7 @@ export default async function NewsletterPage() {
           <tbody>
             {rows.length === 0 && (
               <tr>
-                <td colSpan={3} className="px-4 py-8 text-center text-muted">
+                <td colSpan={4} className="px-4 py-8 text-center text-muted">
                   No subscribers yet.
                 </td>
               </tr>
@@ -61,6 +65,19 @@ export default async function NewsletterPage() {
             {rows.map((s) => (
               <tr key={s.id} className="border-b border-line last:border-none hover:bg-hover">
                 <td className="px-4 py-3">{s.email}</td>
+                <td className="px-4 py-3">
+                  <div className="flex flex-wrap gap-1.5">
+                    {s.interests.map((value) => (
+                      <span
+                        key={value}
+                        title={NEWSLETTER_INTERESTS.find((i) => i.value === value)?.label}
+                        className="rounded border border-line px-1.5 py-0.5 font-mono text-[10px] uppercase text-muted"
+                      >
+                        {value}
+                      </span>
+                    ))}
+                  </div>
+                </td>
                 <td className="px-4 py-3 font-mono text-xs text-muted">
                   {new Date(s.created_at).toLocaleString()}
                 </td>

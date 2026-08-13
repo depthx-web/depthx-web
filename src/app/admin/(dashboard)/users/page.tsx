@@ -4,6 +4,7 @@ import { requireProfile } from "@/lib/admin/auth";
 import { createClient } from "@/lib/supabase/server";
 import { RoleSelect } from "@/components/admin/role-select";
 import { AddUserForm } from "@/components/admin/add-user-form";
+import { UserActions } from "@/components/admin/user-actions";
 
 export const metadata: Metadata = { title: "Users & Roles" };
 
@@ -31,6 +32,7 @@ export default async function UsersPage() {
               <th className="px-4 py-3 text-left font-mono text-[11px] text-muted">Email</th>
               <th className="px-4 py-3 text-left font-mono text-[11px] text-muted">Joined</th>
               <th className="px-4 py-3 text-left font-mono text-[11px] text-muted">Role</th>
+              <th className="px-4 py-3 text-right font-mono text-[11px] text-muted">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -44,6 +46,9 @@ export default async function UsersPage() {
                 </td>
                 <td className="px-4 py-3">
                   <RoleSelect userId={p.id} role={p.role} />
+                </td>
+                <td className="px-4 py-3 text-right">
+                  <UserActions userId={p.id} email={p.email} isSelf={p.id === profile.id} />
                 </td>
               </tr>
             ))}

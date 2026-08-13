@@ -13,7 +13,7 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
 
   return (
     <div className="min-h-screen">
-      <div className="flex items-center justify-between border-b border-line px-6 py-3.5">
+      <div className="sticky top-0 z-20 flex h-[58px] items-center justify-between border-b border-line bg-bg px-6">
         <Link href="/admin" className="font-display text-base font-bold">
           Depth<span className="text-amber">X</span>{" "}
           <span className="font-mono text-xs font-normal text-muted">Admin</span>
@@ -30,37 +30,30 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
             View site
           </Link>
           <form action={logoutAction}>
-            <button type="submit" className="hover:text-text">
+            <button
+              type="submit"
+              className="rounded-md border border-line px-3 py-1.5 font-semibold text-text transition-all duration-150 hover:border-amber hover:bg-amber/10 hover:text-amber active:scale-95"
+            >
               Sign out
             </button>
           </form>
         </div>
       </div>
       <div className="grid grid-cols-[220px_1fr]">
-        <nav className="border-r border-line px-4 py-6">
+        <nav className="sticky top-[58px] h-[calc(100vh-58px)] overflow-y-auto border-r border-line px-4 py-6">
           <NavLink href="/admin" label="Dashboard" />
-          <p className="mb-2 mt-6 px-3 font-mono text-[10px] tracking-widest text-muted">
-            CONTENT
-          </p>
+          <SectionLabel>{"// CONTENT"}</SectionLabel>
           {RESOURCE_CONFIGS.map((r) => (
             <NavLink key={r.slug} href={`/admin/${r.slug}`} label={r.label} />
           ))}
-          <p className="mb-2 mt-6 px-3 font-mono text-[10px] tracking-widest text-muted">
-            INBOX
-          </p>
+          <SectionLabel>{"// INBOX"}</SectionLabel>
           <NavLink href="/admin/messages" label="Messages" />
-          <p className="mb-2 mt-6 px-3 font-mono text-[10px] tracking-widest text-muted">
-            MARKETING
-          </p>
+          <SectionLabel>{"// MARKETING"}</SectionLabel>
           <NavLink href="/admin/newsletter" label="Newsletter" />
           <NavLink href="/admin/campaigns" label="Campaigns" />
-          <p className="mb-2 mt-6 px-3 font-mono text-[10px] tracking-widest text-muted">
-            INSIGHTS
-          </p>
+          <SectionLabel>{"// INSIGHTS"}</SectionLabel>
           <NavLink href="/admin/analytics" label="Analytics" />
-          <p className="mb-2 mt-6 px-3 font-mono text-[10px] tracking-widest text-muted">
-            SETTINGS
-          </p>
+          <SectionLabel>{"// SETTINGS"}</SectionLabel>
           <NavLink href="/admin/site-settings" label="Site Settings" />
           {profile.role === "admin" && <NavLink href="/admin/legal" label="Legal Pages" />}
           {profile.role === "admin" && <NavLink href="/admin/users" label="Users & Roles" />}
@@ -68,6 +61,14 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
         <main className="px-8 py-8">{children}</main>
       </div>
     </div>
+  );
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="mb-2.5 mt-7 px-3 font-mono text-[11px] font-semibold tracking-widest text-amber">
+      {children}
+    </p>
   );
 }
 

@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import Link from "next/link";
 import { subscribeNewsletterAction, type NewsletterActionState } from "@/app/actions/newsletter";
 import { Reveal } from "@/components/ui/reveal";
+import { NEWSLETTER_INTERESTS } from "@/lib/newsletter-interests";
 
 const initialState: NewsletterActionState = { error: null };
 
@@ -59,6 +60,26 @@ export function NewsletterSection() {
                     {pending ? "Subscribing…" : "Subscribe"}
                   </button>
                 </div>
+                <fieldset className="flex flex-col gap-1.5">
+                  <legend className="mb-0.5 font-mono text-[11px] tracking-wide text-muted">
+                    WHAT ARE YOU INTERESTED IN? (OPTIONAL — DEFAULTS TO EVERYTHING)
+                  </legend>
+                  {NEWSLETTER_INTERESTS.map((interest) => (
+                    <label
+                      key={interest.value}
+                      className="flex items-center gap-2 text-xs leading-5 text-muted"
+                    >
+                      <input
+                        type="checkbox"
+                        name="interests"
+                        value={interest.value}
+                        defaultChecked
+                        className="h-3.5 w-3.5 shrink-0 accent-green"
+                      />
+                      {interest.label}
+                    </label>
+                  ))}
+                </fieldset>
                 <label className="flex items-start gap-2 text-xs leading-5 text-muted">
                   <input
                     type="checkbox"

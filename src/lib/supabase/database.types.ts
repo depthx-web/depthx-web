@@ -14,6 +14,7 @@ export type ProjectStatus = "granted" | "pending" | "licensing";
 export type PatentNumberKind = "application" | "patent";
 export type FaqCategory = "licensing" | "general";
 export type EmailCampaignStatus = "draft" | "sent" | "failed" | "scheduled";
+export type NewsletterInterest = "news" | "investment" | "research" | "partnership";
 
 type NoRelationships = { Relationships: [] };
 
@@ -191,11 +192,16 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["page_views"]["Insert"]>;
       } & NoRelationships;
       newsletter_subscribers: {
-        Row: { id: string; email: string; created_at: string };
+        Row: {
+          id: string;
+          email: string;
+          created_at: string;
+          interests: NewsletterInterest[];
+        };
         Insert: Omit<
           Database["public"]["Tables"]["newsletter_subscribers"]["Row"],
-          "id" | "created_at"
-        > & { id?: string };
+          "id" | "created_at" | "interests"
+        > & { id?: string; interests?: NewsletterInterest[] };
         Update: Partial<Database["public"]["Tables"]["newsletter_subscribers"]["Row"]>;
       } & NoRelationships;
       message_replies: {
@@ -223,16 +229,24 @@ export interface Database {
           created_at: string;
           sent_at: string | null;
           scheduled_at: string | null;
+          audience_interest: NewsletterInterest | null;
         };
         Insert: Omit<
           Database["public"]["Tables"]["email_campaigns"]["Row"],
-          "id" | "created_at" | "status" | "recipient_count" | "sent_at" | "scheduled_at"
+          | "id"
+          | "created_at"
+          | "status"
+          | "recipient_count"
+          | "sent_at"
+          | "scheduled_at"
+          | "audience_interest"
         > & {
           id?: string;
           status?: EmailCampaignStatus;
           recipient_count?: number;
           sent_at?: string | null;
           scheduled_at?: string | null;
+          audience_interest?: NewsletterInterest | null;
         };
         Update: Partial<Database["public"]["Tables"]["email_campaigns"]["Row"]>;
       } & NoRelationships;

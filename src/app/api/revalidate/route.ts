@@ -18,7 +18,7 @@ const PATHS_BY_TABLE: Record<string, string[]> = {
   projects: ["/", "/projects", "/investors"],
   publications: ["/publications"],
   team_members: ["/team"],
-  news_posts: ["/news"],
+  news_posts: ["/", "/news"], // "/" too: the homepage's Latest News section reads news_posts
   testimonials: ["/investors"],
   faq_items: ["/investors"],
   research_domains: ["/", "/research"],

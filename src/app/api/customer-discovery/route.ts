@@ -1,862 +1,95 @@
-<!doctype html>
-<html lang="en"> 
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Depth X — Customer Discovery V3</title>
-<style>
-:root{
-  --bg:#08111f; --panel:#0f1b2c; --panel2:#14243a; --text:#edf5ff; --muted:#9eb2cb;
-  --accent:#52adff; --line:#29405b; --ok:#44c89b;
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text)}
-header{position:sticky;top:0;z-index:20;background:rgba(8,17,31,.97);border-bottom:1px solid var(--line);padding:14px 16px}
-.brand{font-weight:900;letter-spacing:.08em}.sub{color:var(--muted);font-size:13px;margin-top:3px}
-nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-button,.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:10px;padding:10px 13px;cursor:pointer;font-weight:700}
-button.primary{background:var(--accent);border-color:var(--accent);color:#06111e}
-main{max-width:1050px;margin:0 auto;padding:16px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:17px;margin-bottom:15px}
-h1,h2,h3{margin:0 0 12px} h1{font-size:24px} h2{font-size:19px} h3{font-size:15px}
-p{color:var(--muted);line-height:1.5}
-.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}.col12{grid-column:span 12}.col6{grid-column:span 6}.col4{grid-column:span 4}
-label{display:block;font-size:13px;color:var(--muted);margin:5px 0 6px}
-input,select,textarea{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:#0a1524;color:var(--text);outline:none}
-textarea{min-height:78px;resize:vertical}
-.choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:8px 0 10px}
-.choice{display:flex;gap:8px;align-items:flex-start;background:#0a1524;border:1px solid var(--line);border-radius:10px;padding:10px;cursor:pointer}
-.choice input{width:auto;margin-top:2px}
-.question{border-top:1px solid var(--line);padding-top:15px;margin-top:15px}
-.question:first-child{border-top:none;padding-top:0;margin-top:0}
-.qhead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
-.qtext{font-weight:750;line-height:1.45}
-.speak{padding:7px 10px;font-size:13px;white-space:nowrap}
-.small{font-size:12px;color:var(--muted)}
-.notice{border-left:3px solid var(--accent);background:#0a1728;border-radius:8px;padding:11px 12px;color:#dcecff}
-.stepbar{display:flex;gap:6px;margin:12px 0 18px}.step{height:6px;flex:1;border-radius:6px;background:#1e3046}.step.on{background:var(--accent)}
-.footer-actions{display:flex;justify-content:space-between;gap:10px;margin-top:20px}
-.hidden{display:none!important}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.kpi{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px}.kpi .v{font-size:27px;font-weight:850}.kpi .l{font-size:12px;color:var(--muted)}
-table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left}th{color:var(--muted)}
-.bar{height:9px;background:#1c2d43;border-radius:8px;overflow:hidden;margin-top:5px}.bar span{display:block;height:100%;background:var(--accent)}
-.langbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
-.syncbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
-.syncpill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#0a1524;border-radius:999px;padding:7px 10px;font-size:12px;color:var(--muted)}
-.syncpill strong{color:var(--text)}
-@media(max-width:760px){main{padding:11px}.card{padding:14px}.col6,.col4{grid-column:span 12}.choice-grid{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.qhead{align-items:center}}
-</style>
-</head>
-<body>
-<header>
-  <div class="brand">DEPTH X</div>
-  <div class="sub">Customer Discovery — Exhibition Interview System V3</div>
-  <div class="langbar">
-    <span class="small">Question language</span>
-    <button type="button" id="lang-en" onclick="setLang('en')">🇬🇧 English</button>
-    <button type="button" id="lang-de" onclick="setLang('de')">🇩🇪 Deutsch</button>
-  </div>
-  <nav>
-    <button onclick="showView('new')">+ New Interview</button>
-    <button onclick="showView('dashboard')">Dashboard</button>
-    <button onclick="showView('interviews')">Interviews</button>
-    <button onclick="syncPending()">Sync Pending</button>
-    <button onclick="exportCSV()">Export CSV</button>
-  </nav>
-  <div class="syncbar">
-    <span class="syncpill">Database: <strong id="dbState">Ready</strong></span>
-    <span class="syncpill">Pending: <strong id="pendingCount">0</strong></span>
-  </div>
-</header>
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-<main>
-<section id="view-new">
-<div class="card">
-<h1 data-en="New Interview" data-de="Neues Interview">New Interview</h1>
-<div class="small" id="interviewId"></div>
-<div class="stepbar" id="stepbar"></div>
-
-<form id="form">
-
-<div class="stepPage" data-step="0">
-<h2 data-en="1. Profile" data-de="1. Profil">1. Profile</h2>
-<div class="grid">
-  <div class="col6"><label data-en="Exhibition" data-de="Messe / Veranstaltung">Exhibition</label><input name="exhibition"/></div>
-  <div class="col6"><label data-en="Company / Organization (optional)" data-de="Unternehmen / Organisation (optional)">Company / Organization (optional)</label><input name="company"/></div>
-  <div class="col6"><label data-en="Role / Position (optional for visitors)" data-de="Rolle / Position (für Besucher optional)">Role / Position (optional for visitors)</label><input name="role"/></div>
-  <div class="col6">
-    <label data-en="Interviewee type" data-de="Interviewtyp">Interviewee type</label>
-    <select name="type" id="type" required>
-      <option value="">Select…</option>
-      <option value="E">E — Exhibitor / Brand</option>
-      <option value="O">O — Exhibition Organizer</option>
-      <option value="A">A — Advertising / Marketing Agency</option>
-      <option value="V">V — Visitor / Audience</option>
-    </select>
-  </div>
-</div>
-</div>
-
-<div class="stepPage hidden" data-step="1">
-<h2 data-en="2. Discovery" data-de="2. Bedarfsermittlung">2. Discovery</h2>
-
-<div id="professional-discovery">
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="1. How do you currently attract visitors or promote your company during exhibitions?" data-de="1. Wie gewinnen Sie derzeit Besucher oder bewerben Ihr Unternehmen auf Messen?">1. How do you currently attract visitors or promote your company during exhibitions?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <div class="choice-grid">
-    <label class="choice"><input type="checkbox" name="currentApproach[]" value="Booth / stand">Booth / stand</label>
-    <label class="choice"><input type="checkbox" name="currentApproach[]" value="Digital screens">Digital screens</label>
-    <label class="choice"><input type="checkbox" name="currentApproach[]" value="Banners / signage">Banners / signage</label>
-    <label class="choice"><input type="checkbox" name="currentApproach[]" value="Flyers / printed media">Flyers / printed media</label>
-    <label class="choice"><input type="checkbox" name="currentApproach[]" value="Promotional staff">Promotional staff</label>
-    <label class="choice"><input type="checkbox" name="currentApproach[]" value="QR / digital interaction">QR / digital interaction</label>
-    <label class="choice"><input type="checkbox" name="currentApproach[]" value="Social media / online promotion">Social media / online promotion</label>
-    <label class="choice"><input type="checkbox" name="currentApproach[]" value="Other">Other</label>
-  </div>
-  <label data-en="Optional comment" data-de="Optionaler Kommentar">Optional comment</label><textarea name="currentApproachComment"></textarea>
-</div>
-
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="2. How do you currently measure whether your physical advertising is working?" data-de="2. Wie messen Sie derzeit, ob Ihre physische Werbung funktioniert?">2. How do you currently measure whether your physical advertising is working?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <div class="choice-grid">
-    <label class="choice"><input type="checkbox" name="measurement[]" value="Booth visits">Booth visits</label>
-    <label class="choice"><input type="checkbox" name="measurement[]" value="QR scans">QR scans</label>
-    <label class="choice"><input type="checkbox" name="measurement[]" value="Leads / registrations">Leads / registrations</label>
-    <label class="choice"><input type="checkbox" name="measurement[]" value="Sales / conversions">Sales / conversions</label>
-    <label class="choice"><input type="checkbox" name="measurement[]" value="Staff observation">Staff observation</label>
-    <label class="choice"><input type="checkbox" name="measurement[]" value="Digital analytics">Digital analytics</label>
-    <label class="choice"><input type="checkbox" name="measurement[]" value="Very limited / not measured">Very limited / not measured</label>
-    <label class="choice"><input type="checkbox" name="measurement[]" value="Other">Other</label>
-  </div>
-  <label data-en="Optional comment" data-de="Optionaler Kommentar">Optional comment</label><textarea name="measurementComment"></textarea>
-</div>
-
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="3. What audience information would be most useful but difficult to measure today?" data-de="3. Welche Informationen über das Publikum wären für Sie besonders nützlich, sind heute aber schwer zu messen?">3. What audience information would be most useful but difficult to measure today?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <div class="choice-grid">
-    <label class="choice"><input type="checkbox" name="missingData[]" value="Attention">Attention</label>
-    <label class="choice"><input type="checkbox" name="missingData[]" value="Engagement">Engagement</label>
-    <label class="choice"><input type="checkbox" name="missingData[]" value="Traffic / location patterns">Traffic / location patterns</label>
-    <label class="choice"><input type="checkbox" name="missingData[]" value="Interaction duration">Interaction duration</label>
-    <label class="choice"><input type="checkbox" name="missingData[]" value="Response to different messages">Response to different messages</label>
-    <label class="choice"><input type="checkbox" name="missingData[]" value="Conversion to booth / action">Conversion to booth / action</label>
-    <label class="choice"><input type="checkbox" name="missingData[]" value="Nothing important missing">Nothing important missing</label>
-    <label class="choice"><input type="checkbox" name="missingData[]" value="Other">Other</label>
-  </div>
-  <label data-en="Optional comment" data-de="Optionaler Kommentar">Optional comment</label><textarea name="missingDataComment"></textarea>
-</div>
-
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="4. If a campaign is not performing well during an event, how easily can you identify that and change it?" data-de="4. Wenn eine Kampagne während einer Veranstaltung nicht gut funktioniert, wie leicht können Sie das erkennen und die Kampagne anpassen?">4. If a campaign is not performing well during an event, how easily can you identify that and change it?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <select name="adaptability">
-    <option value="">Select…</option><option>Yes, easily</option><option>Yes, but with limitations</option><option>Difficult</option><option>Usually not possible</option>
-  </select>
-</div>
-
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="5. How important would better measurement and adaptability of physical advertising be for you?" data-de="5. Wie wichtig wären für Sie eine bessere Messbarkeit und Anpassungsfähigkeit physischer Werbung?">5. How important would better measurement and adaptability of physical advertising be for you?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <select name="problemImportance"><option value="">Select 1–5…</option><option value="1">1 — Not important</option><option value="2">2</option><option value="3">3</option><option value="4">4 — Important</option><option value="5">5 — Very important</option></select>
-</div>
-</div>
-
-<div id="visitor-discovery" class="hidden">
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="V1. What usually attracts your attention most at an exhibition?" data-de="V1. Was zieht auf einer Messe normalerweise Ihre Aufmerksamkeit am stärksten auf sich?">V1. What usually attracts your attention most at an exhibition?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <div class="choice-grid">
-    <label class="choice"><input type="checkbox" name="visitorAttention[]" value="Large displays / screens">Large displays / screens</label>
-    <label class="choice"><input type="checkbox" name="visitorAttention[]" value="Movement / unusual displays">Movement / unusual displays</label>
-    <label class="choice"><input type="checkbox" name="visitorAttention[]" value="Offers / promotions">Offers / promotions</label>
-    <label class="choice"><input type="checkbox" name="visitorAttention[]" value="Interactive experiences">Interactive experiences</label>
-    <label class="choice"><input type="checkbox" name="visitorAttention[]" value="People / demonstrations">People / demonstrations</label>
-    <label class="choice"><input type="checkbox" name="visitorAttention[]" value="Other">Other</label>
-  </div>
-  <label data-en="Optional comment" data-de="Optionaler Kommentar">Optional comment</label><textarea name="visitorAttentionComment"></textarea>
-</div>
-
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="V2. If you saw a mobile aerial advertising display around an exhibition, would it be more likely to attract your attention than a fixed banner or screen?" data-de="V2. Würde eine mobile Luftwerbeanzeige rund um eine Messe Ihre Aufmerksamkeit eher auf sich ziehen als ein festes Banner oder ein fester Bildschirm?">V2. If you saw a mobile aerial advertising display around an exhibition, would it be more likely to attract your attention than a fixed banner or screen?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <select name="visitorAerialAttention"><option value="">Select…</option><option>Definitely yes</option><option>Probably yes</option><option>Maybe / depends</option><option>Probably not</option><option>Definitely not</option></select>
-  <label data-en="Why? (optional)" data-de="Warum? (optional)">Why? (optional)</label><textarea name="visitorAerialWhy"></textarea>
-</div>
-
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="V3. What would make you comfortable or uncomfortable interacting with such a system?" data-de="V3. Was würde dazu führen, dass Sie sich bei der Interaktion mit einem solchen System wohl oder unwohl fühlen?">V3. What would make you comfortable or uncomfortable interacting with such a system?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <div class="choice-grid">
-    <label class="choice"><input type="checkbox" name="visitorConcerns[]" value="Safety">Safety</label>
-    <label class="choice"><input type="checkbox" name="visitorConcerns[]" value="Noise">Noise</label>
-    <label class="choice"><input type="checkbox" name="visitorConcerns[]" value="Privacy">Privacy</label>
-    <label class="choice"><input type="checkbox" name="visitorConcerns[]" value="Clear information about data use">Clear information about data use</label>
-    <label class="choice"><input type="checkbox" name="visitorConcerns[]" value="Useful offer / content">Useful offer / content</label>
-    <label class="choice"><input type="checkbox" name="visitorConcerns[]" value="No major concern">No major concern</label>
-    <label class="choice"><input type="checkbox" name="visitorConcerns[]" value="Other">Other</label>
-  </div>
-  <label data-en="Optional comment" data-de="Optionaler Kommentar">Optional comment</label><textarea name="visitorConcernComment"></textarea>
-</div>
-</div>
-</div>
-
-<div class="stepPage hidden" data-step="2">
-<h2 data-en="3. Depth X Concept Test" data-de="3. Depth-X-Konzepttest">3. Depth X Concept Test</h2>
-<div class="notice" id="conceptText"
-data-en="Depth X is developing a patent-pending autonomous aerial marketing platform designed to combine mobile advertising with anonymous audience measurement and real-time campaign adaptation. The system is designed around multiple UAVs and intelligent energy management to support continuous or near-continuous operation rather than depending on the flight time of a single drone."
-data-de="Depth X entwickelt eine zum Patent angemeldete autonome Plattform für Luftmarketing. Sie soll mobile Werbung mit anonymer Publikumsanalyse und einer Anpassung von Kampagnen in Echtzeit verbinden. Das System ist mit mehreren UAVs und intelligentem Energiemanagement konzipiert, um einen kontinuierlichen oder nahezu kontinuierlichen Betrieb zu ermöglichen, statt von der Flugzeit einer einzelnen Drohne abhängig zu sein.">
-Depth X is developing a patent-pending autonomous aerial marketing platform designed to combine mobile advertising with anonymous audience measurement and real-time campaign adaptation.
-</div>
-<div style="margin:10px 0"><button type="button" onclick="speakElement(document.getElementById('conceptText'))">🔊 Read concept</button></div>
-
-<div id="professional-concept">
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="6. Which part of the concept would create the most value for you — if any?" data-de="6. Welcher Teil des Konzepts würde für Sie den größten Nutzen schaffen – falls überhaupt?">6. Which part of the concept would create the most value for you — if any?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <div class="choice-grid">
-    <label class="choice"><input type="radio" name="mostValuable" value="Mobile / aerial advertising">Mobile / aerial advertising</label>
-    <label class="choice"><input type="radio" name="mostValuable" value="Audience measurement">Audience measurement</label>
-    <label class="choice"><input type="radio" name="mostValuable" value="Real-time analytics">Real-time analytics</label>
-    <label class="choice"><input type="radio" name="mostValuable" value="Campaign adaptation">Campaign adaptation</label>
-    <label class="choice"><input type="radio" name="mostValuable" value="Continuous operation">Continuous operation</label>
-    <label class="choice"><input type="radio" name="mostValuable" value="Multiple media formats">Multiple media formats</label>
-    <label class="choice"><input type="radio" name="mostValuable" value="No significant value">I do not currently see significant value</label>
-    <label class="choice"><input type="radio" name="mostValuable" value="Other">Other</label>
-  </div>
-  <label data-en="Optional comment" data-de="Optionaler Kommentar">Optional comment</label><textarea name="valueWhy"></textarea>
-</div>
-
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="7. What would be your biggest concern about using a system like this?" data-de="7. Was wäre Ihre größte Sorge bei der Nutzung eines solchen Systems?">7. What would be your biggest concern about using a system like this?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <div class="choice-grid">
-    <label class="choice"><input type="checkbox" name="concernCategory[]" value="Safety">Safety</label>
-    <label class="choice"><input type="checkbox" name="concernCategory[]" value="Regulation">Regulation</label>
-    <label class="choice"><input type="checkbox" name="concernCategory[]" value="Noise">Noise</label>
-    <label class="choice"><input type="checkbox" name="concernCategory[]" value="Privacy">Privacy</label>
-    <label class="choice"><input type="checkbox" name="concernCategory[]" value="Cost">Cost</label>
-    <label class="choice"><input type="checkbox" name="concernCategory[]" value="Technical Reliability">Technical reliability</label>
-    <label class="choice"><input type="checkbox" name="concernCategory[]" value="Weather">Weather</label>
-    <label class="choice"><input type="checkbox" name="concernCategory[]" value="Audience Acceptance">Audience acceptance</label>
-    <label class="choice"><input type="checkbox" name="concernCategory[]" value="No major concern">No major concern</label>
-    <label class="choice"><input type="checkbox" name="concernCategory[]" value="Other">Other</label>
-  </div>
-  <label data-en="Optional comment" data-de="Optionaler Kommentar">Optional comment</label><textarea name="concernText"></textarea>
-</div>
-</div>
-
-<div id="visitor-concept" class="hidden">
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="V4. After hearing the concept, would you be comfortable engaging with the system if it clearly explained that audience measurement is anonymous?" data-de="V4. Würden Sie nach dieser Erklärung mit dem System interagieren, wenn klar erklärt wird, dass die Publikumsanalyse anonym erfolgt?">V4. After hearing the concept, would you be comfortable engaging with the system if it clearly explained that audience measurement is anonymous?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <select name="visitorComfort"><option value="">Select…</option><option>Yes</option><option>Probably yes</option><option>Maybe / depends</option><option>Probably not</option><option>No</option></select>
-  <label data-en="Optional comment" data-de="Optionaler Kommentar">Optional comment</label><textarea name="visitorComfortComment"></textarea>
-</div>
-</div>
-</div>
-
-<div class="stepPage hidden" data-step="3">
-<h2 data-en="4. Pilot / Segment Questions" data-de="4. Pilot- / Segmentfragen">4. Pilot / Segment Questions</h2>
-
-<div id="professional-pilot">
-<div class="question">
-<div class="qhead"><div class="qtext" data-en="8. If the system were successfully built, technically validated and appropriately approved, would you consider exploring a controlled pilot?" data-de="8. Wenn das System erfolgreich gebaut, technisch validiert und ordnungsgemäß genehmigt wäre, würden Sie einen kontrollierten Pilotversuch in Betracht ziehen?">8. If the system were successfully built, technically validated and appropriately approved, would you consider exploring a controlled pilot?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-<select name="pilotInterest"><option value="">Select 1–5…</option><option value="1">1 — Definitely not</option><option value="2">2 — Probably not</option><option value="3">3 — Maybe</option><option value="4">4 — Yes</option><option value="5">5 — Strong interest</option></select>
-<label data-en="Optional comment" data-de="Optionaler Kommentar">Optional comment</label><textarea name="pilotWhy"></textarea>
-</div>
-
-<div id="branch-E" class="branch hidden">
-<div class="question"><div class="qhead"><div class="qtext" data-en="E1. Could you imagine using this to attract visitors to your booth or campaign area?" data-de="E1. Könnten Sie sich vorstellen, dieses System zu nutzen, um Besucher zu Ihrem Stand oder Kampagnenbereich zu ziehen?">E1. Could you imagine using this to attract visitors to your booth or campaign area?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-<select name="E1"><option value="">Select…</option><option>Yes</option><option>Maybe</option><option>No</option></select><textarea name="E1_comment" placeholder="Optional comment"></textarea></div>
-<div class="question"><div class="qhead"><div class="qtext" data-en="E2. What result would make a campaign like this valuable enough to pay for?" data-de="E2. Welches Ergebnis müsste eine solche Kampagne liefern, damit sie für Ihr Unternehmen zahlungswürdig wäre?">E2. What result would make a campaign like this valuable enough to pay for?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-<div class="choice-grid"><label class="choice"><input type="checkbox" name="E2[]" value="More booth visits">More booth visits</label><label class="choice"><input type="checkbox" name="E2[]" value="More leads">More leads</label><label class="choice"><input type="checkbox" name="E2[]" value="Higher engagement">Higher engagement</label><label class="choice"><input type="checkbox" name="E2[]" value="Better measurable ROI">Better measurable ROI</label><label class="choice"><input type="checkbox" name="E2[]" value="Other">Other</label></div><textarea name="E2_comment" placeholder="Optional comment"></textarea></div>
-</div>
-
-<div id="branch-O" class="branch hidden">
-<div class="question"><div class="qhead"><div class="qtext" data-en="O1. Could you see a useful location for a system like this in outdoor or transitional exhibition areas?" data-de="O1. Sehen Sie einen geeigneten Einsatzort für ein solches System in Außen- oder Übergangsbereichen einer Messe?">O1. Could you see a useful location for a system like this in outdoor or transitional exhibition areas?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-<div class="choice-grid"><label class="choice"><input type="checkbox" name="O1[]" value="Entrances / exits">Entrances / exits</label><label class="choice"><input type="checkbox" name="O1[]" value="Between halls">Between halls</label><label class="choice"><input type="checkbox" name="O1[]" value="Outdoor exhibition area">Outdoor exhibition area</label><label class="choice"><input type="checkbox" name="O1[]" value="Transport / parking area">Transport / parking area</label><label class="choice"><input type="checkbox" name="O1[]" value="No obvious location">No obvious location</label><label class="choice"><input type="checkbox" name="O1[]" value="Other">Other</label></div><textarea name="O1_comment" placeholder="Optional comment"></textarea></div>
-<div class="question"><div class="qhead"><div class="qtext" data-en="O2. What would be the main requirement or obstacle for allowing a controlled pilot?" data-de="O2. Was wäre die wichtigste Voraussetzung oder das größte Hindernis für einen kontrollierten Pilotversuch?">O2. What would be the main requirement or obstacle for allowing a controlled pilot?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-<div class="choice-grid"><label class="choice"><input type="checkbox" name="O2[]" value="Safety">Safety</label><label class="choice"><input type="checkbox" name="O2[]" value="Regulatory approval">Regulatory approval</label><label class="choice"><input type="checkbox" name="O2[]" value="Insurance">Insurance</label><label class="choice"><input type="checkbox" name="O2[]" value="Noise">Noise</label><label class="choice"><input type="checkbox" name="O2[]" value="Site operations">Site operations</label><label class="choice"><input type="checkbox" name="O2[]" value="Other">Other</label></div><textarea name="O2_comment" placeholder="Optional comment"></textarea></div>
-</div>
-
-<div id="branch-A" class="branch hidden">
-<div class="question"><div class="qhead"><div class="qtext" data-en="A1. Could you imagine offering a measurable aerial advertising service like this to clients?" data-de="A1. Könnten Sie sich vorstellen, Ihren Kunden einen messbaren Luftwerbeservice wie diesen anzubieten?">A1. Could you imagine offering a measurable aerial advertising service like this to clients?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-<select name="A1"><option value="">Select…</option><option>Yes</option><option>Maybe</option><option>No</option></select><textarea name="A1_comment" placeholder="Optional comment"></textarea></div>
-<div class="question"><div class="qhead"><div class="qtext" data-en="A2. What would Depth X need to prove before you would recommend it to a client?" data-de="A2. Was müsste Depth X nachweisen, bevor Sie das System einem Kunden empfehlen würden?">A2. What would Depth X need to prove before you would recommend it to a client?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-<div class="choice-grid"><label class="choice"><input type="checkbox" name="A2[]" value="Safety / reliability">Safety / reliability</label><label class="choice"><input type="checkbox" name="A2[]" value="Regulatory feasibility">Regulatory feasibility</label><label class="choice"><input type="checkbox" name="A2[]" value="Engagement uplift">Engagement uplift</label><label class="choice"><input type="checkbox" name="A2[]" value="Measurement quality">Measurement quality</label><label class="choice"><input type="checkbox" name="A2[]" value="ROI / pricing">ROI / pricing</label><label class="choice"><input type="checkbox" name="A2[]" value="Successful pilot / reference">Successful pilot / reference</label><label class="choice"><input type="checkbox" name="A2[]" value="Other">Other</label></div><textarea name="A2_comment" placeholder="Optional comment"></textarea></div>
-</div>
-
-<div class="question">
-<div class="qhead"><div class="qtext" data-en="Would you be open to a short follow-up conversation when Depth X reaches the physical pilot stage?" data-de="Wären Sie offen für ein kurzes Folgegespräch, wenn Depth X die Phase des physischen Piloten erreicht?">Would you be open to a short follow-up conversation when Depth X reaches the physical pilot stage?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-<select name="followUp"><option value="">Select…</option><option>Yes</option><option>Maybe</option><option>No</option></select>
-<label data-en="Contact details (optional, only if voluntarily provided)" data-de="Kontaktdaten (optional, nur wenn freiwillig angegeben)">Contact details (optional, only if voluntarily provided)</label><input name="contact"/>
-<label class="choice"><input type="checkbox" name="contactConsent"/> <span data-en="Agreed to be contacted for Depth X follow-up / future pilot." data-de="Einverstanden mit einer Kontaktaufnahme für Depth-X-Follow-up / zukünftigen Pilotversuch.">Agreed to be contacted for Depth X follow-up / future pilot.</span></label>
-</div>
-</div>
-
-<div id="visitor-pilot" class="hidden">
-<div class="question">
-<div class="qhead"><div class="qtext" data-en="V5. If the system appeared safe, useful and respectful of privacy, would you be willing to interact with it (for example scan a QR code or view an offer)?" data-de="V5. Wenn das System sicher, nützlich und datenschutzfreundlich wirkt, würden Sie damit interagieren, z. B. einen QR-Code scannen oder ein Angebot ansehen?">V5. If the system appeared safe, useful and respectful of privacy, would you be willing to interact with it?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-<select name="visitorInteraction"><option value="">Select…</option><option>Yes</option><option>Probably yes</option><option>Maybe / depends</option><option>Probably not</option><option>No</option></select>
-<textarea name="visitorInteractionComment" placeholder="Optional comment"></textarea>
-</div>
-</div>
-</div>
-
-<div class="stepPage hidden" data-step="4">
-<h2 data-en="5. Interviewer Review" data-de="5. Bewertung durch Interviewer">5. Interviewer Review</h2>
-<div class="grid">
-<div class="col4"><label>Measurement / Need Pain (1–5)</label><input name="measurementPain" type="number" min="1" max="5"/></div>
-<div class="col4"><label>Concept Interest (1–5)</label><input name="conceptInterest" type="number" min="1" max="5"/></div>
-<div class="col4"><label>Pilot / Interaction Potential (1–5)</label><input name="pilotPotential" type="number" min="1" max="5"/></div>
-</div>
-<label data-en="Most important insight" data-de="Wichtigste Erkenntnis">Most important insight</label><textarea name="keyInsight"></textarea>
-<label data-en="Biggest objection / concern" data-de="Größter Einwand / größte Sorge">Biggest objection / concern</label><textarea name="biggestObjection"></textarea>
-<label data-en="Next step" data-de="Nächster Schritt">Next step</label>
-<select name="nextAction"><option value="">Select…</option><option>Follow up</option><option>Potential pilot</option><option>Introduction to another person</option><option>Useful insight only</option><option>No action</option></select>
-</div>
-
-<div class="footer-actions">
-<button type="button" id="backBtn" onclick="goToPreviousStep()">Back</button>
-<button type="button" class="primary" id="nextBtn" onclick="goToNextStep()">Next</button>
-<button type="submit" class="primary hidden" id="saveBtn">Save Interview</button>
-</div>
-</form>
-</div>
-</section>
-
-<section id="view-dashboard" class="hidden">
-<div class="card"><h1>Customer Discovery Dashboard</h1><div class="kpis" id="kpis"></div></div>
-<div class="grid">
-<div class="col6 card"><h2>Interview Mix — E / O / A / V</h2><div id="mix"></div></div>
-<div class="col6 card"><h2>Top Concerns</h2><div id="concerns"></div></div>
-<div class="col12 card"><h2>Key Signals</h2><div id="signals"></div></div>
-</div>
-</section>
-
-<section id="view-interviews" class="hidden">
-<div class="card"><h1>Interviews</h1><div style="overflow:auto"><table>
-<thead><tr><th>ID</th><th>Date</th><th>Company</th><th>Type</th><th>Pain</th><th>Interest</th><th>Follow-up</th></tr></thead><tbody id="rows"></tbody>
-</table></div></div>
-</section>
-</main>
-
-<script>
-var KEY='depthx_customer_discovery_v3';
-var LEGACY_KEY='depthx_customer_discovery_v21';
-var step=0, lang='en';
-var pages=Array.prototype.slice.call(document.querySelectorAll('.stepPage'));
-
-function getData(){
-  try{
-    var r=localStorage.getItem(KEY);
-    if(r) return JSON.parse(r);
-
-    var old=localStorage.getItem(LEGACY_KEY);
-    if(old){
-      var imported=JSON.parse(old);
-      if(Object.prototype.toString.call(imported)==='[object Array]'){
-        localStorage.setItem(KEY,JSON.stringify(imported));
-        return imported;
-      }
-    }
-    return [];
-  }catch(e){return []}
-}
-
-function saveData(x){
-  try{
-    localStorage.setItem(KEY,JSON.stringify(x));
-  }catch(e){
-    alert('Could not save locally on this browser.');
+const supabase = createClient(
+  supabaseUrl,
+  supabaseServiceKey,
+  {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
   }
-}
+);
 
-function idForNext(){
-  var a=getData(), max=0;
-  for(var i=0;i<a.length;i++){
-    var m=String(a[i].id||'').match(/^DX-(\d+)$/);
-    if(m) max=Math.max(max,Number(m[1])||0);
-  }
-  var n=String(max+1);
-  while(n.length<4)n='0'+n;
-  return 'DX-'+n;
-}
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
 
-function toggleClass(el,cls,on){
-  if(!el)return;
-  if(on)el.classList.add(cls);else el.classList.remove(cls);
-}
-
-function setLang(l){
-  lang=l;
-  document.documentElement.lang=l;
-  var els=document.querySelectorAll('[data-en]');
-  for(var i=0;i<els.length;i++){
-    var v=els[i].getAttribute('data-'+l);
-    if(v!==null)els[i].textContent=v;
-  }
-  toggleClass(document.getElementById('lang-en'),'primary',l==='en');
-  toggleClass(document.getElementById('lang-de'),'primary',l==='de');
-}
-
-function speakElement(el){
-  if(!el)return;
-  if(!window.speechSynthesis||!window.SpeechSynthesisUtterance){
-    alert('Text-to-speech is not supported in this browser.');
-    return;
-  }
-  window.speechSynthesis.cancel();
-  var t=el.getAttribute('data-'+lang)||(el.textContent||'').replace(/^\s+|\s+$/g,'');
-  var u=new SpeechSynthesisUtterance(t);
-  u.lang=lang==='de'?'de-DE':'en-GB';
-  window.speechSynthesis.speak(u);
-}
-
-function speakQuestion(btn){
-  var p=btn.parentNode;
-  speakElement(p?p.querySelector('.qtext'):null);
-}
-
-function selectedType(){
-  var el=document.getElementById('type');
-  return el?el.value:'';
-}
-
-function setHidden(id,h){
-  var el=document.getElementById(id);
-  if(!el)return;
-  if(h)el.classList.add('hidden');else el.classList.remove('hidden');
-}
-
-function setPath(){
-  var t=selectedType(),v=t==='V';
-  setHidden('professional-discovery',v);
-  setHidden('visitor-discovery',!v);
-  setHidden('professional-concept',v);
-  setHidden('visitor-concept',!v);
-  setHidden('professional-pilot',v);
-  setHidden('visitor-pilot',!v);
-
-  var b=document.querySelectorAll('.branch');
-  for(var i=0;i<b.length;i++)b[i].classList.add('hidden');
-
-  if(t==='E'||t==='O'||t==='A'){
-    var x=document.getElementById('branch-'+t);
-    if(x)x.classList.remove('hidden');
-  }
-}
-
-function updateStep(){
-  for(var i=0;i<pages.length;i++){
-    if(i===step)pages[i].classList.remove('hidden');
-    else pages[i].classList.add('hidden');
-  }
-
-  var s=document.querySelectorAll('.step');
-  for(i=0;i<s.length;i++){
-    if(i<=step)s[i].classList.add('on');
-    else s[i].classList.remove('on');
-  }
-
-  var b=document.getElementById('backBtn'),
-      n=document.getElementById('nextBtn'),
-      sv=document.getElementById('saveBtn');
-
-  if(b)b.style.visibility=step===0?'hidden':'visible';
-  if(n)toggleClass(n,'hidden',step===pages.length-1);
-  if(sv)toggleClass(sv,'hidden',step!==pages.length-1);
-
-  setPath();
-  try{window.scrollTo(0,0)}catch(e){}
-}
-
-function goToNextStep(){
-  if(step===0&&!selectedType()){
-    alert('Please select E, O, A or V.');
-    return;
-  }
-  if(step<pages.length-1){
-    step++;
-    updateStep();
-  }
-}
-
-function goToPreviousStep(){
-  if(step>0){
-    step--;
-    updateStep();
-  }
-}
-
-function formObject(form){
-  var fd=new FormData(form),o={};
-  fd.forEach(function(v,k){
-    var arr=k.slice(-2)==='[]',key=arr?k.slice(0,-2):k;
-    if(arr){
-      if(!o[key])o[key]=[];
-      o[key].push(v);
-    }else if(typeof o[key]!=='undefined'){
-      if(Object.prototype.toString.call(o[key])!=='[object Array]')o[key]=[o[key]];
-      o[key].push(v);
-    }else{
-      o[key]=v;
-    }
-  });
-
-  var cc=form.querySelector('[name=contactConsent]');
-  o.contactConsent=cc?!!cc.checked:false;
-  return o;
-}
-
-function postInterview(obj){
-  return fetch('/api/customer-discovery',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(obj)
-  }).then(function(response){
-    if(!response.ok){
-      return response.text().then(function(txt){
-        throw new Error(txt||('HTTP '+response.status));
-      });
-    }
-    return response.json();
-  });
-}
-
-function upsertLocal(obj){
-  var a=getData(), found=false;
-  for(var i=0;i<a.length;i++){
-    if(a[i].id===obj.id){
-      a[i]=obj;
-      found=true;
-      break;
-    }
-  }
-  if(!found)a.push(obj);
-  saveData(a);
-}
-
-function resetInterview(form){
-  form.reset();
-  step=0;
-  setPath();
-  updateStep();
-
-  var id=document.getElementById('interviewId');
-  if(id)id.textContent='Interview '+idForNext();
-
-  render();
-  showView('dashboard');
-}
-
-function submitForm(e){
-  e.preventDefault();
-
-  var form=e.target;
-  var o=formObject(form);
-  o.id=idForNext();
-  o.createdAt=new Date().toISOString();
-  o.questionLanguage=lang;
-  o.syncStatus='saving';
-
-  var saveBtn=document.getElementById('saveBtn');
-  if(saveBtn){
-    saveBtn.disabled=true;
-    saveBtn.textContent='Saving...';
-  }
-
-  setDbState('Saving...');
-
-  postInterview(o).then(function(result){
-    o.syncStatus='synced';
-    o.databaseId=result.databaseId||null;
-    o.databaseCreatedAt=result.createdAt||null;
-    upsertLocal(o);
-    setDbState('Connected');
-    alert('Interview saved to database successfully.');
-    resetInterview(form);
-  }).catch(function(error){
-    console.error('Database save failed:',error);
-    o.syncStatus='pending';
-    upsertLocal(o);
-    setDbState('Offline / API error');
-    alert('Database unavailable. Interview saved locally and marked Pending Sync.');
-    resetInterview(form);
-  }).then(function(){
-    if(saveBtn){
-      saveBtn.disabled=false;
-      saveBtn.textContent='Save Interview';
-    }
-    updateSyncIndicators();
-  });
-}
-
-function syncPending(){
-  var a=getData(), pending=[], i;
-  for(i=0;i<a.length;i++){
-    if(a[i].syncStatus==='pending')pending.push(a[i]);
-  }
-
-  if(!pending.length){
-    alert('No pending interviews to sync.');
-    updateSyncIndicators();
-    return;
-  }
-
-  setDbState('Syncing...');
-  var index=0, synced=0, failed=0;
-
-  function next(){
-    if(index>=pending.length){
-      render();
-      updateSyncIndicators();
-      setDbState(failed?'Partial sync':'Connected');
-      alert('Sync complete. Synced: '+synced+'. Remaining: '+failed+'.');
-      return;
+    if (!body.type || !["E", "O", "A", "V"].includes(body.type)) {
+      return NextResponse.json(
+        { error: "Invalid interviewee type" },
+        { status: 400 }
+      );
     }
 
-    var obj=pending[index++];
-    postInterview(obj).then(function(result){
-      obj.syncStatus='synced';
-      obj.databaseId=result.databaseId||obj.databaseId||null;
-      obj.databaseCreatedAt=result.createdAt||obj.databaseCreatedAt||null;
-      upsertLocal(obj);
-      synced++;
-      next();
-    }).catch(function(error){
-      console.error('Pending sync failed:',error);
-      failed++;
-      next();
+    const row = {
+      interview_code: body.id || null,
+      exhibition: body.exhibition || null,
+      company: body.company || null,
+      role: body.role || null,
+      interviewee_type: body.type,
+      question_language: body.questionLanguage || "en",
+
+      measurement_pain: toScore(body.measurementPain),
+      concept_interest: toScore(body.conceptInterest),
+      pilot_potential: toScore(body.pilotPotential),
+      pilot_interest: toScore(body.pilotInterest),
+
+      follow_up: body.followUp || null,
+      contact: body.contact || null,
+      contact_consent: body.contactConsent === true,
+
+      next_action: body.nextAction || null,
+      key_insight: body.keyInsight || null,
+      biggest_objection: body.biggestObjection || null,
+
+      responses: body,
+    };
+
+    const { data, error } = await supabase
+      .from("customer_discovery_interviews")
+      .insert(row)
+      .select("id, created_at")
+      .single();
+
+    if (error) {
+      console.error("Supabase insert error:", error);
+
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      databaseId: data.id,
+      createdAt: data.created_at,
     });
+  } catch (error) {
+    console.error("Customer discovery API error:", error);
+
+    return NextResponse.json(
+      { error: "Unexpected server error" },
+      { status: 500 }
+    );
+  }
+}
+
+function toScore(value: unknown): number | null {
+  if (value === null || value === undefined || value === "") {
+    return null;
   }
 
-  next();
-}
+  const n = Number(value);
 
-function avg(a,f){
-  var s=0,c=0;
-  for(var i=0;i<a.length;i++){
-    var n=Number(a[i][f]);
-    if(isFinite(n)&&n>0){s+=n;c++}
+  if (!Number.isInteger(n) || n < 1 || n > 5) {
+    return null;
   }
-  return c?(s/c).toFixed(1):'—';
-}
 
-function esc(s){
-  s=String(s===null||typeof s==='undefined'?'':s);
-  return s.replace(/[&<>"']/g,function(c){
-    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
-  });
-}
-
-function countPending(a){
-  var n=0;
-  for(var i=0;i<a.length;i++)if(a[i].syncStatus==='pending')n++;
   return n;
 }
-
-function setDbState(state){
-  var el=document.getElementById('dbState');
-  if(el)el.textContent=state;
-}
-
-function updateSyncIndicators(){
-  var a=getData();
-  var p=document.getElementById('pendingCount');
-  if(p)p.textContent=countPending(a);
-}
-
-function topConcerns(a){
-  var counts={},i,j,list,key;
-  for(i=0;i<a.length;i++){
-    list=a[i].concernCategory||a[i].visitorConcerns||[];
-    if(Object.prototype.toString.call(list)!=='[object Array]')list=[list];
-    for(j=0;j<list.length;j++){
-      key=String(list[j]||'');
-      if(!key)continue;
-      counts[key]=(counts[key]||0)+1;
-    }
-  }
-
-  var entries=[];
-  for(key in counts){
-    if(Object.prototype.hasOwnProperty.call(counts,key))entries.push([key,counts[key]]);
-  }
-  entries.sort(function(x,y){return y[1]-x[1]});
-
-  if(!entries.length)return '<p>No concern data yet.</p>';
-
-  var h=[];
-  for(i=0;i<Math.min(entries.length,8);i++){
-    h.push('<div style="margin:10px 0"><b>'+esc(entries[i][0])+'</b> — '+entries[i][1]+'</div>');
-  }
-  return h.join('');
-}
-
-function renderSignals(a){
-  if(!a.length)return '<p>No interviews yet.</p>';
-
-  var professionals=0, visitors=0, pilot45=0, follow=0, visitorPositive=0, pain45=0;
-  for(var i=0;i<a.length;i++){
-    var x=a[i];
-    if(x.type==='V'){
-      visitors++;
-      if(x.visitorInteraction==='Yes'||x.visitorInteraction==='Probably yes')visitorPositive++;
-    }else{
-      professionals++;
-      if(Number(x.pilotInterest)>=4)pilot45++;
-      if(Number(x.measurementPain)>=4)pain45++;
-      if(x.followUp==='Yes')follow++;
-    }
-  }
-
-  var h=[];
-  h.push('<p><b>Professional stakeholders:</b> '+professionals+' &nbsp; <b>Visitors:</b> '+visitors+'</p>');
-  if(professionals){
-    h.push('<p><b>Professional pain ≥4/5:</b> '+pain45+' / '+professionals+
-           ' &nbsp; <b>Pilot interest ≥4/5:</b> '+pilot45+' / '+professionals+
-           ' &nbsp; <b>Follow-up yes:</b> '+follow+'</p>');
-  }
-  if(visitors){
-    h.push('<p><b>Visitors willing / probably willing to interact:</b> '+visitorPositive+' / '+visitors+'</p>');
-  }
-  h.push('<p class="small">These signals describe only the interviewed sample, not the wider market.</p>');
-  return h.join('');
-}
-
-function render(){
-  var a=getData(),follow=0,i;
-
-  for(i=0;i<a.length;i++)if(a[i].followUp==='Yes')follow++;
-
-  var k=document.getElementById('kpis');
-  if(k)k.innerHTML=
-    '<div class="kpi"><div class="v">'+a.length+'</div><div class="l">Interviews</div></div>'+
-    '<div class="kpi"><div class="v">'+avg(a,'measurementPain')+'/5</div><div class="l">Avg Need/Pain</div></div>'+
-    '<div class="kpi"><div class="v">'+avg(a,'conceptInterest')+'/5</div><div class="l">Concept Interest</div></div>'+
-    '<div class="kpi"><div class="v">'+follow+'</div><div class="l">Follow-up Leads</div></div>';
-
-  var labels={
-    E:'E — Exhibitor / Brand',
-    O:'O — Organizer',
-    A:'A — Agency',
-    V:'V — Visitor / Audience'
-  };
-  var keys=['E','O','A','V'],mh=[];
-  for(i=0;i<keys.length;i++){
-    var n=0;
-    for(var j=0;j<a.length;j++)if(a[j].type===keys[i])n++;
-    var p=a.length?Math.round(n/a.length*100):0;
-    mh.push('<div style="margin:12px 0"><b>'+labels[keys[i]]+'</b> — '+n+
-      '<div class="bar"><span style="width:'+p+'%"></span></div></div>');
-  }
-
-  var mix=document.getElementById('mix');
-  if(mix)mix.innerHTML=mh.join('');
-
-  var concerns=document.getElementById('concerns');
-  if(concerns)concerns.innerHTML=topConcerns(a);
-
-  var signals=document.getElementById('signals');
-  if(signals)signals.innerHTML=renderSignals(a);
-
-  var rows=document.getElementById('rows');
-  if(rows){
-    var rh=[];
-    for(i=a.length-1;i>=0;i--){
-      var x=a[i];
-      var status=x.syncStatus==='pending'?' ⏳':' ✓';
-      rh.push('<tr><td>'+esc(x.id)+status+'</td>'+
-        '<td>'+new Date(x.createdAt).toLocaleDateString()+'</td>'+
-        '<td>'+esc(x.company||'—')+'</td>'+
-        '<td>'+esc(labels[x.type]||x.type)+'</td>'+
-        '<td>'+esc(x.measurementPain||'—')+'</td>'+
-        '<td>'+esc(x.conceptInterest||'—')+'</td>'+
-        '<td>'+esc(x.followUp||'—')+'</td></tr>');
-    }
-    rows.innerHTML=rh.join('');
-  }
-
-  updateSyncIndicators();
-}
-
-function showView(v){
-  var names=['new','dashboard','interviews'];
-  for(var i=0;i<names.length;i++){
-    var el=document.getElementById('view-'+names[i]);
-    if(!el)continue;
-    if(names[i]===v)el.classList.remove('hidden');
-    else el.classList.add('hidden');
-  }
-  if(v!=='new')render();
-  try{window.scrollTo(0,0)}catch(e){}
-}
-
-function exportCSV(){
-  var a=getData();
-  if(!a.length){
-    alert('No interviews to export yet.');
-    return;
-  }
-
-  var keys=[],seen={},i,k;
-  for(i=0;i<a.length;i++){
-    for(k in a[i]){
-      if(Object.prototype.hasOwnProperty.call(a[i],k)&&!seen[k]){
-        seen[k]=true;
-        keys.push(k);
-      }
-    }
-  }
-
-  function q(v){
-    if(Object.prototype.toString.call(v)==='[object Array]')v=v.join(' | ');
-    v=String(v===null||typeof v==='undefined'?'':v);
-    return '"'+v.replace(/"/g,'""')+'"';
-  }
-
-  var lines=[keys.map(q).join(',')];
-  for(i=0;i<a.length;i++){
-    var row=[];
-    for(var j=0;j<keys.length;j++)row.push(q(a[i][keys[j]]));
-    lines.push(row.join(','));
-  }
-
-  var blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'}),
-      url=URL.createObjectURL(blob),
-      link=document.createElement('a');
-
-  link.href=url;
-  link.download='depthx_customer_discovery_v3.csv';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-}
-
-function setup(){
-  document.getElementById('interviewId').textContent='Interview '+idForNext();
-
-  var sb=document.getElementById('stepbar'),bits=[];
-  for(var i=0;i<pages.length;i++)bits.push('<span class="step '+(i===0?'on':'')+'"></span>');
-  sb.innerHTML=bits.join('');
-
-  document.getElementById('type').addEventListener('change',setPath);
-  document.getElementById('form').addEventListener('submit',submitForm);
-
-  setLang('en');
-  updateStep();
-  render();
-
-  if(navigator.onLine)setDbState('Ready');
-  else setDbState('Offline');
-
-  window.addEventListener('online',function(){
-    setDbState('Online');
-    updateSyncIndicators();
-  });
-
-  window.addEventListener('offline',function(){
-    setDbState('Offline');
-  });
-}
-
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);
-else setup();
-</script>
-</body>
-</html>

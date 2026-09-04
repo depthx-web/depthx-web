@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Depth X — Customer Discovery V3</title>
+<title>Depth X — Customer Discovery V3.1.1</title>
 <style>
 :root{
   --bg:#08111f; --panel:#0f1b2c; --panel2:#14243a; --text:#edf5ff; --muted:#9eb2cb;
@@ -502,6 +502,19 @@ function formObject(form){
   return o;
 }
 
+function createClientUuid(){
+  if(window.crypto && typeof window.crypto.randomUUID==='function'){
+    return window.crypto.randomUUID();
+  }
+
+  // Fallback for older browsers.
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){
+    var r=Math.random()*16|0;
+    var v=c==='x'?r:(r&0x3|0x8);
+    return v.toString(16);
+  });
+}
+
 function postInterview(obj){
   return fetch('/api/customer-discovery',{
     method:'POST',
@@ -549,6 +562,7 @@ function submitForm(e){
   var form=e.target;
   var o=formObject(form);
   o.id=idForNext();
+  o.clientUuid=createClientUuid();
   o.createdAt=new Date().toISOString();
   o.questionLanguage=lang;
   o.syncStatus='saving';
@@ -610,6 +624,14 @@ function syncPending(){
     }
 
     var obj=pending[index++];
+
+    // Older locally-saved pending interviews may predate V3.1.
+    // Give them one stable UUID before their first retry, then persist it.
+    if(!obj.clientUuid){
+      obj.clientUuid=createClientUuid();
+      upsertLocal(obj);
+    }
+
     postInterview(obj).then(function(result){
       obj.syncStatus='synced';
       obj.databaseId=result.databaseId||obj.databaseId||null;

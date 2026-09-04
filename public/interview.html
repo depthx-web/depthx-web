@@ -326,143 +326,31 @@ Depth X is developing a patent-pending autonomous aerial marketing platform desi
 </main>
 
 <script>
-const KEY='depthx_customer_discovery_v2';
-let step=0, lang='en';
-const pages=[...document.querySelectorAll('.stepPage')];
-
-function getData(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
-function saveData(x){localStorage.setItem(KEY,JSON.stringify(x))}
-function idForNext(){return 'DX-'+String(getData().length+1).padStart(4,'0')}
-
-function setLang(l){
-  lang=l;
-  document.documentElement.lang=l;
-  document.querySelectorAll('[data-en]').forEach(el=>el.textContent=el.dataset[l]);
-  document.getElementById('lang-en').classList.toggle('primary',l==='en');
-  document.getElementById('lang-de').classList.toggle('primary',l==='de');
-}
-function speakElement(el){
-  if(!('speechSynthesis' in window)){alert('Text-to-speech is not supported in this browser.');return}
-  speechSynthesis.cancel();
-  const text=el.dataset[lang]||el.textContent.trim();
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang=lang==='de'?'de-DE':'en-GB';
-  speechSynthesis.speak(u);
-}
-function speakQuestion(btn){speakElement(btn.parentElement.querySelector('.qtext'))}
-
-function selectedType(){return document.getElementById('type').value}
-function setPath(){
- const t=selectedType(), visitor=t==='V';
- document.getElementById('professional-discovery').classList.toggle('hidden',visitor);
- document.getElementById('visitor-discovery').classList.toggle('hidden',!visitor);
- document.getElementById('professional-concept').classList.toggle('hidden',visitor);
- document.getElementById('visitor-concept').classList.toggle('hidden',!visitor);
- document.getElementById('professional-pilot').classList.toggle('hidden',visitor);
- document.getElementById('visitor-pilot').classList.toggle('hidden',!visitor);
- document.querySelectorAll('.branch').forEach(x=>x.classList.add('hidden'));
- if(['E','O','A'].includes(t)){const b=document.getElementById('branch-'+t); if(b)b.classList.remove('hidden')}
-}
-
-function setup(){
- document.getElementById('interviewId').textContent='Interview '+idForNext();
- document.getElementById('stepbar').innerHTML=pages.map((_,i)=>`<span class="step ${i===0?'on':''}"></span>`).join('');
- document.getElementById('type').addEventListener('change',setPath);
- document.getElementById('form').addEventListener('submit',submitForm);
- setLang('en'); render();
-}
-function updateStep(){
- pages.forEach((p,i)=>p.classList.toggle('hidden',i!==step));
- document.querySelectorAll('.step').forEach((s,i)=>s.classList.toggle('on',i<=step));
- document.getElementById('backBtn').style.visibility=step===0?'hidden':'visible';
- document.getElementById('nextBtn').classList.toggle('hidden',step===pages.length-1);
- document.getElementById('saveBtn').classList.toggle('hidden',step!==pages.length-1);
- setPath(); window.scrollTo({top:0,behavior:'smooth'});
-}
-function nextStep(){
- if(step===0 && !selectedType()){alert('Please select E, O, A or V.');return}
- if(step<pages.length-1){step++;updateStep()}
-}
+var KEY='depthx_customer_discovery_v21';
+var step=0, lang='en';
+var pages=Array.prototype.slice.call(document.querySelectorAll('.stepPage'));
+function getData(){try{var r=localStorage.getItem(KEY);return r?JSON.parse(r):[]}catch(e){return[]}}
+function saveData(x){try{localStorage.setItem(KEY,JSON.stringify(x))}catch(e){alert('Could not save locally on this browser.')}}
+function idForNext(){var n=String(getData().length+1);while(n.length<4)n='0'+n;return 'DX-'+n}
+function toggleClass(el,cls,on){if(!el)return;if(on)el.classList.add(cls);else el.classList.remove(cls)}
+function setLang(l){lang=l;document.documentElement.lang=l;var els=document.querySelectorAll('[data-en]');for(var i=0;i<els.length;i++){var v=els[i].getAttribute('data-'+l);if(v!==null)els[i].textContent=v}toggleClass(document.getElementById('lang-en'),'primary',l==='en');toggleClass(document.getElementById('lang-de'),'primary',l==='de')}
+function speakElement(el){if(!el)return;if(!window.speechSynthesis||!window.SpeechSynthesisUtterance){alert('Text-to-speech is not supported in this browser.');return}window.speechSynthesis.cancel();var t=el.getAttribute('data-'+lang)||(el.textContent||'').replace(/^\s+|\s+$/g,'');var u=new SpeechSynthesisUtterance(t);u.lang=lang==='de'?'de-DE':'en-GB';window.speechSynthesis.speak(u)}
+function speakQuestion(btn){var p=btn.parentNode;speakElement(p?p.querySelector('.qtext'):null)}
+function selectedType(){var el=document.getElementById('type');return el?el.value:''}
+function setHidden(id,h){var el=document.getElementById(id);if(!el)return;if(h)el.classList.add('hidden');else el.classList.remove('hidden')}
+function setPath(){var t=selectedType(),v=t==='V';setHidden('professional-discovery',v);setHidden('visitor-discovery',!v);setHidden('professional-concept',v);setHidden('visitor-concept',!v);setHidden('professional-pilot',v);setHidden('visitor-pilot',!v);var b=document.querySelectorAll('.branch');for(var i=0;i<b.length;i++)b[i].classList.add('hidden');if(t==='E'||t==='O'||t==='A'){var x=document.getElementById('branch-'+t);if(x)x.classList.remove('hidden')}}
+function updateStep(){for(var i=0;i<pages.length;i++){if(i===step)pages[i].classList.remove('hidden');else pages[i].classList.add('hidden')}var s=document.querySelectorAll('.step');for(i=0;i<s.length;i++){if(i<=step)s[i].classList.add('on');else s[i].classList.remove('on')}var b=document.getElementById('backBtn'),n=document.getElementById('nextBtn'),sv=document.getElementById('saveBtn');if(b)b.style.visibility=step===0?'hidden':'visible';if(n)toggleClass(n,'hidden',step===pages.length-1);if(sv)toggleClass(sv,'hidden',step!==pages.length-1);setPath();try{window.scrollTo(0,0)}catch(e){}}
+function nextStep(){if(step===0&&!selectedType()){alert('Please select E, O, A or V.');return}if(step<pages.length-1){step++;updateStep()}}
 function prevStep(){if(step>0){step--;updateStep()}}
-
-function formObject(form){
- const fd=new FormData(form), obj={};
- for(const [k,v] of fd.entries()){
-   const key=k.endsWith('[]')?k.slice(0,-2):k;
-   if(k.endsWith('[]')){
-     if(!obj[key])obj[key]=[]; obj[key].push(v);
-   }else if(obj[key]!==undefined){
-     if(!Array.isArray(obj[key]))obj[key]=[obj[key]]; obj[key].push(v);
-   }else obj[key]=v;
- }
- obj.contactConsent=!!form.querySelector('[name=contactConsent]')?.checked;
- return obj;
-}
-function submitForm(e){
- e.preventDefault();
- const obj=formObject(e.target);
- obj.id=idForNext(); obj.createdAt=new Date().toISOString(); obj.questionLanguage=lang;
- const a=getData(); a.push(obj); saveData(a);
- e.target.reset(); step=0; setPath(); updateStep();
- document.getElementById('interviewId').textContent='Interview '+idForNext();
- render(); showView('dashboard');
-}
-
-function avg(arr,field){
- const xs=arr.map(x=>Number(x[field])).filter(x=>Number.isFinite(x)&&x>0);
- return xs.length?(xs.reduce((a,b)=>a+b,0)/xs.length).toFixed(1):'—';
-}
-function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function render(){
- const a=getData(), follow=a.filter(x=>x.followUp==='Yes').length;
- document.getElementById('kpis').innerHTML=[
-  ['Interviews',a.length],['Avg Need/Pain',avg(a,'measurementPain')+'/5'],['Concept Interest',avg(a,'conceptInterest')+'/5'],['Follow-up Leads',follow]
- ].map(([l,v])=>`<div class="kpi"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
-
- const labels={E:'E — Exhibitor / Brand',O:'O — Organizer',A:'A — Agency',V:'V — Visitor / Audience'};
- document.getElementById('mix').innerHTML=Object.entries(labels).map(([k,l])=>{
-   const n=a.filter(x=>x.type===k).length,p=a.length?Math.round(n/a.length*100):0;
-   return `<div style="margin:12px 0"><b>${l}</b> — ${n}<div class="bar"><span style="width:${p}%"></span></div></div>`
- }).join('');
-
- const counts={};
- a.forEach(x=>{
-   const vals=[...(Array.isArray(x.concernCategory)?x.concernCategory:[]),...(Array.isArray(x.visitorConcerns)?x.visitorConcerns:[])];
-   vals.forEach(v=>counts[v]=(counts[v]||0)+1);
- });
- const max=Math.max(1,...Object.values(counts));
- document.getElementById('concerns').innerHTML=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([k,n])=>`<div style="margin:12px 0"><b>${esc(k)}</b> — ${n}<div class="bar"><span style="width:${Math.round(n/max*100)}%"></span></div></div>`).join('')||'<p>No categorized concerns yet.</p>';
-
- const pros=a.filter(x=>x.type!=='V'), visitors=a.filter(x=>x.type==='V');
- const strongPain=pros.filter(x=>Number(x.measurementPain)>=4).length;
- const strongConcept=a.filter(x=>Number(x.conceptInterest)>=4).length;
- const pilot=pros.filter(x=>Number(x.pilotInterest)>=4||Number(x.pilotPotential)>=4).length;
- const visitorPositive=visitors.filter(x=>['Definitely yes','Probably yes'].includes(x.visitorAerialAttention)).length;
- document.getElementById('signals').innerHTML=`
- <p><b>${strongPain}/${pros.length}</b> professional interviews show strong need/pain (internal score ≥4/5).</p>
- <p><b>${strongConcept}/${a.length}</b> total interviews show strong concept interest (internal score ≥4/5).</p>
- <p><b>${pilot}/${pros.length}</b> professional interviews show strong pilot interest/potential.</p>
- <p><b>${visitorPositive}/${visitors.length}</b> visitors said aerial/mobile advertising would definitely or probably attract more attention than a fixed display.</p>
- <p class="small">These results describe only the interviewed sample and are not market-wide statistics.</p>`;
-
- document.getElementById('rows').innerHTML=a.slice().reverse().map(x=>`<tr><td>${esc(x.id)}</td><td>${new Date(x.createdAt).toLocaleDateString()}</td><td>${esc(x.company||'—')}</td><td>${esc(labels[x.type]||x.type)}</td><td>${esc(x.measurementPain||'—')}</td><td>${esc(x.conceptInterest||'—')}</td><td>${esc(x.followUp||'—')}</td></tr>`).join('');
-}
-function showView(v){
- ['new','dashboard','interviews'].forEach(x=>document.getElementById('view-'+x).classList.toggle('hidden',x!==v));
- if(v!=='new')render(); window.scrollTo({top:0,behavior:'smooth'});
-}
-function exportCSV(){
- const a=getData(); if(!a.length){alert('No interviews to export yet.');return}
- const flat=a.map(r=>{
-   const o={}; Object.entries(r).forEach(([k,v])=>o[k]=Array.isArray(v)?v.join(' | '):v); return o;
- });
- const keys=[...new Set(flat.flatMap(Object.keys))];
- const q=v=>'"'+String(v??'').replaceAll('"','""')+'"';
- const csv=[keys.map(q).join(','),...flat.map(r=>keys.map(k=>q(r[k])).join(','))].join('\n');
- const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),link=document.createElement('a');
- link.href=url; link.download='depthx_customer_discovery_v2.csv'; link.click(); URL.revokeObjectURL(url);
-}
-setup();
+function formObject(form){var fd=new FormData(form),o={};fd.forEach(function(v,k){var arr=k.slice(-2)==='[]',key=arr?k.slice(0,-2):k;if(arr){if(!o[key])o[key]=[];o[key].push(v)}else if(typeof o[key]!=='undefined'){if(Object.prototype.toString.call(o[key])!=='[object Array]')o[key]=[o[key]];o[key].push(v)}else{o[key]=v}});var cc=form.querySelector('[name=contactConsent]');o.contactConsent=cc?!!cc.checked:false;return o}
+function submitForm(e){e.preventDefault();var o=formObject(e.target);o.id=idForNext();o.createdAt=new Date().toISOString();o.questionLanguage=lang;var a=getData();a.push(o);saveData(a);e.target.reset();step=0;setPath();updateStep();document.getElementById('interviewId').textContent='Interview '+idForNext();render();showView('dashboard')}
+function avg(a,f){var s=0,c=0;for(var i=0;i<a.length;i++){var n=Number(a[i][f]);if(isFinite(n)&&n>0){s+=n;c++}}return c?(s/c).toFixed(1):'—'}
+function esc(s){s=String(s===null||typeof s==='undefined'?'':s);return s.replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function render(){var a=getData(),follow=0,i;for(i=0;i<a.length;i++)if(a[i].followUp==='Yes')follow++;var k=document.getElementById('kpis');if(k)k.innerHTML='<div class="kpi"><div class="v">'+a.length+'</div><div class="l">Interviews</div></div><div class="kpi"><div class="v">'+avg(a,'measurementPain')+'/5</div><div class="l">Avg Need/Pain</div></div><div class="kpi"><div class="v">'+avg(a,'conceptInterest')+'/5</div><div class="l">Concept Interest</div></div><div class="kpi"><div class="v">'+follow+'</div><div class="l">Follow-up Leads</div></div>';var labels={E:'E — Exhibitor / Brand',O:'O — Organizer',A:'A — Agency',V:'V — Visitor / Audience'},keys=['E','O','A','V'],mh=[];for(i=0;i<keys.length;i++){var n=0;for(var j=0;j<a.length;j++)if(a[j].type===keys[i])n++;var p=a.length?Math.round(n/a.length*100):0;mh.push('<div style="margin:12px 0"><b>'+labels[keys[i]]+'</b> — '+n+'<div class="bar"><span style="width:'+p+'%"></span></div></div>')}var mix=document.getElementById('mix');if(mix)mix.innerHTML=mh.join('');var rows=document.getElementById('rows');if(rows){var rh=[];for(i=a.length-1;i>=0;i--){var x=a[i];rh.push('<tr><td>'+esc(x.id)+'</td><td>'+new Date(x.createdAt).toLocaleDateString()+'</td><td>'+esc(x.company||'—')+'</td><td>'+esc(labels[x.type]||x.type)+'</td><td>'+esc(x.measurementPain||'—')+'</td><td>'+esc(x.conceptInterest||'—')+'</td><td>'+esc(x.followUp||'—')+'</td></tr>')}rows.innerHTML=rh.join('')}}
+function showView(v){var names=['new','dashboard','interviews'];for(var i=0;i<names.length;i++){var el=document.getElementById('view-'+names[i]);if(!el)continue;if(names[i]===v)el.classList.remove('hidden');else el.classList.add('hidden')}if(v!=='new')render();try{window.scrollTo(0,0)}catch(e){}}
+function exportCSV(){var a=getData();if(!a.length){alert('No interviews to export yet.');return}var keys=[],seen={},i,k;for(i=0;i<a.length;i++){for(k in a[i])if(Object.prototype.hasOwnProperty.call(a[i],k)&&!seen[k]){seen[k]=true;keys.push(k)}}function q(v){if(Object.prototype.toString.call(v)==='[object Array]')v=v.join(' | ');v=String(v===null||typeof v==='undefined'?'':v);return '"'+v.replace(/"/g,'""')+'"'}var lines=[keys.map(q).join(',')];for(i=0;i<a.length;i++){var row=[];for(var j=0;j<keys.length;j++)row.push(q(a[i][keys[j]]));lines.push(row.join(','))}var blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='depthx_customer_discovery_v21.csv';document.body.appendChild(link);link.click();document.body.removeChild(link);URL.revokeObjectURL(url)}
+function setup(){document.getElementById('interviewId').textContent='Interview '+idForNext();var sb=document.getElementById('stepbar'),bits=[];for(var i=0;i<pages.length;i++)bits.push('<span class="step '+(i===0?'on':'')+'"></span>');sb.innerHTML=bits.join('');document.getElementById('type').addEventListener('change',setPath);document.getElementById('form').addEventListener('submit',submitForm);setLang('en');updateStep();render()}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
 </script>
 </body>
 </html>

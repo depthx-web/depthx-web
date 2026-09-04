@@ -297,12 +297,12 @@ Depth X is developing a patent-pending autonomous aerial marketing platform desi
 <label data-en="Most important insight" data-de="Wichtigste Erkenntnis">Most important insight</label><textarea name="keyInsight"></textarea>
 <label data-en="Biggest objection / concern" data-de="Größter Einwand / größte Sorge">Biggest objection / concern</label><textarea name="biggestObjection"></textarea>
 <label data-en="Next step" data-de="Nächster Schritt">Next step</label>
-<select name="nextStep"><option value="">Select…</option><option>Follow up</option><option>Potential pilot</option><option>Introduction to another person</option><option>Useful insight only</option><option>No action</option></select>
+<select name="nextAction"><option value="">Select…</option><option>Follow up</option><option>Potential pilot</option><option>Introduction to another person</option><option>Useful insight only</option><option>No action</option></select>
 </div>
 
 <div class="footer-actions">
-<button type="button" id="backBtn" onclick="prevStep()">Back</button>
-<button type="button" class="primary" id="nextBtn" onclick="nextStep()">Next</button>
+<button type="button" id="backBtn" onclick="goToPreviousStep()">Back</button>
+<button type="button" class="primary" id="nextBtn" onclick="goToNextStep()">Next</button>
 <button type="submit" class="primary hidden" id="saveBtn">Save Interview</button>
 </div>
 </form>
@@ -340,8 +340,8 @@ function selectedType(){var el=document.getElementById('type');return el?el.valu
 function setHidden(id,h){var el=document.getElementById(id);if(!el)return;if(h)el.classList.add('hidden');else el.classList.remove('hidden')}
 function setPath(){var t=selectedType(),v=t==='V';setHidden('professional-discovery',v);setHidden('visitor-discovery',!v);setHidden('professional-concept',v);setHidden('visitor-concept',!v);setHidden('professional-pilot',v);setHidden('visitor-pilot',!v);var b=document.querySelectorAll('.branch');for(var i=0;i<b.length;i++)b[i].classList.add('hidden');if(t==='E'||t==='O'||t==='A'){var x=document.getElementById('branch-'+t);if(x)x.classList.remove('hidden')}}
 function updateStep(){for(var i=0;i<pages.length;i++){if(i===step)pages[i].classList.remove('hidden');else pages[i].classList.add('hidden')}var s=document.querySelectorAll('.step');for(i=0;i<s.length;i++){if(i<=step)s[i].classList.add('on');else s[i].classList.remove('on')}var b=document.getElementById('backBtn'),n=document.getElementById('nextBtn'),sv=document.getElementById('saveBtn');if(b)b.style.visibility=step===0?'hidden':'visible';if(n)toggleClass(n,'hidden',step===pages.length-1);if(sv)toggleClass(sv,'hidden',step!==pages.length-1);setPath();try{window.scrollTo(0,0)}catch(e){}}
-function nextStep(){if(step===0&&!selectedType()){alert('Please select E, O, A or V.');return}if(step<pages.length-1){step++;updateStep()}}
-function prevStep(){if(step>0){step--;updateStep()}}
+function goToNextStep(){if(step===0&&!selectedType()){alert('Please select E, O, A or V.');return}if(step<pages.length-1){step++;updateStep()}}
+function goToPreviousStep(){if(step>0){step--;updateStep()}}
 function formObject(form){var fd=new FormData(form),o={};fd.forEach(function(v,k){var arr=k.slice(-2)==='[]',key=arr?k.slice(0,-2):k;if(arr){if(!o[key])o[key]=[];o[key].push(v)}else if(typeof o[key]!=='undefined'){if(Object.prototype.toString.call(o[key])!=='[object Array]')o[key]=[o[key]];o[key].push(v)}else{o[key]=v}});var cc=form.querySelector('[name=contactConsent]');o.contactConsent=cc?!!cc.checked:false;return o}
 function submitForm(e){e.preventDefault();var o=formObject(e.target);o.id=idForNext();o.createdAt=new Date().toISOString();o.questionLanguage=lang;var a=getData();a.push(o);saveData(a);e.target.reset();step=0;setPath();updateStep();document.getElementById('interviewId').textContent='Interview '+idForNext();render();showView('dashboard')}
 function avg(a,f){var s=0,c=0;for(var i=0;i<a.length;i++){var n=Number(a[i][f]);if(isFinite(n)&&n>0){s+=n;c++}}return c?(s/c).toFixed(1):'—'}

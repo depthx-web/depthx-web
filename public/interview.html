@@ -1,9 +1,10 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Depth X — Customer Discovery V3.1.1</title>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Depth X — Customer Discovery V3.2</title>
 <style>
 :root{
   --bg:#08111f; --panel:#0f1b2c; --panel2:#14243a; --text:#edf5ff; --muted:#9eb2cb;
@@ -46,279 +47,253 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px;bord
 .syncpill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#0a1524;border-radius:999px;padding:7px 10px;font-size:12px;color:var(--muted)}
 .syncpill strong{color:var(--text)}
 @media(max-width:760px){main{padding:11px}.card{padding:14px}.col6,.col4{grid-column:span 12}.choice-grid{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.qhead{align-items:center}}
+
+.requiredBadge{font-size:11px;font-weight:700;color:#ffd4d4;background:#5a2430;border:1px solid #8b3a48;border-radius:999px;padding:3px 7px;margin-left:8px;white-space:nowrap}.question.missing{outline:2px solid #ff6b7a;outline-offset:2px}.field-missing{outline:2px solid #ff6b7a!important;outline-offset:2px}.reqmark{color:#ff8b98;font-weight:800;margin-left:4px}.tts-note{font-size:11px;color:var(--muted);margin-left:6px}
 </style>
 </head>
 <body>
 <header>
-  <div class="brand">DEPTH X</div>
-  <div class="sub">Customer Discovery — Exhibition Interview System V3</div>
-  <div class="langbar">
-    <span class="small">Question language</span>
-    <button type="button" id="lang-en" onclick="setLang('en')">🇬🇧 English</button>
-    <button type="button" id="lang-de" onclick="setLang('de')">🇩🇪 Deutsch</button>
-  </div>
-  <nav>
-    <button onclick="showView('new')">+ New Interview</button>
-    <button onclick="showView('dashboard')">Dashboard</button>
-    <button onclick="showView('interviews')">Interviews</button>
-    <button onclick="syncPending()">Sync Pending</button>
-    <button onclick="exportCSV()">Export CSV</button>
-  </nav>
-  <div class="syncbar">
-    <span class="syncpill">Database: <strong id="dbState">Ready</strong></span>
-    <span class="syncpill">Pending: <strong id="pendingCount">0</strong></span>
-  </div>
+<div class="brand">DEPTH X</div>
+<div class="sub">Customer Discovery — Exhibition Interview System V3.2</div>
+<div class="langbar">
+<span class="small" data-de="Fragesprache" data-en="Question language" data-zh="问题语言">Question language</span>
+<button id="lang-en" onclick="setLang('en')" type="button">🇬🇧 English</button>
+<button id="lang-de" onclick="setLang('de')" type="button">🇩🇪 Deutsch</button>
+<button id="lang-zh" onclick="setLang('zh')" type="button">🇨🇳 中文</button></div>
+<nav>
+<button data-de="＋ Neues Interview" data-en="+ New Interview" data-zh="＋ 新访谈" onclick="showView('new')">+ New Interview</button>
+<button data-de="Dashboard" data-en="Dashboard" data-zh="仪表板" onclick="showView('dashboard')">Dashboard</button>
+<button data-de="Interviews" data-en="Interviews" data-zh="访谈记录" onclick="showView('interviews')">Interviews</button>
+<button data-de="Ausstehende synchronisieren" data-en="Sync Pending" data-zh="同步待上传" onclick="syncPending()">Sync Pending</button>
+<button data-de="CSV exportieren" data-en="Export CSV" data-zh="导出 CSV" onclick="exportCSV()">Export CSV</button>
+</nav>
+<div class="syncbar">
+<span class="syncpill">Database: <strong id="dbState">Ready</strong></span>
+<span class="syncpill">Pending: <strong id="pendingCount">0</strong></span>
+</div>
 </header>
-
 <main>
 <section id="view-new">
 <div class="card">
-<h1 data-en="New Interview" data-de="Neues Interview">New Interview</h1>
+<h1 data-de="Neues Interview" data-en="New Interview" data-zh="新访谈">New Interview</h1>
 <div class="small" id="interviewId"></div>
 <div class="stepbar" id="stepbar"></div>
-
 <form id="form">
-
 <div class="stepPage" data-step="0">
-<h2 data-en="1. Profile" data-de="1. Profil">1. Profile</h2>
+<h2 data-de="1. Profil" data-en="1. Profile" data-zh="1. 基本信息">1. Profile</h2>
 <div class="grid">
-  <div class="col6"><label data-en="Exhibition" data-de="Messe / Veranstaltung">Exhibition</label><input name="exhibition"/></div>
-  <div class="col6"><label data-en="Company / Organization (optional)" data-de="Unternehmen / Organisation (optional)">Company / Organization (optional)</label><input name="company"/></div>
-  <div class="col6"><label data-en="Role / Position (optional for visitors)" data-de="Rolle / Position (für Besucher optional)">Role / Position (optional for visitors)</label><input name="role"/></div>
-  <div class="col6">
-    <label data-en="Interviewee type" data-de="Interviewtyp">Interviewee type</label>
-    <select name="type" id="type" required>
-      <option value="">Select…</option>
-      <option value="E">E — Exhibitor / Brand</option>
-      <option value="O">O — Exhibition Organizer</option>
-      <option value="A">A — Advertising / Marketing Agency</option>
-      <option value="V">V — Visitor / Audience</option>
-    </select>
-  </div>
+<div class="col6"><label data-de="Messe / Veranstaltung" data-en="Exhibition" data-zh="展会 / 活动">Exhibition<span class="reqmark">*</span></label><input data-required-visible="true" name="exhibition"/></div>
+<div class="col6"><label data-de="Unternehmen / Organisation (optional)" data-en="Company / Organization (optional)" data-zh="公司 / 组织（可选）">Company / Organization (optional)</label><input name="company"/></div>
+<div class="col6"><label data-de="Rolle / Position (für Besucher optional)" data-en="Role / Position (optional for visitors)" data-zh="职位 / 角色（访客可选）">Role / Position (optional for visitors)</label><input name="role"/></div>
+<div class="col6">
+<label data-de="Interviewtyp" data-en="Interviewee type" data-zh="受访者类型">Interviewee type<span class="reqmark">*</span></label>
+<select data-required-visible="true" id="type" name="type" required="">
+<option data-de="Auswählen…" data-en="Select…" data-zh="请选择…" value="">Select…</option>
+<option data-de="E — Aussteller / Marke" data-en="E — Exhibitor / Brand" data-zh="E — 参展商 / 品牌" value="E">E — Exhibitor / Brand</option>
+<option data-de="O — Messeveranstalter" data-en="O — Exhibition Organizer" data-zh="O — 展会主办方" value="O">O — Exhibition Organizer</option>
+<option data-de="A — Werbe- / Marketingagentur" data-en="A — Advertising / Marketing Agency" data-zh="A — 广告 / 营销代理商" value="A">A — Advertising / Marketing Agency</option>
+<option data-de="V — Besucher / Publikum" data-en="V — Visitor / Audience" data-zh="V — 访客 / 受众" value="V">V — Visitor / Audience</option>
+</select>
 </div>
 </div>
-
+</div>
 <div class="stepPage hidden" data-step="1">
-<h2 data-en="2. Discovery" data-de="2. Bedarfsermittlung">2. Discovery</h2>
-
+<h2 data-de="2. Bedarfsermittlung" data-en="2. Discovery" data-zh="2. 需求探索">2. Discovery</h2>
 <div id="professional-discovery">
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="1. How do you currently attract visitors or promote your company during exhibitions?" data-de="1. Wie gewinnen Sie derzeit Besucher oder bewerben Ihr Unternehmen auf Messen?">1. How do you currently attract visitors or promote your company during exhibitions?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <div class="choice-grid">
-    <label class="choice"><input type="checkbox" name="currentApproach[]" value="Booth / stand">Booth / stand</label>
-    <label class="choice"><input type="checkbox" name="currentApproach[]" value="Digital screens">Digital screens</label>
-    <label class="choice"><input type="checkbox" name="currentApproach[]" value="Banners / signage">Banners / signage</label>
-    <label class="choice"><input type="checkbox" name="currentApproach[]" value="Flyers / printed media">Flyers / printed media</label>
-    <label class="choice"><input type="checkbox" name="currentApproach[]" value="Promotional staff">Promotional staff</label>
-    <label class="choice"><input type="checkbox" name="currentApproach[]" value="QR / digital interaction">QR / digital interaction</label>
-    <label class="choice"><input type="checkbox" name="currentApproach[]" value="Social media / online promotion">Social media / online promotion</label>
-    <label class="choice"><input type="checkbox" name="currentApproach[]" value="Other">Other</label>
-  </div>
-  <label data-en="Optional comment" data-de="Optionaler Kommentar">Optional comment</label><textarea name="currentApproachComment"></textarea>
+<div class="question" data-required="true">
+<div class="qhead"><div class="qtext" data-de="1. Wie gewinnen Sie derzeit Besucher oder bewerben Ihr Unternehmen auf Messen?" data-en="1. How do you currently attract visitors or promote your company during exhibitions?" data-zh="1. 您目前在展会期间如何吸引访客或推广您的公司？">1. How do you currently attract visitors or promote your company during exhibitions?</div><button class="speak" onclick="speakQuestion(this)" title="Read question and answer options" type="button">🔊</button><span class="requiredBadge" data-de="Pflicht" data-en="Required" data-zh="必答">Required</span></div>
+<div class="choice-grid">
+<label class="choice"><input name="currentApproach[]" type="checkbox" value="Booth / stand"/> <span data-de="Messestand" data-en="Booth / stand" data-zh="展位 / 展台">Booth / stand</span></label>
+<label class="choice"><input name="currentApproach[]" type="checkbox" value="Digital screens"/> <span data-de="Digitale Bildschirme" data-en="Digital screens" data-zh="数字屏幕">Digital screens</span></label>
+<label class="choice"><input name="currentApproach[]" type="checkbox" value="Banners / signage"/> <span data-de="Banner / Beschilderung" data-en="Banners / signage" data-zh="横幅 / 标牌">Banners / signage</span></label>
+<label class="choice"><input name="currentApproach[]" type="checkbox" value="Flyers / printed media"/> <span data-de="Flyer / Printmedien" data-en="Flyers / printed media" data-zh="传单 / 印刷媒体">Flyers / printed media</span></label>
+<label class="choice"><input name="currentApproach[]" type="checkbox" value="Promotional staff"/> <span data-de="Promotion-Personal" data-en="Promotional staff" data-zh="推广人员">Promotional staff</span></label>
+<label class="choice"><input name="currentApproach[]" type="checkbox" value="QR / digital interaction"/> <span data-de="QR / digitale Interaktion" data-en="QR / digital interaction" data-zh="二维码 / 数字互动">QR / digital interaction</span></label>
+<label class="choice"><input name="currentApproach[]" type="checkbox" value="Social media / online promotion"/> <span data-de="Social Media / Online-Werbung" data-en="Social media / online promotion" data-zh="社交媒体 / 在线推广">Social media / online promotion</span></label>
+<label class="choice"><input name="currentApproach[]" type="checkbox" value="Other"/> <span data-de="Sonstiges" data-en="Other" data-zh="其他">Other</span></label>
 </div>
-
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="2. How do you currently measure whether your physical advertising is working?" data-de="2. Wie messen Sie derzeit, ob Ihre physische Werbung funktioniert?">2. How do you currently measure whether your physical advertising is working?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <div class="choice-grid">
-    <label class="choice"><input type="checkbox" name="measurement[]" value="Booth visits">Booth visits</label>
-    <label class="choice"><input type="checkbox" name="measurement[]" value="QR scans">QR scans</label>
-    <label class="choice"><input type="checkbox" name="measurement[]" value="Leads / registrations">Leads / registrations</label>
-    <label class="choice"><input type="checkbox" name="measurement[]" value="Sales / conversions">Sales / conversions</label>
-    <label class="choice"><input type="checkbox" name="measurement[]" value="Staff observation">Staff observation</label>
-    <label class="choice"><input type="checkbox" name="measurement[]" value="Digital analytics">Digital analytics</label>
-    <label class="choice"><input type="checkbox" name="measurement[]" value="Very limited / not measured">Very limited / not measured</label>
-    <label class="choice"><input type="checkbox" name="measurement[]" value="Other">Other</label>
-  </div>
-  <label data-en="Optional comment" data-de="Optionaler Kommentar">Optional comment</label><textarea name="measurementComment"></textarea>
+<label data-de="Optionaler Kommentar" data-en="Optional comment" data-zh="可选备注">Optional comment</label><textarea name="currentApproachComment"></textarea>
 </div>
-
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="3. What audience information would be most useful but difficult to measure today?" data-de="3. Welche Informationen über das Publikum wären für Sie besonders nützlich, sind heute aber schwer zu messen?">3. What audience information would be most useful but difficult to measure today?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <div class="choice-grid">
-    <label class="choice"><input type="checkbox" name="missingData[]" value="Attention">Attention</label>
-    <label class="choice"><input type="checkbox" name="missingData[]" value="Engagement">Engagement</label>
-    <label class="choice"><input type="checkbox" name="missingData[]" value="Traffic / location patterns">Traffic / location patterns</label>
-    <label class="choice"><input type="checkbox" name="missingData[]" value="Interaction duration">Interaction duration</label>
-    <label class="choice"><input type="checkbox" name="missingData[]" value="Response to different messages">Response to different messages</label>
-    <label class="choice"><input type="checkbox" name="missingData[]" value="Conversion to booth / action">Conversion to booth / action</label>
-    <label class="choice"><input type="checkbox" name="missingData[]" value="Nothing important missing">Nothing important missing</label>
-    <label class="choice"><input type="checkbox" name="missingData[]" value="Other">Other</label>
-  </div>
-  <label data-en="Optional comment" data-de="Optionaler Kommentar">Optional comment</label><textarea name="missingDataComment"></textarea>
+<div class="question" data-required="true">
+<div class="qhead"><div class="qtext" data-de="2. Wie messen Sie derzeit, ob Ihre physische Werbung funktioniert?" data-en="2. How do you currently measure whether your physical advertising is working?" data-zh="2. 您目前如何衡量实体广告是否有效？">2. How do you currently measure whether your physical advertising is working?</div><button class="speak" onclick="speakQuestion(this)" title="Read question and answer options" type="button">🔊</button><span class="requiredBadge" data-de="Pflicht" data-en="Required" data-zh="必答">Required</span></div>
+<div class="choice-grid">
+<label class="choice"><input name="measurement[]" type="checkbox" value="Booth visits"/> <span data-de="Standbesuche" data-en="Booth visits" data-zh="展位访问量">Booth visits</span></label>
+<label class="choice"><input name="measurement[]" type="checkbox" value="QR scans"/> <span data-de="QR-Scans" data-en="QR scans" data-zh="二维码扫描">QR scans</span></label>
+<label class="choice"><input name="measurement[]" type="checkbox" value="Leads / registrations"/> <span data-de="Leads / Registrierungen" data-en="Leads / registrations" data-zh="潜在客户 / 注册">Leads / registrations</span></label>
+<label class="choice"><input name="measurement[]" type="checkbox" value="Sales / conversions"/> <span data-de="Verkäufe / Conversions" data-en="Sales / conversions" data-zh="销售 / 转化">Sales / conversions</span></label>
+<label class="choice"><input name="measurement[]" type="checkbox" value="Staff observation"/> <span data-de="Beobachtung durch Personal" data-en="Staff observation" data-zh="工作人员观察">Staff observation</span></label>
+<label class="choice"><input name="measurement[]" type="checkbox" value="Digital analytics"/> <span data-de="Digitale Analysen" data-en="Digital analytics" data-zh="数字分析">Digital analytics</span></label>
+<label class="choice"><input name="measurement[]" type="checkbox" value="Very limited / not measured"/> <span data-de="Sehr begrenzt / nicht gemessen" data-en="Very limited / not measured" data-zh="非常有限 / 未测量">Very limited / not measured</span></label>
+<label class="choice"><input name="measurement[]" type="checkbox" value="Other"/> <span data-de="Sonstiges" data-en="Other" data-zh="其他">Other</span></label>
 </div>
-
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="4. If a campaign is not performing well during an event, how easily can you identify that and change it?" data-de="4. Wenn eine Kampagne während einer Veranstaltung nicht gut funktioniert, wie leicht können Sie das erkennen und die Kampagne anpassen?">4. If a campaign is not performing well during an event, how easily can you identify that and change it?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <select name="adaptability">
-    <option value="">Select…</option><option>Yes, easily</option><option>Yes, but with limitations</option><option>Difficult</option><option>Usually not possible</option>
-  </select>
+<label data-de="Optionaler Kommentar" data-en="Optional comment" data-zh="可选备注">Optional comment</label><textarea name="measurementComment"></textarea>
 </div>
-
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="5. How important would better measurement and adaptability of physical advertising be for you?" data-de="5. Wie wichtig wären für Sie eine bessere Messbarkeit und Anpassungsfähigkeit physischer Werbung?">5. How important would better measurement and adaptability of physical advertising be for you?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <select name="problemImportance"><option value="">Select 1–5…</option><option value="1">1 — Not important</option><option value="2">2</option><option value="3">3</option><option value="4">4 — Important</option><option value="5">5 — Very important</option></select>
+<div class="question" data-required="true">
+<div class="qhead"><div class="qtext" data-de="3. Welche Informationen über das Publikum wären für Sie besonders nützlich, sind heute aber schwer zu messen?" data-en="3. What audience information would be most useful but difficult to measure today?" data-zh="3. 哪些受众信息对您最有用，但目前最难衡量？">3. What audience information would be most useful but difficult to measure today?</div><button class="speak" onclick="speakQuestion(this)" title="Read question and answer options" type="button">🔊</button><span class="requiredBadge" data-de="Pflicht" data-en="Required" data-zh="必答">Required</span></div>
+<div class="choice-grid">
+<label class="choice"><input name="missingData[]" type="checkbox" value="Attention"/> <span data-de="Aufmerksamkeit" data-en="Attention" data-zh="注意力">Attention</span></label>
+<label class="choice"><input name="missingData[]" type="checkbox" value="Engagement"/> <span data-de="Interaktion / Engagement" data-en="Engagement" data-zh="互动参与">Engagement</span></label>
+<label class="choice"><input name="missingData[]" type="checkbox" value="Traffic / location patterns"/> <span data-de="Besucherströme / Standortmuster" data-en="Traffic / location patterns" data-zh="人流 / 位置模式">Traffic / location patterns</span></label>
+<label class="choice"><input name="missingData[]" type="checkbox" value="Interaction duration"/> <span data-de="Interaktionsdauer" data-en="Interaction duration" data-zh="互动时长">Interaction duration</span></label>
+<label class="choice"><input name="missingData[]" type="checkbox" value="Response to different messages"/> <span data-de="Reaktion auf unterschiedliche Botschaften" data-en="Response to different messages" data-zh="对不同信息的反应">Response to different messages</span></label>
+<label class="choice"><input name="missingData[]" type="checkbox" value="Conversion to booth / action"/> <span data-de="Konversion zum Stand / zur Aktion" data-en="Conversion to booth / action" data-zh="转化到展位 / 行动">Conversion to booth / action</span></label>
+<label class="choice"><input name="missingData[]" type="checkbox" value="Nothing important missing"/> <span data-de="Keine wichtigen Daten fehlen" data-en="Nothing important missing" data-zh="没有重要信息缺失">Nothing important missing</span></label>
+<label class="choice"><input name="missingData[]" type="checkbox" value="Other"/> <span data-de="Sonstiges" data-en="Other" data-zh="其他">Other</span></label>
+</div>
+<label data-de="Optionaler Kommentar" data-en="Optional comment" data-zh="可选备注">Optional comment</label><textarea name="missingDataComment"></textarea>
+</div>
+<div class="question" data-required="true">
+<div class="qhead"><div class="qtext" data-de="4. Wenn eine Kampagne während einer Veranstaltung nicht gut funktioniert, wie leicht können Sie das erkennen und die Kampagne anpassen?" data-en="4. If a campaign is not performing well during an event, how easily can you identify that and change it?" data-zh="4. 如果活动期间广告效果不佳，您能多容易发现并进行调整？">4. If a campaign is not performing well during an event, how easily can you identify that and change it?</div><button class="speak" onclick="speakQuestion(this)" title="Read question and answer options" type="button">🔊</button><span class="requiredBadge" data-de="Pflicht" data-en="Required" data-zh="必答">Required</span></div>
+<select name="adaptability">
+<option data-de="Auswählen…" data-en="Select…" data-zh="请选择…" value="">Select…</option><option data-de="Ja, problemlos" data-en="Yes, easily" data-zh="是，很容易">Yes, easily</option><option data-de="Ja, aber mit Einschränkungen" data-en="Yes, but with limitations" data-zh="是，但有限制">Yes, but with limitations</option><option data-de="Schwierig" data-en="Difficult" data-zh="比较困难">Difficult</option><option data-de="Meist nicht möglich" data-en="Usually not possible" data-zh="通常无法做到">Usually not possible</option>
+</select>
+</div>
+<div class="question" data-required="true">
+<div class="qhead"><div class="qtext" data-de="5. Wie wichtig wären für Sie eine bessere Messbarkeit und Anpassungsfähigkeit physischer Werbung?" data-en="5. How important would better measurement and adaptability of physical advertising be for you?" data-zh="5. 对您而言，提高实体广告的可衡量性和可调整性有多重要？">5. How important would better measurement and adaptability of physical advertising be for you?</div><button class="speak" onclick="speakQuestion(this)" title="Read question and answer options" type="button">🔊</button><span class="requiredBadge" data-de="Pflicht" data-en="Required" data-zh="必答">Required</span></div>
+<select name="problemImportance"><option data-de="1–5 auswählen…" data-en="Select 1–5…" data-zh="请选择 1–5…" value="">Select 1–5…</option><option data-de="1 — Nicht wichtig" data-en="1 — Not important" data-zh="1 — 不重要" value="1">1 — Not important</option><option data-de="2" data-en="2" data-zh="2" value="2">2</option><option data-de="3" data-en="3" data-zh="3" value="3">3</option><option data-de="4 — Wichtig" data-en="4 — Important" data-zh="4 — 重要" value="4">4 — Important</option><option data-de="5 — Sehr wichtig" data-en="5 — Very important" data-zh="5 — 非常重要" value="5">5 — Very important</option></select>
 </div>
 </div>
-
-<div id="visitor-discovery" class="hidden">
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="V1. What usually attracts your attention most at an exhibition?" data-de="V1. Was zieht auf einer Messe normalerweise Ihre Aufmerksamkeit am stärksten auf sich?">V1. What usually attracts your attention most at an exhibition?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <div class="choice-grid">
-    <label class="choice"><input type="checkbox" name="visitorAttention[]" value="Large displays / screens">Large displays / screens</label>
-    <label class="choice"><input type="checkbox" name="visitorAttention[]" value="Movement / unusual displays">Movement / unusual displays</label>
-    <label class="choice"><input type="checkbox" name="visitorAttention[]" value="Offers / promotions">Offers / promotions</label>
-    <label class="choice"><input type="checkbox" name="visitorAttention[]" value="Interactive experiences">Interactive experiences</label>
-    <label class="choice"><input type="checkbox" name="visitorAttention[]" value="People / demonstrations">People / demonstrations</label>
-    <label class="choice"><input type="checkbox" name="visitorAttention[]" value="Other">Other</label>
-  </div>
-  <label data-en="Optional comment" data-de="Optionaler Kommentar">Optional comment</label><textarea name="visitorAttentionComment"></textarea>
+<div class="hidden" id="visitor-discovery">
+<div class="question" data-required="true">
+<div class="qhead"><div class="qtext" data-de="V1. Was zieht auf einer Messe normalerweise Ihre Aufmerksamkeit am stärksten auf sich?" data-en="V1. What usually attracts your attention most at an exhibition?" data-zh="V1. 在展会上，什么通常最能吸引您的注意？">V1. What usually attracts your attention most at an exhibition?</div><button class="speak" onclick="speakQuestion(this)" title="Read question and answer options" type="button">🔊</button><span class="requiredBadge" data-de="Pflicht" data-en="Required" data-zh="必答">Required</span></div>
+<div class="choice-grid">
+<label class="choice"><input name="visitorAttention[]" type="checkbox" value="Large displays / screens"/> <span data-de="Große Displays / Bildschirme" data-en="Large displays / screens" data-zh="大型显示屏 / 屏幕">Large displays / screens</span></label>
+<label class="choice"><input name="visitorAttention[]" type="checkbox" value="Movement / unusual displays"/> <span data-de="Bewegung / ungewöhnliche Displays" data-en="Movement / unusual displays" data-zh="动态 / 非常规展示">Movement / unusual displays</span></label>
+<label class="choice"><input name="visitorAttention[]" type="checkbox" value="Offers / promotions"/> <span data-de="Angebote / Aktionen" data-en="Offers / promotions" data-zh="优惠 / 促销">Offers / promotions</span></label>
+<label class="choice"><input name="visitorAttention[]" type="checkbox" value="Interactive experiences"/> <span data-de="Interaktive Erlebnisse" data-en="Interactive experiences" data-zh="互动体验">Interactive experiences</span></label>
+<label class="choice"><input name="visitorAttention[]" type="checkbox" value="People / demonstrations"/> <span data-de="Menschen / Vorführungen" data-en="People / demonstrations" data-zh="人员 / 演示">People / demonstrations</span></label>
+<label class="choice"><input name="visitorAttention[]" type="checkbox" value="Other"/> <span data-de="Sonstiges" data-en="Other" data-zh="其他">Other</span></label>
 </div>
-
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="V2. If you saw a mobile aerial advertising display around an exhibition, would it be more likely to attract your attention than a fixed banner or screen?" data-de="V2. Würde eine mobile Luftwerbeanzeige rund um eine Messe Ihre Aufmerksamkeit eher auf sich ziehen als ein festes Banner oder ein fester Bildschirm?">V2. If you saw a mobile aerial advertising display around an exhibition, would it be more likely to attract your attention than a fixed banner or screen?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <select name="visitorAerialAttention"><option value="">Select…</option><option>Definitely yes</option><option>Probably yes</option><option>Maybe / depends</option><option>Probably not</option><option>Definitely not</option></select>
-  <label data-en="Why? (optional)" data-de="Warum? (optional)">Why? (optional)</label><textarea name="visitorAerialWhy"></textarea>
+<label data-de="Optionaler Kommentar" data-en="Optional comment" data-zh="可选备注">Optional comment</label><textarea name="visitorAttentionComment"></textarea>
 </div>
-
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="V3. What would make you comfortable or uncomfortable interacting with such a system?" data-de="V3. Was würde dazu führen, dass Sie sich bei der Interaktion mit einem solchen System wohl oder unwohl fühlen?">V3. What would make you comfortable or uncomfortable interacting with such a system?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <div class="choice-grid">
-    <label class="choice"><input type="checkbox" name="visitorConcerns[]" value="Safety">Safety</label>
-    <label class="choice"><input type="checkbox" name="visitorConcerns[]" value="Noise">Noise</label>
-    <label class="choice"><input type="checkbox" name="visitorConcerns[]" value="Privacy">Privacy</label>
-    <label class="choice"><input type="checkbox" name="visitorConcerns[]" value="Clear information about data use">Clear information about data use</label>
-    <label class="choice"><input type="checkbox" name="visitorConcerns[]" value="Useful offer / content">Useful offer / content</label>
-    <label class="choice"><input type="checkbox" name="visitorConcerns[]" value="No major concern">No major concern</label>
-    <label class="choice"><input type="checkbox" name="visitorConcerns[]" value="Other">Other</label>
-  </div>
-  <label data-en="Optional comment" data-de="Optionaler Kommentar">Optional comment</label><textarea name="visitorConcernComment"></textarea>
+<div class="question" data-required="true">
+<div class="qhead"><div class="qtext" data-de="V2. Würde eine mobile Luftwerbeanzeige rund um eine Messe Ihre Aufmerksamkeit eher auf sich ziehen als ein festes Banner oder ein fester Bildschirm?" data-en="V2. If you saw a mobile aerial advertising display around an exhibition, would it be more likely to attract your attention than a fixed banner or screen?" data-zh="V2. 如果您在展会周围看到移动式空中广告，它是否比固定横幅或屏幕更能吸引您的注意？">V2. If you saw a mobile aerial advertising display around an exhibition, would it be more likely to attract your attention than a fixed banner or screen?</div><button class="speak" onclick="speakQuestion(this)" title="Read question and answer options" type="button">🔊</button><span class="requiredBadge" data-de="Pflicht" data-en="Required" data-zh="必答">Required</span></div>
+<select name="visitorAerialAttention"><option data-de="Auswählen…" data-en="Select…" data-zh="请选择…" value="">Select…</option><option data-de="Definitiv ja" data-en="Definitely yes" data-zh="肯定会">Definitely yes</option><option data-de="Wahrscheinlich ja" data-en="Probably yes" data-zh="大概率会">Probably yes</option><option data-de="Vielleicht / kommt darauf an" data-en="Maybe / depends" data-zh="可能 / 视情况而定">Maybe / depends</option><option data-de="Wahrscheinlich nicht" data-en="Probably not" data-zh="大概率不会">Probably not</option><option data-de="Definitiv nicht" data-en="Definitely not" data-zh="肯定不会">Definitely not</option></select>
+<label data-de="Warum? (optional)" data-en="Why? (optional)" data-zh="为什么？（可选）">Why? (optional)</label><textarea name="visitorAerialWhy"></textarea>
+</div>
+<div class="question" data-required="true">
+<div class="qhead"><div class="qtext" data-de="V3. Was würde dazu führen, dass Sie sich bei der Interaktion mit einem solchen System wohl oder unwohl fühlen?" data-en="V3. What would make you comfortable or uncomfortable interacting with such a system?" data-zh="V3. 什么因素会让您愿意或不愿意与这样的系统互动？">V3. What would make you comfortable or uncomfortable interacting with such a system?</div><button class="speak" onclick="speakQuestion(this)" title="Read question and answer options" type="button">🔊</button><span class="requiredBadge" data-de="Pflicht" data-en="Required" data-zh="必答">Required</span></div>
+<div class="choice-grid">
+<label class="choice"><input name="visitorConcerns[]" type="checkbox" value="Safety"/> <span data-de="Sicherheit" data-en="Safety" data-zh="安全">Safety</span></label>
+<label class="choice"><input name="visitorConcerns[]" type="checkbox" value="Noise"/> <span data-de="Lärm" data-en="Noise" data-zh="噪音">Noise</span></label>
+<label class="choice"><input name="visitorConcerns[]" type="checkbox" value="Privacy"/> <span data-de="Datenschutz" data-en="Privacy" data-zh="隐私">Privacy</span></label>
+<label class="choice"><input name="visitorConcerns[]" type="checkbox" value="Clear information about data use"/> <span data-de="Klare Informationen zur Datennutzung" data-en="Clear information about data use" data-zh="清晰说明数据用途">Clear information about data use</span></label>
+<label class="choice"><input name="visitorConcerns[]" type="checkbox" value="Useful offer / content"/> <span data-de="Nützliches Angebot / Inhalte" data-en="Useful offer / content" data-zh="有价值的优惠 / 内容">Useful offer / content</span></label>
+<label class="choice"><input name="visitorConcerns[]" type="checkbox" value="No major concern"/> <span data-de="Keine größeren Bedenken" data-en="No major concern" data-zh="没有重大顾虑">No major concern</span></label>
+<label class="choice"><input name="visitorConcerns[]" type="checkbox" value="Other"/> <span data-de="Sonstiges" data-en="Other" data-zh="其他">Other</span></label>
+</div>
+<label data-de="Optionaler Kommentar" data-en="Optional comment" data-zh="可选备注">Optional comment</label><textarea name="visitorConcernComment"></textarea>
 </div>
 </div>
 </div>
-
 <div class="stepPage hidden" data-step="2">
-<h2 data-en="3. Depth X Concept Test" data-de="3. Depth-X-Konzepttest">3. Depth X Concept Test</h2>
-<div class="notice" id="conceptText"
-data-en="Depth X is developing a patent-pending autonomous aerial marketing platform designed to combine mobile advertising with anonymous audience measurement and real-time campaign adaptation. The system is designed around multiple UAVs and intelligent energy management to support continuous or near-continuous operation rather than depending on the flight time of a single drone."
-data-de="Depth X entwickelt eine zum Patent angemeldete autonome Plattform für Luftmarketing. Sie soll mobile Werbung mit anonymer Publikumsanalyse und einer Anpassung von Kampagnen in Echtzeit verbinden. Das System ist mit mehreren UAVs und intelligentem Energiemanagement konzipiert, um einen kontinuierlichen oder nahezu kontinuierlichen Betrieb zu ermöglichen, statt von der Flugzeit einer einzelnen Drohne abhängig zu sein.">
+<h2 data-de="3. Depth-X-Konzepttest" data-en="3. Depth X Concept Test" data-zh="3. Depth X 概念测试">3. Depth X Concept Test</h2>
+<div class="notice" data-de="Depth X entwickelt eine zum Patent angemeldete autonome Plattform für Luftmarketing. Sie soll mobile Werbung mit anonymer Publikumsanalyse und einer Anpassung von Kampagnen in Echtzeit verbinden. Das System ist mit mehreren UAVs und intelligentem Energiemanagement konzipiert, um einen kontinuierlichen oder nahezu kontinuierlichen Betrieb zu ermöglichen, statt von der Flugzeit einer einzelnen Drohne abhängig zu sein." data-en="Depth X is developing a patent-pending autonomous aerial marketing platform designed to combine mobile advertising with anonymous audience measurement and real-time campaign adaptation. The system is designed around multiple UAVs and intelligent energy management to support continuous or near-continuous operation rather than depending on the flight time of a single drone." data-zh="Depth X 正在开发一套正在申请专利的自主空中营销平台，将移动广告、匿名受众测量和实时广告调整结合起来。该系统围绕多架无人机和智能能源管理设计，目标是支持连续或近连续运行，而不是受限于单架无人机的飞行时间。" id="conceptText">
 Depth X is developing a patent-pending autonomous aerial marketing platform designed to combine mobile advertising with anonymous audience measurement and real-time campaign adaptation.
 </div>
-<div style="margin:10px 0"><button type="button" onclick="speakElement(document.getElementById('conceptText'))">🔊 Read concept</button></div>
-
+<div style="margin:10px 0"><button onclick="speakElement(document.getElementById('conceptText'))" type="button">🔊 Read concept</button></div>
 <div id="professional-concept">
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="6. Which part of the concept would create the most value for you — if any?" data-de="6. Welcher Teil des Konzepts würde für Sie den größten Nutzen schaffen – falls überhaupt?">6. Which part of the concept would create the most value for you — if any?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <div class="choice-grid">
-    <label class="choice"><input type="radio" name="mostValuable" value="Mobile / aerial advertising">Mobile / aerial advertising</label>
-    <label class="choice"><input type="radio" name="mostValuable" value="Audience measurement">Audience measurement</label>
-    <label class="choice"><input type="radio" name="mostValuable" value="Real-time analytics">Real-time analytics</label>
-    <label class="choice"><input type="radio" name="mostValuable" value="Campaign adaptation">Campaign adaptation</label>
-    <label class="choice"><input type="radio" name="mostValuable" value="Continuous operation">Continuous operation</label>
-    <label class="choice"><input type="radio" name="mostValuable" value="Multiple media formats">Multiple media formats</label>
-    <label class="choice"><input type="radio" name="mostValuable" value="No significant value">I do not currently see significant value</label>
-    <label class="choice"><input type="radio" name="mostValuable" value="Other">Other</label>
-  </div>
-  <label data-en="Optional comment" data-de="Optionaler Kommentar">Optional comment</label><textarea name="valueWhy"></textarea>
+<div class="question" data-required="true">
+<div class="qhead"><div class="qtext" data-de="6. Welcher Teil des Konzepts würde für Sie den größten Nutzen schaffen – falls überhaupt?" data-en="6. Which part of the concept would create the most value for you — if any?" data-zh="6. 如果有的话，这个概念的哪一部分对您最有价值？">6. Which part of the concept would create the most value for you — if any?</div><button class="speak" onclick="speakQuestion(this)" title="Read question and answer options" type="button">🔊</button><span class="requiredBadge" data-de="Pflicht" data-en="Required" data-zh="必答">Required</span></div>
+<div class="choice-grid">
+<label class="choice"><input name="mostValuable" type="radio" value="Mobile / aerial advertising"/> <span data-de="Mobile / Luftwerbung" data-en="Mobile / aerial advertising" data-zh="移动 / 空中广告">Mobile / aerial advertising</span></label>
+<label class="choice"><input name="mostValuable" type="radio" value="Audience measurement"/> <span data-de="Publikumsmessung" data-en="Audience measurement" data-zh="受众测量">Audience measurement</span></label>
+<label class="choice"><input name="mostValuable" type="radio" value="Real-time analytics"/> <span data-de="Echtzeit-Analysen" data-en="Real-time analytics" data-zh="实时分析">Real-time analytics</span></label>
+<label class="choice"><input name="mostValuable" type="radio" value="Campaign adaptation"/> <span data-de="Kampagnenanpassung" data-en="Campaign adaptation" data-zh="广告活动调整">Campaign adaptation</span></label>
+<label class="choice"><input name="mostValuable" type="radio" value="Continuous operation"/> <span data-de="Kontinuierlicher Betrieb" data-en="Continuous operation" data-zh="连续运行">Continuous operation</span></label>
+<label class="choice"><input name="mostValuable" type="radio" value="Multiple media formats"/> <span data-de="Mehrere Medienformate" data-en="Multiple media formats" data-zh="多种媒体形式">Multiple media formats</span></label>
+<label class="choice"><input name="mostValuable" type="radio" value="No significant value"/> <span data-de="Ich sehe derzeit keinen wesentlichen Mehrwert" data-en="I do not currently see significant value" data-zh="目前看不到明显价值">I do not currently see significant value</span></label>
+<label class="choice"><input name="mostValuable" type="radio" value="Other"/> <span data-de="Sonstiges" data-en="Other" data-zh="其他">Other</span></label>
 </div>
-
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="7. What would be your biggest concern about using a system like this?" data-de="7. Was wäre Ihre größte Sorge bei der Nutzung eines solchen Systems?">7. What would be your biggest concern about using a system like this?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <div class="choice-grid">
-    <label class="choice"><input type="checkbox" name="concernCategory[]" value="Safety">Safety</label>
-    <label class="choice"><input type="checkbox" name="concernCategory[]" value="Regulation">Regulation</label>
-    <label class="choice"><input type="checkbox" name="concernCategory[]" value="Noise">Noise</label>
-    <label class="choice"><input type="checkbox" name="concernCategory[]" value="Privacy">Privacy</label>
-    <label class="choice"><input type="checkbox" name="concernCategory[]" value="Cost">Cost</label>
-    <label class="choice"><input type="checkbox" name="concernCategory[]" value="Technical Reliability">Technical reliability</label>
-    <label class="choice"><input type="checkbox" name="concernCategory[]" value="Weather">Weather</label>
-    <label class="choice"><input type="checkbox" name="concernCategory[]" value="Audience Acceptance">Audience acceptance</label>
-    <label class="choice"><input type="checkbox" name="concernCategory[]" value="No major concern">No major concern</label>
-    <label class="choice"><input type="checkbox" name="concernCategory[]" value="Other">Other</label>
-  </div>
-  <label data-en="Optional comment" data-de="Optionaler Kommentar">Optional comment</label><textarea name="concernText"></textarea>
+<label data-de="Optionaler Kommentar" data-en="Optional comment" data-zh="可选备注">Optional comment</label><textarea name="valueWhy"></textarea>
+</div>
+<div class="question" data-required="true">
+<div class="qhead"><div class="qtext" data-de="7. Was wäre Ihre größte Sorge bei der Nutzung eines solchen Systems?" data-en="7. What would be your biggest concern about using a system like this?" data-zh="7. 使用这样的系统时，您最大的顾虑是什么？">7. What would be your biggest concern about using a system like this?</div><button class="speak" onclick="speakQuestion(this)" title="Read question and answer options" type="button">🔊</button><span class="requiredBadge" data-de="Pflicht" data-en="Required" data-zh="必答">Required</span></div>
+<div class="choice-grid">
+<label class="choice"><input name="concernCategory[]" type="checkbox" value="Safety"/> <span data-de="Sicherheit" data-en="Safety" data-zh="安全">Safety</span></label>
+<label class="choice"><input name="concernCategory[]" type="checkbox" value="Regulation"/> <span data-de="Regulierung" data-en="Regulation" data-zh="法规">Regulation</span></label>
+<label class="choice"><input name="concernCategory[]" type="checkbox" value="Noise"/> <span data-de="Lärm" data-en="Noise" data-zh="噪音">Noise</span></label>
+<label class="choice"><input name="concernCategory[]" type="checkbox" value="Privacy"/> <span data-de="Datenschutz" data-en="Privacy" data-zh="隐私">Privacy</span></label>
+<label class="choice"><input name="concernCategory[]" type="checkbox" value="Cost"/> <span data-de="Kosten" data-en="Cost" data-zh="成本">Cost</span></label>
+<label class="choice"><input name="concernCategory[]" type="checkbox" value="Technical Reliability"/> <span data-de="Technische Zuverlässigkeit" data-en="Technical reliability" data-zh="技术可靠性">Technical reliability</span></label>
+<label class="choice"><input name="concernCategory[]" type="checkbox" value="Weather"/> <span data-de="Wetter" data-en="Weather" data-zh="天气">Weather</span></label>
+<label class="choice"><input name="concernCategory[]" type="checkbox" value="Audience Acceptance"/> <span data-de="Akzeptanz beim Publikum" data-en="Audience acceptance" data-zh="受众接受度">Audience acceptance</span></label>
+<label class="choice"><input name="concernCategory[]" type="checkbox" value="No major concern"/> <span data-de="Keine größeren Bedenken" data-en="No major concern" data-zh="没有重大顾虑">No major concern</span></label>
+<label class="choice"><input name="concernCategory[]" type="checkbox" value="Other"/> <span data-de="Sonstiges" data-en="Other" data-zh="其他">Other</span></label>
+</div>
+<label data-de="Optionaler Kommentar" data-en="Optional comment" data-zh="可选备注">Optional comment</label><textarea name="concernText"></textarea>
 </div>
 </div>
-
-<div id="visitor-concept" class="hidden">
-<div class="question">
-  <div class="qhead"><div class="qtext" data-en="V4. After hearing the concept, would you be comfortable engaging with the system if it clearly explained that audience measurement is anonymous?" data-de="V4. Würden Sie nach dieser Erklärung mit dem System interagieren, wenn klar erklärt wird, dass die Publikumsanalyse anonym erfolgt?">V4. After hearing the concept, would you be comfortable engaging with the system if it clearly explained that audience measurement is anonymous?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-  <select name="visitorComfort"><option value="">Select…</option><option>Yes</option><option>Probably yes</option><option>Maybe / depends</option><option>Probably not</option><option>No</option></select>
-  <label data-en="Optional comment" data-de="Optionaler Kommentar">Optional comment</label><textarea name="visitorComfortComment"></textarea>
+<div class="hidden" id="visitor-concept">
+<div class="question" data-required="true">
+<div class="qhead"><div class="qtext" data-de="V4. Würden Sie nach dieser Erklärung mit dem System interagieren, wenn klar erklärt wird, dass die Publikumsanalyse anonym erfolgt?" data-en="V4. After hearing the concept, would you be comfortable engaging with the system if it clearly explained that audience measurement is anonymous?" data-zh="V4. 了解该概念后，如果系统明确说明受众测量是匿名的，您是否愿意与其互动？">V4. After hearing the concept, would you be comfortable engaging with the system if it clearly explained that audience measurement is anonymous?</div><button class="speak" onclick="speakQuestion(this)" title="Read question and answer options" type="button">🔊</button><span class="requiredBadge" data-de="Pflicht" data-en="Required" data-zh="必答">Required</span></div>
+<select name="visitorComfort"><option data-de="Auswählen…" data-en="Select…" data-zh="请选择…" value="">Select…</option><option data-de="Ja" data-en="Yes" data-zh="是">Yes</option><option data-de="Wahrscheinlich ja" data-en="Probably yes" data-zh="大概率会">Probably yes</option><option data-de="Vielleicht / kommt darauf an" data-en="Maybe / depends" data-zh="可能 / 视情况而定">Maybe / depends</option><option data-de="Wahrscheinlich nicht" data-en="Probably not" data-zh="大概率不会">Probably not</option><option data-de="Nein" data-en="No" data-zh="否">No</option></select>
+<label data-de="Optionaler Kommentar" data-en="Optional comment" data-zh="可选备注">Optional comment</label><textarea name="visitorComfortComment"></textarea>
 </div>
 </div>
 </div>
-
 <div class="stepPage hidden" data-step="3">
-<h2 data-en="4. Pilot / Segment Questions" data-de="4. Pilot- / Segmentfragen">4. Pilot / Segment Questions</h2>
-
+<h2 data-de="4. Pilot- / Segmentfragen" data-en="4. Pilot / Segment Questions" data-zh="4. 试点 / 细分问题">4. Pilot / Segment Questions</h2>
 <div id="professional-pilot">
-<div class="question">
-<div class="qhead"><div class="qtext" data-en="8. If the system were successfully built, technically validated and appropriately approved, would you consider exploring a controlled pilot?" data-de="8. Wenn das System erfolgreich gebaut, technisch validiert und ordnungsgemäß genehmigt wäre, würden Sie einen kontrollierten Pilotversuch in Betracht ziehen?">8. If the system were successfully built, technically validated and appropriately approved, would you consider exploring a controlled pilot?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-<select name="pilotInterest"><option value="">Select 1–5…</option><option value="1">1 — Definitely not</option><option value="2">2 — Probably not</option><option value="3">3 — Maybe</option><option value="4">4 — Yes</option><option value="5">5 — Strong interest</option></select>
-<label data-en="Optional comment" data-de="Optionaler Kommentar">Optional comment</label><textarea name="pilotWhy"></textarea>
+<div class="question" data-required="true">
+<div class="qhead"><div class="qtext" data-de="8. Wenn das System erfolgreich gebaut, technisch validiert und ordnungsgemäß genehmigt wäre, würden Sie einen kontrollierten Pilotversuch in Betracht ziehen?" data-en="8. If the system were successfully built, technically validated and appropriately approved, would you consider exploring a controlled pilot?" data-zh="8. 如果系统成功建成、完成技术验证并获得适当批准，您是否愿意考虑开展受控试点？">8. If the system were successfully built, technically validated and appropriately approved, would you consider exploring a controlled pilot?</div><button class="speak" onclick="speakQuestion(this)" title="Read question and answer options" type="button">🔊</button><span class="requiredBadge" data-de="Pflicht" data-en="Required" data-zh="必答">Required</span></div>
+<select name="pilotInterest"><option data-de="1–5 auswählen…" data-en="Select 1–5…" data-zh="请选择 1–5…" value="">Select 1–5…</option><option data-de="1 — Definitiv nicht" data-en="1 — Definitely not" data-zh="1 — 肯定不会" value="1">1 — Definitely not</option><option data-de="2 — Wahrscheinlich nicht" data-en="2 — Probably not" data-zh="2 — 大概率不会" value="2">2 — Probably not</option><option data-de="3 — Vielleicht" data-en="3 — Maybe" data-zh="3 — 可能" value="3">3 — Maybe</option><option data-de="4 — Ja" data-en="4 — Yes" data-zh="4 — 会" value="4">4 — Yes</option><option data-de="5 — Starkes Interesse" data-en="5 — Strong interest" data-zh="5 — 非常有兴趣" value="5">5 — Strong interest</option></select>
+<label data-de="Optionaler Kommentar" data-en="Optional comment" data-zh="可选备注">Optional comment</label><textarea name="pilotWhy"></textarea>
 </div>
-
-<div id="branch-E" class="branch hidden">
-<div class="question"><div class="qhead"><div class="qtext" data-en="E1. Could you imagine using this to attract visitors to your booth or campaign area?" data-de="E1. Könnten Sie sich vorstellen, dieses System zu nutzen, um Besucher zu Ihrem Stand oder Kampagnenbereich zu ziehen?">E1. Could you imagine using this to attract visitors to your booth or campaign area?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-<select name="E1"><option value="">Select…</option><option>Yes</option><option>Maybe</option><option>No</option></select><textarea name="E1_comment" placeholder="Optional comment"></textarea></div>
-<div class="question"><div class="qhead"><div class="qtext" data-en="E2. What result would make a campaign like this valuable enough to pay for?" data-de="E2. Welches Ergebnis müsste eine solche Kampagne liefern, damit sie für Ihr Unternehmen zahlungswürdig wäre?">E2. What result would make a campaign like this valuable enough to pay for?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-<div class="choice-grid"><label class="choice"><input type="checkbox" name="E2[]" value="More booth visits">More booth visits</label><label class="choice"><input type="checkbox" name="E2[]" value="More leads">More leads</label><label class="choice"><input type="checkbox" name="E2[]" value="Higher engagement">Higher engagement</label><label class="choice"><input type="checkbox" name="E2[]" value="Better measurable ROI">Better measurable ROI</label><label class="choice"><input type="checkbox" name="E2[]" value="Other">Other</label></div><textarea name="E2_comment" placeholder="Optional comment"></textarea></div>
+<div class="branch hidden" id="branch-E">
+<div class="question" data-required="true"><div class="qhead"><div class="qtext" data-de="E1. Könnten Sie sich vorstellen, dieses System zu nutzen, um Besucher zu Ihrem Stand oder Kampagnenbereich zu ziehen?" data-en="E1. Could you imagine using this to attract visitors to your booth or campaign area?" data-zh="E1. 您能否想象使用该系统吸引访客来到您的展位或活动区域？">E1. Could you imagine using this to attract visitors to your booth or campaign area?</div><button class="speak" onclick="speakQuestion(this)" title="Read question and answer options" type="button">🔊</button><span class="requiredBadge" data-de="Pflicht" data-en="Required" data-zh="必答">Required</span></div>
+<select name="E1"><option data-de="Auswählen…" data-en="Select…" data-zh="请选择…" value="">Select…</option><option data-de="Ja" data-en="Yes" data-zh="是">Yes</option><option data-de="Vielleicht" data-en="Maybe" data-zh="可能">Maybe</option><option data-de="Nein" data-en="No" data-zh="否">No</option></select><textarea data-placeholder-de="Optionaler Kommentar" data-placeholder-en="Optional comment" data-placeholder-zh="可选备注" name="E1_comment" placeholder="Optional comment"></textarea></div>
+<div class="question" data-required="true"><div class="qhead"><div class="qtext" data-de="E2. Welches Ergebnis müsste eine solche Kampagne liefern, damit sie für Ihr Unternehmen zahlungswürdig wäre?" data-en="E2. What result would make a campaign like this valuable enough to pay for?" data-zh="E2. 什么结果会让这样的活动具有足够价值，值得付费？">E2. What result would make a campaign like this valuable enough to pay for?</div><button class="speak" onclick="speakQuestion(this)" title="Read question and answer options" type="button">🔊</button><span class="requiredBadge" data-de="Pflicht" data-en="Required" data-zh="必答">Required</span></div>
+<div class="choice-grid"><label class="choice"><input name="E2[]" type="checkbox" value="More booth visits"/> <span data-de="Mehr Standbesuche" data-en="More booth visits" data-zh="更多展位访问">More booth visits</span></label><label class="choice"><input name="E2[]" type="checkbox" value="More leads"/> <span data-de="Mehr Leads" data-en="More leads" data-zh="更多潜在客户">More leads</span></label><label class="choice"><input name="E2[]" type="checkbox" value="Higher engagement"/> <span data-de="Höheres Engagement" data-en="Higher engagement" data-zh="更高互动率">Higher engagement</span></label><label class="choice"><input name="E2[]" type="checkbox" value="Better measurable ROI"/> <span data-de="Besser messbarer ROI" data-en="Better measurable ROI" data-zh="更好的可衡量投资回报率">Better measurable ROI</span></label><label class="choice"><input name="E2[]" type="checkbox" value="Other"/> <span data-de="Sonstiges" data-en="Other" data-zh="其他">Other</span></label></div><textarea data-placeholder-de="Optionaler Kommentar" data-placeholder-en="Optional comment" data-placeholder-zh="可选备注" name="E2_comment" placeholder="Optional comment"></textarea></div>
 </div>
-
-<div id="branch-O" class="branch hidden">
-<div class="question"><div class="qhead"><div class="qtext" data-en="O1. Could you see a useful location for a system like this in outdoor or transitional exhibition areas?" data-de="O1. Sehen Sie einen geeigneten Einsatzort für ein solches System in Außen- oder Übergangsbereichen einer Messe?">O1. Could you see a useful location for a system like this in outdoor or transitional exhibition areas?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-<div class="choice-grid"><label class="choice"><input type="checkbox" name="O1[]" value="Entrances / exits">Entrances / exits</label><label class="choice"><input type="checkbox" name="O1[]" value="Between halls">Between halls</label><label class="choice"><input type="checkbox" name="O1[]" value="Outdoor exhibition area">Outdoor exhibition area</label><label class="choice"><input type="checkbox" name="O1[]" value="Transport / parking area">Transport / parking area</label><label class="choice"><input type="checkbox" name="O1[]" value="No obvious location">No obvious location</label><label class="choice"><input type="checkbox" name="O1[]" value="Other">Other</label></div><textarea name="O1_comment" placeholder="Optional comment"></textarea></div>
-<div class="question"><div class="qhead"><div class="qtext" data-en="O2. What would be the main requirement or obstacle for allowing a controlled pilot?" data-de="O2. Was wäre die wichtigste Voraussetzung oder das größte Hindernis für einen kontrollierten Pilotversuch?">O2. What would be the main requirement or obstacle for allowing a controlled pilot?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-<div class="choice-grid"><label class="choice"><input type="checkbox" name="O2[]" value="Safety">Safety</label><label class="choice"><input type="checkbox" name="O2[]" value="Regulatory approval">Regulatory approval</label><label class="choice"><input type="checkbox" name="O2[]" value="Insurance">Insurance</label><label class="choice"><input type="checkbox" name="O2[]" value="Noise">Noise</label><label class="choice"><input type="checkbox" name="O2[]" value="Site operations">Site operations</label><label class="choice"><input type="checkbox" name="O2[]" value="Other">Other</label></div><textarea name="O2_comment" placeholder="Optional comment"></textarea></div>
+<div class="branch hidden" id="branch-O">
+<div class="question" data-required="true"><div class="qhead"><div class="qtext" data-de="O1. Sehen Sie einen geeigneten Einsatzort für ein solches System in Außen- oder Übergangsbereichen einer Messe?" data-en="O1. Could you see a useful location for a system like this in outdoor or transitional exhibition areas?" data-zh="O1. 您认为在展会的户外或过渡区域，有适合部署这类系统的位置吗？">O1. Could you see a useful location for a system like this in outdoor or transitional exhibition areas?</div><button class="speak" onclick="speakQuestion(this)" title="Read question and answer options" type="button">🔊</button><span class="requiredBadge" data-de="Pflicht" data-en="Required" data-zh="必答">Required</span></div>
+<div class="choice-grid"><label class="choice"><input name="O1[]" type="checkbox" value="Entrances / exits"/> <span data-de="Ein- / Ausgänge" data-en="Entrances / exits" data-zh="入口 / 出口">Entrances / exits</span></label><label class="choice"><input name="O1[]" type="checkbox" value="Between halls"/> <span data-de="Zwischen Hallen" data-en="Between halls" data-zh="展馆之间">Between halls</span></label><label class="choice"><input name="O1[]" type="checkbox" value="Outdoor exhibition area"/> <span data-de="Außenbereich der Messe" data-en="Outdoor exhibition area" data-zh="户外展区">Outdoor exhibition area</span></label><label class="choice"><input name="O1[]" type="checkbox" value="Transport / parking area"/> <span data-de="Transport- / Parkplatzbereich" data-en="Transport / parking area" data-zh="交通 / 停车区域">Transport / parking area</span></label><label class="choice"><input name="O1[]" type="checkbox" value="No obvious location"/> <span data-de="Kein offensichtlicher Standort" data-en="No obvious location" data-zh="没有明显合适位置">No obvious location</span></label><label class="choice"><input name="O1[]" type="checkbox" value="Other"/> <span data-de="Sonstiges" data-en="Other" data-zh="其他">Other</span></label></div><textarea data-placeholder-de="Optionaler Kommentar" data-placeholder-en="Optional comment" data-placeholder-zh="可选备注" name="O1_comment" placeholder="Optional comment"></textarea></div>
+<div class="question" data-required="true"><div class="qhead"><div class="qtext" data-de="O2. Was wäre die wichtigste Voraussetzung oder das größte Hindernis für einen kontrollierten Pilotversuch?" data-en="O2. What would be the main requirement or obstacle for allowing a controlled pilot?" data-zh="O2. 允许受控试点的主要要求或障碍会是什么？">O2. What would be the main requirement or obstacle for allowing a controlled pilot?</div><button class="speak" onclick="speakQuestion(this)" title="Read question and answer options" type="button">🔊</button><span class="requiredBadge" data-de="Pflicht" data-en="Required" data-zh="必答">Required</span></div>
+<div class="choice-grid"><label class="choice"><input name="O2[]" type="checkbox" value="Safety"/> <span data-de="Sicherheit" data-en="Safety" data-zh="安全">Safety</span></label><label class="choice"><input name="O2[]" type="checkbox" value="Regulatory approval"/> <span data-de="Behördliche Genehmigung" data-en="Regulatory approval" data-zh="监管批准">Regulatory approval</span></label><label class="choice"><input name="O2[]" type="checkbox" value="Insurance"/> <span data-de="Versicherung" data-en="Insurance" data-zh="保险">Insurance</span></label><label class="choice"><input name="O2[]" type="checkbox" value="Noise"/> <span data-de="Lärm" data-en="Noise" data-zh="噪音">Noise</span></label><label class="choice"><input name="O2[]" type="checkbox" value="Site operations"/> <span data-de="Betriebsabläufe vor Ort" data-en="Site operations" data-zh="现场运营">Site operations</span></label><label class="choice"><input name="O2[]" type="checkbox" value="Other"/> <span data-de="Sonstiges" data-en="Other" data-zh="其他">Other</span></label></div><textarea data-placeholder-de="Optionaler Kommentar" data-placeholder-en="Optional comment" data-placeholder-zh="可选备注" name="O2_comment" placeholder="Optional comment"></textarea></div>
 </div>
-
-<div id="branch-A" class="branch hidden">
-<div class="question"><div class="qhead"><div class="qtext" data-en="A1. Could you imagine offering a measurable aerial advertising service like this to clients?" data-de="A1. Könnten Sie sich vorstellen, Ihren Kunden einen messbaren Luftwerbeservice wie diesen anzubieten?">A1. Could you imagine offering a measurable aerial advertising service like this to clients?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-<select name="A1"><option value="">Select…</option><option>Yes</option><option>Maybe</option><option>No</option></select><textarea name="A1_comment" placeholder="Optional comment"></textarea></div>
-<div class="question"><div class="qhead"><div class="qtext" data-en="A2. What would Depth X need to prove before you would recommend it to a client?" data-de="A2. Was müsste Depth X nachweisen, bevor Sie das System einem Kunden empfehlen würden?">A2. What would Depth X need to prove before you would recommend it to a client?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-<div class="choice-grid"><label class="choice"><input type="checkbox" name="A2[]" value="Safety / reliability">Safety / reliability</label><label class="choice"><input type="checkbox" name="A2[]" value="Regulatory feasibility">Regulatory feasibility</label><label class="choice"><input type="checkbox" name="A2[]" value="Engagement uplift">Engagement uplift</label><label class="choice"><input type="checkbox" name="A2[]" value="Measurement quality">Measurement quality</label><label class="choice"><input type="checkbox" name="A2[]" value="ROI / pricing">ROI / pricing</label><label class="choice"><input type="checkbox" name="A2[]" value="Successful pilot / reference">Successful pilot / reference</label><label class="choice"><input type="checkbox" name="A2[]" value="Other">Other</label></div><textarea name="A2_comment" placeholder="Optional comment"></textarea></div>
+<div class="branch hidden" id="branch-A">
+<div class="question" data-required="true"><div class="qhead"><div class="qtext" data-de="A1. Könnten Sie sich vorstellen, Ihren Kunden einen messbaren Luftwerbeservice wie diesen anzubieten?" data-en="A1. Could you imagine offering a measurable aerial advertising service like this to clients?" data-zh="A1. 您能否想象向客户提供这种可衡量的空中广告服务？">A1. Could you imagine offering a measurable aerial advertising service like this to clients?</div><button class="speak" onclick="speakQuestion(this)" title="Read question and answer options" type="button">🔊</button><span class="requiredBadge" data-de="Pflicht" data-en="Required" data-zh="必答">Required</span></div>
+<select name="A1"><option data-de="Auswählen…" data-en="Select…" data-zh="请选择…" value="">Select…</option><option data-de="Ja" data-en="Yes" data-zh="是">Yes</option><option data-de="Vielleicht" data-en="Maybe" data-zh="可能">Maybe</option><option data-de="Nein" data-en="No" data-zh="否">No</option></select><textarea data-placeholder-de="Optionaler Kommentar" data-placeholder-en="Optional comment" data-placeholder-zh="可选备注" name="A1_comment" placeholder="Optional comment"></textarea></div>
+<div class="question" data-required="true"><div class="qhead"><div class="qtext" data-de="A2. Was müsste Depth X nachweisen, bevor Sie das System einem Kunden empfehlen würden?" data-en="A2. What would Depth X need to prove before you would recommend it to a client?" data-zh="A2. 在您愿意向客户推荐之前，Depth X 需要证明什么？">A2. What would Depth X need to prove before you would recommend it to a client?</div><button class="speak" onclick="speakQuestion(this)" title="Read question and answer options" type="button">🔊</button><span class="requiredBadge" data-de="Pflicht" data-en="Required" data-zh="必答">Required</span></div>
+<div class="choice-grid"><label class="choice"><input name="A2[]" type="checkbox" value="Safety / reliability"/> <span data-de="Sicherheit / Zuverlässigkeit" data-en="Safety / reliability" data-zh="安全 / 可靠性">Safety / reliability</span></label><label class="choice"><input name="A2[]" type="checkbox" value="Regulatory feasibility"/> <span data-de="Regulatorische Machbarkeit" data-en="Regulatory feasibility" data-zh="法规可行性">Regulatory feasibility</span></label><label class="choice"><input name="A2[]" type="checkbox" value="Engagement uplift"/> <span data-de="Steigerung des Engagements" data-en="Engagement uplift" data-zh="互动提升">Engagement uplift</span></label><label class="choice"><input name="A2[]" type="checkbox" value="Measurement quality"/> <span data-de="Messqualität" data-en="Measurement quality" data-zh="测量质量">Measurement quality</span></label><label class="choice"><input name="A2[]" type="checkbox" value="ROI / pricing"/> <span data-de="ROI / Preisgestaltung" data-en="ROI / pricing" data-zh="投资回报率 / 定价">ROI / pricing</span></label><label class="choice"><input name="A2[]" type="checkbox" value="Successful pilot / reference"/> <span data-de="Erfolgreicher Pilot / Referenz" data-en="Successful pilot / reference" data-zh="成功试点 / 案例">Successful pilot / reference</span></label><label class="choice"><input name="A2[]" type="checkbox" value="Other"/> <span data-de="Sonstiges" data-en="Other" data-zh="其他">Other</span></label></div><textarea data-placeholder-de="Optionaler Kommentar" data-placeholder-en="Optional comment" data-placeholder-zh="可选备注" name="A2_comment" placeholder="Optional comment"></textarea></div>
 </div>
-
-<div class="question">
-<div class="qhead"><div class="qtext" data-en="Would you be open to a short follow-up conversation when Depth X reaches the physical pilot stage?" data-de="Wären Sie offen für ein kurzes Folgegespräch, wenn Depth X die Phase des physischen Piloten erreicht?">Would you be open to a short follow-up conversation when Depth X reaches the physical pilot stage?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-<select name="followUp"><option value="">Select…</option><option>Yes</option><option>Maybe</option><option>No</option></select>
-<label data-en="Contact details (optional, only if voluntarily provided)" data-de="Kontaktdaten (optional, nur wenn freiwillig angegeben)">Contact details (optional, only if voluntarily provided)</label><input name="contact"/>
-<label class="choice"><input type="checkbox" name="contactConsent"/> <span data-en="Agreed to be contacted for Depth X follow-up / future pilot." data-de="Einverstanden mit einer Kontaktaufnahme für Depth-X-Follow-up / zukünftigen Pilotversuch.">Agreed to be contacted for Depth X follow-up / future pilot.</span></label>
+<div class="question" data-required="true">
+<div class="qhead"><div class="qtext" data-de="Wären Sie offen für ein kurzes Folgegespräch, wenn Depth X die Phase des physischen Piloten erreicht?" data-en="Would you be open to a short follow-up conversation when Depth X reaches the physical pilot stage?" data-zh="当 Depth X 进入实体试点阶段时，您是否愿意进行一次简短的后续沟通？">Would you be open to a short follow-up conversation when Depth X reaches the physical pilot stage?</div><button class="speak" onclick="speakQuestion(this)" title="Read question and answer options" type="button">🔊</button><span class="requiredBadge" data-de="Pflicht" data-en="Required" data-zh="必答">Required</span></div>
+<select name="followUp"><option data-de="Auswählen…" data-en="Select…" data-zh="请选择…" value="">Select…</option><option data-de="Ja" data-en="Yes" data-zh="是">Yes</option><option data-de="Vielleicht" data-en="Maybe" data-zh="可能">Maybe</option><option data-de="Nein" data-en="No" data-zh="否">No</option></select>
+<label data-de="Kontaktdaten (optional, nur wenn freiwillig angegeben)" data-en="Contact details (optional, only if voluntarily provided)" data-zh="联系方式（可选，仅在自愿提供时填写）">Contact details (optional, only if voluntarily provided)</label><input name="contact">
+<label class="choice"><input name="contactConsent" type="checkbox"> <span data-de="Einverstanden mit einer Kontaktaufnahme für Depth-X-Follow-up / zukünftigen Pilotversuch." data-en="Agreed to be contacted for Depth X follow-up / future pilot." data-zh="同意 Depth X 就后续沟通 / 未来试点与我联系。">Agreed to be contacted for Depth X follow-up / future pilot.</span></input></label>
+</input></div>
 </div>
-</div>
-
-<div id="visitor-pilot" class="hidden">
-<div class="question">
-<div class="qhead"><div class="qtext" data-en="V5. If the system appeared safe, useful and respectful of privacy, would you be willing to interact with it (for example scan a QR code or view an offer)?" data-de="V5. Wenn das System sicher, nützlich und datenschutzfreundlich wirkt, würden Sie damit interagieren, z. B. einen QR-Code scannen oder ein Angebot ansehen?">V5. If the system appeared safe, useful and respectful of privacy, would you be willing to interact with it?</div><button type="button" class="speak" onclick="speakQuestion(this)">🔊</button></div>
-<select name="visitorInteraction"><option value="">Select…</option><option>Yes</option><option>Probably yes</option><option>Maybe / depends</option><option>Probably not</option><option>No</option></select>
-<textarea name="visitorInteractionComment" placeholder="Optional comment"></textarea>
+<div class="hidden" id="visitor-pilot">
+<div class="question" data-required="true">
+<div class="qhead"><div class="qtext" data-de="V5. Wenn das System sicher, nützlich und datenschutzfreundlich wirkt, würden Sie damit interagieren, z. B. einen QR-Code scannen oder ein Angebot ansehen?" data-en="V5. If the system appeared safe, useful and respectful of privacy, would you be willing to interact with it (for example scan a QR code or view an offer)?" data-zh="V5. 如果该系统看起来安全、有用并尊重隐私，您是否愿意与其互动（例如扫描二维码或查看优惠）？">V5. If the system appeared safe, useful and respectful of privacy, would you be willing to interact with it?</div><button class="speak" onclick="speakQuestion(this)" title="Read question and answer options" type="button">🔊</button><span class="requiredBadge" data-de="Pflicht" data-en="Required" data-zh="必答">Required</span></div>
+<select name="visitorInteraction"><option data-de="Auswählen…" data-en="Select…" data-zh="请选择…" value="">Select…</option><option data-de="Ja" data-en="Yes" data-zh="是">Yes</option><option data-de="Wahrscheinlich ja" data-en="Probably yes" data-zh="大概率会">Probably yes</option><option data-de="Vielleicht / kommt darauf an" data-en="Maybe / depends" data-zh="可能 / 视情况而定">Maybe / depends</option><option data-de="Wahrscheinlich nicht" data-en="Probably not" data-zh="大概率不会">Probably not</option><option data-de="Nein" data-en="No" data-zh="否">No</option></select>
+<textarea data-placeholder-de="Optionaler Kommentar" data-placeholder-en="Optional comment" data-placeholder-zh="可选备注" name="visitorInteractionComment" placeholder="Optional comment"></textarea>
 </div>
 </div>
 </div>
-
 <div class="stepPage hidden" data-step="4">
-<h2 data-en="5. Interviewer Review" data-de="5. Bewertung durch Interviewer">5. Interviewer Review</h2>
+<h2 data-de="5. Bewertung durch Interviewer" data-en="5. Interviewer Review" data-zh="5. 访谈者评估">5. Interviewer Review</h2>
 <div class="grid">
-<div class="col4"><label>Measurement / Need Pain (1–5)</label><input name="measurementPain" type="number" min="1" max="5"/></div>
-<div class="col4"><label>Concept Interest (1–5)</label><input name="conceptInterest" type="number" min="1" max="5"/></div>
-<div class="col4"><label>Pilot / Interaction Potential (1–5)</label><input name="pilotPotential" type="number" min="1" max="5"/></div>
+<div class="col4"><label data-de="Messproblem / Bedarf (1–5)" data-en="Measurement / Need Pain (1–5)" data-zh="测量 / 需求痛点（1–5）">Measurement / Need Pain (1–5)<span class="reqmark">*</span></label><input data-required-visible="true" max="5" min="1" name="measurementPain" type="number"/></div>
+<div class="col4"><label data-de="Interesse am Konzept (1–5)" data-en="Concept Interest (1–5)" data-zh="概念兴趣（1–5）">Concept Interest (1–5)<span class="reqmark">*</span></label><input data-required-visible="true" max="5" min="1" name="conceptInterest" type="number"/></div>
+<div class="col4"><label data-de="Pilot- / Interaktionspotenzial (1–5)" data-en="Pilot / Interaction Potential (1–5)" data-zh="试点 / 互动潜力（1–5）">Pilot / Interaction Potential (1–5)<span class="reqmark">*</span></label><input data-required-visible="true" max="5" min="1" name="pilotPotential" type="number"/></div>
 </div>
-<label data-en="Most important insight" data-de="Wichtigste Erkenntnis">Most important insight</label><textarea name="keyInsight"></textarea>
-<label data-en="Biggest objection / concern" data-de="Größter Einwand / größte Sorge">Biggest objection / concern</label><textarea name="biggestObjection"></textarea>
-<label data-en="Next step" data-de="Nächster Schritt">Next step</label>
-<select name="nextAction"><option value="">Select…</option><option>Follow up</option><option>Potential pilot</option><option>Introduction to another person</option><option>Useful insight only</option><option>No action</option></select>
+<label data-de="Wichtigste Erkenntnis" data-en="Most important insight" data-zh="最重要的洞察">Most important insight</label><textarea data-required-visible="true" name="keyInsight"></textarea>
+<label data-de="Größter Einwand / größte Sorge" data-en="Biggest objection / concern" data-zh="最大的异议 / 顾虑">Biggest objection / concern</label><textarea data-required-visible="true" name="biggestObjection"></textarea>
+<label data-de="Nächster Schritt" data-en="Next step" data-zh="下一步">Next step</label>
+<select data-required-visible="true" name="nextAction"><option data-de="Auswählen…" data-en="Select…" data-zh="请选择…" value="">Select…</option><option data-de="Nachfassen" data-en="Follow up" data-zh="后续跟进">Follow up</option><option data-de="Potenzieller Pilot" data-en="Potential pilot" data-zh="潜在试点">Potential pilot</option><option data-de="Vorstellung bei einer anderen Person" data-en="Introduction to another person" data-zh="介绍给其他联系人">Introduction to another person</option><option data-de="Nur nützliche Erkenntnis" data-en="Useful insight only" data-zh="仅作为有用洞察">Useful insight only</option><option data-de="Keine Aktion" data-en="No action" data-zh="无需行动">No action</option></select>
 </div>
-
 <div class="footer-actions">
-<button type="button" id="backBtn" onclick="goToPreviousStep()">Back</button>
-<button type="button" class="primary" id="nextBtn" onclick="goToNextStep()">Next</button>
-<button type="submit" class="primary hidden" id="saveBtn">Save Interview</button>
+<button id="backBtn" onclick="goToPreviousStep()" type="button">Back</button>
+<button class="primary" id="nextBtn" onclick="goToNextStep()" type="button">Next</button>
+<button class="primary hidden" id="saveBtn" type="submit">Save Interview</button>
 </div>
 </form>
 </div>
 </section>
-
-<section id="view-dashboard" class="hidden">
+<section class="hidden" id="view-dashboard">
 <div class="card"><h1>Customer Discovery Dashboard</h1><div class="kpis" id="kpis"></div></div>
 <div class="grid">
 <div class="col6 card"><h2>Interview Mix — E / O / A / V</h2><div id="mix"></div></div>
@@ -326,14 +301,12 @@ Depth X is developing a patent-pending autonomous aerial marketing platform desi
 <div class="col12 card"><h2>Key Signals</h2><div id="signals"></div></div>
 </div>
 </section>
-
-<section id="view-interviews" class="hidden">
+<section class="hidden" id="view-interviews">
 <div class="card"><h1>Interviews</h1><div style="overflow:auto"><table>
 <thead><tr><th>ID</th><th>Date</th><th>Company</th><th>Type</th><th>Pain</th><th>Interest</th><th>Follow-up</th></tr></thead><tbody id="rows"></tbody>
 </table></div></div>
 </section>
 </main>
-
 <script>
 var KEY='depthx_customer_discovery_v3';
 var LEGACY_KEY='depthx_customer_discovery_v21';
@@ -383,14 +356,20 @@ function toggleClass(el,cls,on){
 
 function setLang(l){
   lang=l;
-  document.documentElement.lang=l;
+  document.documentElement.lang=l==='zh'?'zh-CN':l;
   var els=document.querySelectorAll('[data-en]');
   for(var i=0;i<els.length;i++){
     var v=els[i].getAttribute('data-'+l);
     if(v!==null)els[i].textContent=v;
   }
+  var ph=document.querySelectorAll('[data-placeholder-en]');
+  for(i=0;i<ph.length;i++){
+    var pv=ph[i].getAttribute('data-placeholder-'+l);
+    if(pv!==null)ph[i].setAttribute('placeholder',pv);
+  }
   toggleClass(document.getElementById('lang-en'),'primary',l==='en');
   toggleClass(document.getElementById('lang-de'),'primary',l==='de');
+  toggleClass(document.getElementById('lang-zh'),'primary',l==='zh');
 }
 
 function speakElement(el){
@@ -402,13 +381,37 @@ function speakElement(el){
   window.speechSynthesis.cancel();
   var t=el.getAttribute('data-'+lang)||(el.textContent||'').replace(/^\s+|\s+$/g,'');
   var u=new SpeechSynthesisUtterance(t);
-  u.lang=lang==='de'?'de-DE':'en-GB';
+  u.lang=lang==='de'?'de-DE':(lang==='zh'?'zh-CN':'en-GB');
   window.speechSynthesis.speak(u);
 }
 
 function speakQuestion(btn){
-  var p=btn.parentNode;
-  speakElement(p?p.querySelector('.qtext'):null);
+  var q=btn.closest?btn.closest('.question'):null;
+  if(!q)return;
+  if(!window.speechSynthesis||!window.SpeechSynthesisUtterance){
+    alert('Text-to-speech is not supported in this browser.');
+    return;
+  }
+  window.speechSynthesis.cancel();
+  var parts=[];
+  var qt=q.querySelector('.qtext');
+  if(qt){
+    parts.push(qt.getAttribute('data-'+lang)||(qt.textContent||'').trim());
+  }
+  var choices=q.querySelectorAll('.choice span[data-en]');
+  for(var i=0;i<choices.length;i++){
+    var ct=choices[i].getAttribute('data-'+lang)||choices[i].textContent;
+    if(ct)parts.push(ct.trim());
+  }
+  var opts=q.querySelectorAll('select option');
+  for(i=0;i<opts.length;i++){
+    if(!opts[i].value)continue;
+    var ot=opts[i].getAttribute('data-'+lang)||opts[i].textContent;
+    if(ot)parts.push(ot.trim());
+  }
+  var u=new SpeechSynthesisUtterance(parts.join('. '));
+  u.lang=lang==='de'?'de-DE':(lang==='zh'?'zh-CN':'en-GB');
+  window.speechSynthesis.speak(u);
 }
 
 function selectedType(){
@@ -464,11 +467,58 @@ function updateStep(){
   try{window.scrollTo(0,0)}catch(e){}
 }
 
-function goToNextStep(){
-  if(step===0&&!selectedType()){
-    alert('Please select E, O, A or V.');
-    return;
+function isVisible(el){
+  if(!el)return false;
+  if(el.closest('.hidden'))return false;
+  return !!(el.offsetWidth||el.offsetHeight||el.getClientRects().length);
+}
+
+function requiredMessage(){
+  if(lang==='de')return 'Bitte beantworten Sie alle Pflichtfragen, bevor Sie fortfahren.';
+  if(lang==='zh')return '请先回答本页所有必答问题，然后再继续。';
+  return 'Please answer all required questions on this page before continuing.';
+}
+
+function validateCurrentStep(){
+  var page=pages[step];
+  if(!page)return true;
+  var first=null, ok=true;
+  var old=page.querySelectorAll('.missing,.field-missing');
+  for(var z=0;z<old.length;z++){old[z].classList.remove('missing');old[z].classList.remove('field-missing');}
+
+  var fields=page.querySelectorAll('[data-required-visible="true"]');
+  for(var i=0;i<fields.length;i++){
+    var f=fields[i];
+    if(!isVisible(f))continue;
+    var empty=(f.type==='checkbox'||f.type==='radio')?!f.checked:!String(f.value||'').trim();
+    if(empty){ok=false;f.classList.add('field-missing');if(!first)first=f;}
   }
+
+  var qs=page.querySelectorAll('.question[data-required="true"]');
+  for(i=0;i<qs.length;i++){
+    var q=qs[i];
+    if(!isVisible(q))continue;
+    var controls=q.querySelectorAll('input[type="checkbox"],input[type="radio"],select');
+    if(!controls.length)continue;
+    var answered=false, hasMeaningful=false;
+    for(var j=0;j<controls.length;j++){
+      var c=controls[j];
+      if(!isVisible(c))continue;
+      hasMeaningful=true;
+      if((c.type==='checkbox'||c.type==='radio')?c.checked:String(c.value||'').trim()!==''){answered=true;break;}
+    }
+    if(hasMeaningful&&!answered){ok=false;q.classList.add('missing');if(!first)first=q;}
+  }
+
+  if(!ok){
+    alert(requiredMessage());
+    try{first.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){}
+  }
+  return ok;
+}
+
+function goToNextStep(){
+  if(!validateCurrentStep())return;
   if(step<pages.length-1){
     step++;
     updateStep();
@@ -558,6 +608,7 @@ function resetInterview(form){
 
 function submitForm(e){
   e.preventDefault();
+  if(!validateCurrentStep())return;
 
   var form=e.target;
   var o=formObject(form);

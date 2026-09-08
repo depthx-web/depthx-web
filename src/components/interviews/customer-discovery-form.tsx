@@ -20,7 +20,7 @@ const translations = {
     back: "Back",
     required: "Required",
     select: "Select…",
-    thankYou: "Interview saved locally.",
+    thankYou: "Interview saved successfully.",
     step1: "1. Profile",
     step2: "2. Discovery",
     step3: "3. Concept Test",
@@ -186,6 +186,8 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
     adminView ? "dashboard" : "new",
   );
   const [interviews, setInterviews] = useState<FormState[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
   const [form, setForm] = useState<FormState>({
     exhibition: "",
     company: "",
@@ -219,6 +221,20 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
     const items = getStoredInterviews();
     setInterviews(items);
   }, []);
+
+  useEffect(() => {
+    if (!adminView) return;
+
+    fetch("/api/customer-discovery")
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Unable to load saved interviews.");
+        return (await response.json()) as FormState[];
+      })
+      .then(setInterviews)
+      .catch((error: unknown) => {
+        setSaveError(error instanceof Error ? error.message : "Unable to load saved interviews.");
+      });
+  }, [adminView]);
 
   useEffect(() => {
     if (!adminView && view !== "new") {
@@ -284,11 +300,14 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
     if (step > 0) setStep((current) => current - 1);
   };
 
-  const saveInterview = () => {
+  const saveInterview = async () => {
     if (!validateStep()) {
       window.alert("Please complete the interview before saving.");
       return;
     }
+
+    setIsSaving(true);
+    setSaveError("");
 
     const item: FormState = {
       ...form,
@@ -297,40 +316,68 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
       syncStatus: "pending",
     };
 
-    const next = [...interviews, item];
-    setInterviews(next);
-    saveStoredInterviews(next);
-    setView(adminView ? "dashboard" : "new");
-    setStep(0);
-    setForm({
-      exhibition: "",
-      company: "",
-      role: "",
-      type: "",
-      currentApproach: [],
-      currentApproachComment: "",
-      measurement: [],
-      measurementComment: "",
-      missingData: [],
-      missingDataComment: "",
-      adaptability: "",
-      problemImportance: "",
-      mostValuable: "",
-      valueWhy: "",
-      concernCategory: [],
-      concernText: "",
-      pilotInterest: "",
-      followUp: "",
-      contact: "",
-      contactConsent: false,
-      measurementPain: "",
-      conceptInterest: "",
-      pilotPotential: "",
-      keyInsight: "",
-      biggestObjection: "",
-      nextAction: "",
-    });
-    window.alert(t.thankYou);
+    try {
+      const clientUuid = crypto.randomUUID();
+      const response = await fetch("/api/customer-discovery", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...item, clientUuid, questionLanguage: lang }),
+      });
+      const result = (await response.json()) as {
+        error?: string;
+        databaseId?: string;
+        createdAt?: string;
+      };
+
+      if (!response.ok || !result.databaseId) {
+        throw new Error(result.error || "The interview could not be saved.");
+      }
+
+      const savedItem: FormState = {
+        ...item,
+        id: result.databaseId,
+        createdAt: result.createdAt || item.createdAt,
+        syncStatus: "synced",
+      };
+      const next = [...interviews, savedItem];
+      setInterviews(next);
+      saveStoredInterviews(next);
+      setView(adminView ? "dashboard" : "new");
+      setStep(0);
+      setForm({
+        exhibition: "",
+        company: "",
+        role: "",
+        type: "",
+        currentApproach: [],
+        currentApproachComment: "",
+        measurement: [],
+        measurementComment: "",
+        missingData: [],
+        missingDataComment: "",
+        adaptability: "",
+        problemImportance: "",
+        mostValuable: "",
+        valueWhy: "",
+        concernCategory: [],
+        concernText: "",
+        pilotInterest: "",
+        followUp: "",
+        contact: "",
+        contactConsent: false,
+        measurementPain: "",
+        conceptInterest: "",
+        pilotPotential: "",
+        keyInsight: "",
+        biggestObjection: "",
+        nextAction: "",
+      });
+      window.alert(t.thankYou);
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : "The interview could not be saved.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const renderChoiceGrid = (
@@ -863,6 +910,11 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
 
             {view === "new" && (
               <div className="mt-8 flex items-center justify-between gap-3 border-t border-line pt-6">
+                {saveError && (
+                  <p className="mr-auto text-sm text-red-400" role="alert">
+                    {saveError}
+                  </p>
+                )}
                 <button
                   type="button"
                   onClick={previousStep}
@@ -884,9 +936,10 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                   <button
                     type="button"
                     onClick={saveInterview}
-                    className="rounded-md bg-green px-5 py-2.5 text-sm font-semibold text-[#06140F]"
+                    disabled={isSaving}
+                    className="rounded-md bg-green px-5 py-2.5 text-sm font-semibold text-[#06140F] disabled:cursor-wait disabled:opacity-60"
                   >
-                    {t.save}
+                    {isSaving ? "Saving…" : t.save}
                   </button>
                 )}
               </div>

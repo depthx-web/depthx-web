@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { createClient as createAuthClient } from "@/lib/supabase/server";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -10,6 +11,45 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey, {
     autoRefreshToken: false,
   },
 });
+
+export async function GET() {
+  const authClient = await createAuthClient();
+  const { data: claims } = await authClient.auth.getClaims();
+  const userId = claims?.claims?.sub;
+
+  if (!userId) {
+    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+  }
+
+  const { data: profile } = await authClient
+    .from("profiles")
+    .select("role")
+    .eq("id", userId)
+    .single();
+
+  if (profile?.role !== "admin") {
+    return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+  }
+
+  const { data, error } = await supabase
+    .from("customer_discovery_interviews")
+    .select("id, created_at, interview_code, responses")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Supabase interview read error:", error);
+    return NextResponse.json({ error: "Unable to load interviews" }, { status: 500 });
+  }
+
+  return NextResponse.json(
+    (data || []).map((row) => ({
+      ...(row.responses || {}),
+      id: row.interview_code || row.id,
+      createdAt: row.created_at,
+      syncStatus: "synced",
+    })),
+  );
+}
 
 export async function POST(request: NextRequest) {
   try {

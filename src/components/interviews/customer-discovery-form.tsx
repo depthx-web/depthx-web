@@ -189,6 +189,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
   const [interviews, setInterviews] = useState<FormState[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
+  const [isLoadingInterviews, setIsLoadingInterviews] = useState(adminView);
   const [showThankYou, setShowThankYou] = useState(false);
   const router = useRouter();
   const [form, setForm] = useState<FormState>({
@@ -221,21 +222,29 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
   });
 
   useEffect(() => {
+    if (adminView) return;
     const items = getStoredInterviews();
     setInterviews(items);
-  }, []);
+  }, [adminView]);
 
   useEffect(() => {
     if (!adminView) return;
 
+    setIsLoadingInterviews(true);
     fetch("/api/customer-discovery")
       .then(async (response) => {
         if (!response.ok) throw new Error("Unable to load saved interviews.");
         return (await response.json()) as FormState[];
       })
-      .then(setInterviews)
+      .then((items) => {
+        setInterviews(items);
+        setSaveError("");
+      })
       .catch((error: unknown) => {
         setSaveError(error instanceof Error ? error.message : "Unable to load saved interviews.");
+      })
+      .finally(() => {
+        setIsLoadingInterviews(false);
       });
   }, [adminView]);
 
@@ -978,6 +987,16 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
 
         {adminView && view === "dashboard" && (
           <div className="space-y-6">
+            {isLoadingInterviews && (
+              <div className="rounded-xl border border-line bg-bg-2 p-4 text-sm text-muted">
+                Loading saved interviews…
+              </div>
+            )}
+            {saveError && !isLoadingInterviews && (
+              <div className="rounded-xl border border-red-400/40 bg-red-400/10 p-4 text-sm text-red-300" role="alert">
+                {saveError}
+              </div>
+            )}
             <div className="grid gap-5 md:grid-cols-4">
               {summaryCards.map((card) => (
                 <div key={card.label} className="rounded-2xl border border-line bg-bg-2 p-5">

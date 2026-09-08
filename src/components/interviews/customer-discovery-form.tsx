@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Breadcrumb, PageHero } from "@/components/ui/page-hero";
 
@@ -188,6 +189,8 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
   const [interviews, setInterviews] = useState<FormState[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
+  const [showThankYou, setShowThankYou] = useState(false);
+  const router = useRouter();
   const [form, setForm] = useState<FormState>({
     exhibition: "",
     company: "",
@@ -372,13 +375,24 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
         biggestObjection: "",
         nextAction: "",
       });
-      window.alert(t.thankYou);
+      if (!adminView) {
+        setShowThankYou(true);
+      } else {
+        window.alert(t.thankYou);
+      }
     } catch (error) {
       setSaveError(error instanceof Error ? error.message : "The interview could not be saved.");
     } finally {
       setIsSaving(false);
     }
   };
+
+  useEffect(() => {
+    if (!showThankYou) return;
+
+    const redirectTimer = window.setTimeout(() => router.push("/"), 3200);
+    return () => window.clearTimeout(redirectTimer);
+  }, [router, showThankYou]);
 
   const renderChoiceGrid = (
     key: string,
@@ -449,6 +463,21 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
       />
 
       <div className="px-8 pb-20 md:px-25">
+        {showThankYou && !adminView ? (
+          <div className="mx-auto max-w-2xl rounded-2xl border border-green/40 bg-green/10 px-6 py-12 text-center shadow-[0_0_60px_rgba(126,255,166,0.12)] animate-[fade-in-up_500ms_ease-out]">
+            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-green text-3xl text-green">
+              ✓
+            </div>
+            <h2 className="font-display text-3xl font-semibold text-text">Thank you</h2>
+            <p className="mx-auto mt-3 max-w-lg text-muted">
+              Your interview has been saved successfully. You will be returned to the home page shortly.
+            </p>
+            <div className="mx-auto mt-8 h-1 max-w-xs overflow-hidden rounded-full bg-bg">
+              <div className="h-full origin-left animate-[progress_3.2s_linear_forwards] rounded-full bg-green" />
+            </div>
+          </div>
+        ) : (
+          <>
         {adminView && (
           <div className="mb-8 flex flex-wrap items-center gap-3">
             {[
@@ -557,7 +586,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                   </div>
                 </div>
               </div>
-            )}
+              )}
 
             {step === 1 && (
               <div className="space-y-8">
@@ -1024,6 +1053,8 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
               </div>
             )}
           </div>
+        )}
+          </>
         )}
       </div>
     </>

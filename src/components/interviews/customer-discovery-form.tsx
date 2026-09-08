@@ -425,12 +425,14 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
           </div>
         )}
 
-        <div className="mb-6 flex flex-wrap items-center gap-3 font-mono text-xs text-muted">
-          <span className="rounded-full border border-line bg-bg-2 px-3 py-1.5">Database: Ready</span>
-          <span className="rounded-full border border-line bg-bg-2 px-3 py-1.5">
-            Pending: {interviews.filter((item) => item.syncStatus === "pending").length}
-          </span>
-        </div>
+        {adminView && (
+          <div className="mb-6 flex flex-wrap items-center gap-3 font-mono text-xs text-muted">
+            <span className="rounded-full border border-line bg-bg-2 px-3 py-1.5">Database: Ready</span>
+            <span className="rounded-full border border-line bg-bg-2 px-3 py-1.5">
+              Pending: {interviews.filter((item) => item.syncStatus === "pending").length}
+            </span>
+          </div>
+        )}
 
         {!adminView && (
           <div className="mb-6 rounded-xl border border-line bg-bg-2 p-4 text-sm text-muted">

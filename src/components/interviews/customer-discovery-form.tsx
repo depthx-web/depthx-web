@@ -7,8 +7,6 @@ import { Breadcrumb, PageHero } from "@/components/ui/page-hero";
 type Lang = "en" | "de" | "zh";
 type FormState = Record<string, string | string[] | boolean>;
 
-const STORAGE_KEY = "depthx_customer_discovery_v3";
-
 const translations = {
   en: {
     title: "Customer Discovery",
@@ -165,21 +163,6 @@ const interviewTypes = [
 
 const stepLabels = ["Profile", "Discovery", "Concept", "Review"];
 
-function getStoredInterviews(): FormState[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as FormState[]) : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveStoredInterviews(items: FormState[]) {
-  if (typeof window === "undefined") return;
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-}
-
 export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boolean }) {
   const [lang, setLang] = useState<Lang>("en");
   const [step, setStep] = useState(0);
@@ -221,12 +204,6 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
     biggestObjection: "",
     nextAction: "",
   });
-
-  useEffect(() => {
-    if (adminView) return;
-    const items = getStoredInterviews();
-    setInterviews(items);
-  }, [adminView]);
 
   useEffect(() => {
     if (!adminView) return;
@@ -356,8 +333,9 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
         syncStatus: "synced",
       };
       const next = [...interviews, savedItem];
-      setInterviews(next);
-      saveStoredInterviews(next);
+      if (adminView) {
+        setInterviews(next);
+      }
       setView(adminView ? "dashboard" : "new");
       setStep(0);
       setForm({

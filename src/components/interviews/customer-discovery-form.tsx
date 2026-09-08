@@ -191,6 +191,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
   const [saveError, setSaveError] = useState("");
   const [isLoadingInterviews, setIsLoadingInterviews] = useState(adminView);
   const [showThankYou, setShowThankYou] = useState(false);
+  const [recordFilter, setRecordFilter] = useState<"admin" | "user">("admin");
   const router = useRouter();
   const [form, setForm] = useState<FormState>({
     exhibition: "",
@@ -339,6 +340,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
         error?: string;
         databaseId?: string;
         createdAt?: string;
+        submissionRole?: "admin" | "user";
       };
 
       if (!response.ok || !result.databaseId) {
@@ -349,6 +351,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
         ...item,
         id: result.databaseId,
         createdAt: result.createdAt || item.createdAt,
+        submissionRole: result.submissionRole || (adminView ? "admin" : "user"),
         syncStatus: "synced",
       };
       const next = [...interviews, savedItem];
@@ -433,8 +436,12 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
 
   const summaryCards = [
     {
-      label: "Interviews",
-      value: interviews.length,
+      label: "Admin forms",
+      value: interviews.filter((item) => item.submissionRole === "admin").length,
+    },
+    {
+      label: "User forms",
+      value: interviews.filter((item) => item.submissionRole !== "admin").length,
     },
     {
       label: "Avg Need/Pain",
@@ -461,6 +468,10 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
       value: interviews.filter((item) => item.followUp === "Yes").length,
     },
   ];
+
+  const filteredInterviews = interviews.filter((item) =>
+    recordFilter === "admin" ? item.submissionRole === "admin" : item.submissionRole !== "admin",
+  );
 
   return (
     <>
@@ -1036,8 +1047,30 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
 
         {adminView && view === "interviews" && (
           <div className="rounded-2xl border border-line bg-bg-2 p-5">
-            <h3 className="font-display text-2xl font-semibold">Saved interviews</h3>
-            {interviews.length === 0 ? (
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <h3 className="font-display text-2xl font-semibold">
+                {recordFilter === "admin" ? "Admin interviews" : "User interviews"}
+              </h3>
+              <div className="flex gap-2">
+                {(["admin", "user"] as const).map((filter) => (
+                  <button
+                    key={filter}
+                    type="button"
+                    onClick={() => setRecordFilter(filter)}
+                    className={`rounded-md border px-3 py-1.5 text-xs font-semibold uppercase tracking-wide ${
+                      recordFilter === filter
+                        ? "border-green bg-green/10 text-green"
+                        : "border-line text-muted hover:text-text"
+                    }`}
+                  >
+                    {filter === "admin" ? "Admin" : "Users"} ({interviews.filter((item) =>
+                      filter === "admin" ? item.submissionRole === "admin" : item.submissionRole !== "admin",
+                    ).length})
+                  </button>
+                ))}
+              </div>
+            </div>
+            {filteredInterviews.length === 0 ? (
               <p className="mt-5 text-muted">{t.noData}</p>
             ) : (
               <div className="mt-5 overflow-x-auto">
@@ -1054,7 +1087,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                     </tr>
                   </thead>
                   <tbody>
-                    {[...interviews].reverse().map((item) => (
+                    {[...filteredInterviews].reverse().map((item) => (
                       <tr key={`${item.id}-${item.createdAt}`} className="border-b border-line/80">
                         <td className="py-3 pr-6">{String(item.id ?? "")}</td>
                         <td className="py-3 pr-6">

@@ -46,6 +46,7 @@ export async function GET() {
       ...(row.responses || {}),
       id: row.interview_code || row.id,
       createdAt: row.created_at,
+      submissionRole: row.responses?.submissionRole === "admin" ? "admin" : "user",
       syncStatus: "synced",
     })),
   );
@@ -54,6 +55,19 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    const authClient = await createAuthClient();
+    const { data: claims } = await authClient.auth.getClaims();
+    const userId = claims?.claims?.sub;
+    let submissionRole = "user";
+
+    if (userId) {
+      const { data: profile } = await authClient
+        .from("profiles")
+        .select("role")
+        .eq("id", userId)
+        .single();
+      submissionRole = profile?.role === "admin" ? "admin" : "user";
+    }
 
     if (!body.type || !["E", "O", "A", "V"].includes(body.type)) {
       return NextResponse.json(
@@ -91,7 +105,7 @@ export async function POST(request: NextRequest) {
       key_insight: body.keyInsight || null,
       biggest_objection: body.biggestObjection || null,
 
-      responses: body,
+      responses: { ...body, submissionRole },
     };
 
     const { data, error } = await supabase
@@ -115,6 +129,7 @@ export async function POST(request: NextRequest) {
       success: true,
       databaseId: data.id,
       createdAt: data.created_at,
+      submissionRole,
     });
   } catch (error) {
     console.error("Customer discovery API error:", error);

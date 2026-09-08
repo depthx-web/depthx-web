@@ -1,0 +1,970 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { Breadcrumb, PageHero } from "@/components/ui/page-hero";
+
+type Lang = "en" | "de" | "zh";
+type FormState = Record<string, string | string[] | boolean>;
+
+const STORAGE_KEY = "depthx_customer_discovery_v3";
+
+const translations = {
+  en: {
+    title: "Customer Discovery",
+    subtitle: "Interview system for exhibitions and audience discovery",
+    navNew: "New Interview",
+    navDashboard: "Dashboard",
+    navInterviews: "Interviews",
+    save: "Save Interview",
+    next: "Next",
+    back: "Back",
+    required: "Required",
+    select: "Select…",
+    thankYou: "Interview saved locally.",
+    step1: "1. Profile",
+    step2: "2. Discovery",
+    step3: "3. Concept Test",
+    step4: "4. Review",
+    profile: "Profile",
+    company: "Company / Organization (optional)",
+    role: "Role / Position (optional for visitors)",
+    exhibition: "Exhibition",
+    interviewType: "Interviewee type",
+    e: "Exhibitor / Brand",
+    o: "Exhibition Organizer",
+    a: "Advertising / Marketing Agency",
+    v: "Visitor / Audience",
+    q1: "How do you currently attract visitors or promote your company during exhibitions?",
+    q2: "How do you currently measure whether your physical advertising is working?",
+    q3: "What audience information would be most useful but difficult to measure today?",
+    q4: "If a campaign is not performing well during an event, how easily can you identify that and change it?",
+    q5: "How important would better measurement and adaptability of physical advertising be for you?",
+    q6: "Which part of the concept would create the most value for you — if any?",
+    q7: "What would be your biggest concern about using a system like this?",
+    q8: "If the system were successfully built, technically validated and appropriately approved, would you consider exploring a controlled pilot?",
+    review: "Interviewer Review",
+    pain: "Measurement / Need Pain (1–5)",
+    interest: "Concept Interest (1–5)",
+    pilot: "Pilot / Interaction Potential (1–5)",
+    insight: "Most important insight",
+    objection: "Biggest objection / concern",
+    nextAction: "Next step",
+    followUp: "Open to follow-up conversation?",
+    contact: "Contact details (optional)",
+    consent: "Agreed to be contacted for follow-up / future pilot.",
+    statusReady: "Ready",
+    statusPending: "Pending",
+    statusOffline: "Offline",
+    noData: "No interviews saved yet.",
+  },
+  de: {
+    title: "Kundenerkundung",
+    subtitle: "Interviewsystem für Ausstellungen und Publikumserfassung",
+    navNew: "Neues Interview",
+    navDashboard: "Dashboard",
+    navInterviews: "Interviews",
+    save: "Interview speichern",
+    next: "Weiter",
+    back: "Zurück",
+    required: "Pflicht",
+    select: "Auswählen…",
+    thankYou: "Interview lokal gespeichert.",
+    step1: "1. Profil",
+    step2: "2. Bedarfsermittlung",
+    step3: "3. Konzepttest",
+    step4: "4. Bewertung",
+    profile: "Profil",
+    company: "Unternehmen / Organisation (optional)",
+    role: "Rolle / Position (optional für Besucher)",
+    exhibition: "Messe / Veranstaltung",
+    interviewType: "Interviewtyp",
+    e: "Aussteller / Marke",
+    o: "Messeveranstalter",
+    a: "Werbe- / Marketingagentur",
+    v: "Besucher / Publikum",
+    q1: "Wie gewinnen Sie derzeit Besucher oder bewerben Ihr Unternehmen auf Messen?",
+    q2: "Wie messen Sie derzeit, ob Ihre physische Werbung funktioniert?",
+    q3: "Welche Informationen über das Publikum wären besonders nützlich, aber heute schwer zu messen?",
+    q4: "Wenn eine Kampagne nicht gut funktioniert, wie leicht können Sie das erkennen und anpassen?",
+    q5: "Wie wichtig wären für Sie bessere Messbarkeit und Anpassungsfähigkeit physischer Werbung?",
+    q6: "Welcher Teil des Konzepts würde für Sie den größten Mehrwert schaffen?",
+    q7: "Was wäre Ihre größte Sorge bei der Nutzung eines solchen Systems?",
+    q8: "Wenn das System technisch validiert und genehmigt wäre, würden Sie einen kontrollierten Pilotversuch prüfen?",
+    review: "Bewertung durch Interviewer",
+    pain: "Messproblem / Bedarf (1–5)",
+    interest: "Interesse am Konzept (1–5)",
+    pilot: "Pilot- / Interaktionspotenzial (1–5)",
+    insight: "Wichtigste Erkenntnis",
+    objection: "Größter Einwand / größte Sorge",
+    nextAction: "Nächster Schritt",
+    followUp: "Offen für Folgegespräch?",
+    contact: "Kontaktdaten (optional)",
+    consent: "Einverstanden mit Kontaktaufnahme für Follow-up / zukünftigen Pilot.",
+    statusReady: "Bereit",
+    statusPending: "Ausstehend",
+    statusOffline: "Offline",
+    noData: "Noch keine Interviews gespeichert.",
+  },
+  zh: {
+    title: "客户探索",
+    subtitle: "展会与受众研究访谈系统",
+    navNew: "新访谈",
+    navDashboard: "仪表板",
+    navInterviews: "访谈记录",
+    save: "保存访谈",
+    next: "下一步",
+    back: "上一步",
+    required: "必答",
+    select: "请选择…",
+    thankYou: "访谈已保存到本地。",
+    step1: "1. 基本信息",
+    step2: "2. 需求探索",
+    step3: "3. 概念测试",
+    step4: "4. 评估",
+    profile: "基本信息",
+    company: "公司 / 组织（可选）",
+    role: "职位 / 角色（访客可选）",
+    exhibition: "展会 / 活动",
+    interviewType: "受访者类型",
+    e: "参展商 / 品牌",
+    o: "展会主办方",
+    a: "广告 / 营销代理商",
+    v: "访客 / 受众",
+    q1: "您目前在展会期间如何吸引访客或推广您的公司？",
+    q2: "您目前如何衡量实体广告是否有效？",
+    q3: "哪些受众信息对您最有用，但目前最难衡量？",
+    q4: "如果活动期间广告效果不佳，您能多容易发现并进行调整？",
+    q5: "对您而言，提高实体广告的可衡量性和可调整性有多重要？",
+    q6: "这个概念的哪一部分对您最有价值？",
+    q7: "使用这类系统时，您最大的顾虑是什么？",
+    q8: "如果系统已成功构建并获得批准，您是否愿意考虑受控试点？",
+    review: "访谈者评估",
+    pain: "需求痛点（1–5）",
+    interest: "概念兴趣（1–5）",
+    pilot: "试点 / 互动潜力（1–5）",
+    insight: "最重要的洞察",
+    objection: "最大的异议 / 顾虑",
+    nextAction: "下一步",
+    followUp: "是否愿意接受后续沟通？",
+    contact: "联系方式（可选）",
+    consent: "同意在后续沟通 / 未来试点中联系我。",
+    statusReady: "就绪",
+    statusPending: "待处理",
+    statusOffline: "离线",
+    noData: "尚未保存任何访谈。",
+  },
+} as const;
+
+const interviewTypes = [
+  { value: "E", label: "E — Exhibitor / Brand" },
+  { value: "O", label: "O — Exhibition Organizer" },
+  { value: "A", label: "A — Advertising / Marketing Agency" },
+  { value: "V", label: "V — Visitor / Audience" },
+] as const;
+
+const stepLabels = ["Profile", "Discovery", "Concept", "Review"];
+
+function getStoredInterviews(): FormState[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as FormState[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveStoredInterviews(items: FormState[]) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+}
+
+export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boolean }) {
+  const [lang, setLang] = useState<Lang>("en");
+  const [step, setStep] = useState(0);
+  const [view, setView] = useState<"new" | "dashboard" | "interviews">(
+    adminView ? "dashboard" : "new",
+  );
+  const [interviews, setInterviews] = useState<FormState[]>([]);
+  const [form, setForm] = useState<FormState>({
+    exhibition: "",
+    company: "",
+    role: "",
+    type: "",
+    currentApproach: [],
+    currentApproachComment: "",
+    measurement: [],
+    measurementComment: "",
+    missingData: [],
+    missingDataComment: "",
+    adaptability: "",
+    problemImportance: "",
+    mostValuable: "",
+    valueWhy: "",
+    concernCategory: [],
+    concernText: "",
+    pilotInterest: "",
+    followUp: "",
+    contact: "",
+    contactConsent: false,
+    measurementPain: "",
+    conceptInterest: "",
+    pilotPotential: "",
+    keyInsight: "",
+    biggestObjection: "",
+    nextAction: "",
+  });
+
+  useEffect(() => {
+    const items = getStoredInterviews();
+    setInterviews(items);
+  }, []);
+
+  const t = translations[lang];
+
+  const activeType = String(form.type || "");
+  const showBranch = useMemo(
+    () => activeType === "E" || activeType === "O" || activeType === "A",
+    [activeType],
+  );
+
+  const handleInput = (
+    key: string,
+    value: string | string[] | boolean,
+  ) => {
+    setForm((current) => ({ ...current, [key]: value }));
+  };
+
+  const handleCheckbox = (key: string, value: string) => {
+    setForm((current) => {
+      const prev = Array.isArray(current[key]) ? [...current[key]] : [];
+      const next = prev.includes(value)
+        ? prev.filter((item) => item !== value)
+        : [...prev, value];
+      return { ...current, [key]: next };
+    });
+  };
+
+  const requiredForStep = (index: number) => {
+    const requiredMap: Record<number, string[]> = {
+      0: ["exhibition", "type"],
+      1: ["adapatability"],
+      2: ["mostValuable"],
+      3: ["measurementPain", "conceptInterest", "pilotPotential", "keyInsight", "biggestObjection", "nextAction"],
+    };
+    return requiredMap[index] ?? [];
+  };
+
+  const validateStep = () => {
+    const keys = requiredForStep(step);
+    if (!keys.length) return true;
+    return keys.every((key) => {
+      const value = form[key];
+      if (Array.isArray(value)) return value.length > 0;
+      if (typeof value === "boolean") return value;
+      return String(value ?? "").trim().length > 0;
+    });
+  };
+
+  const nextStep = () => {
+    if (!validateStep()) {
+      window.alert("Please answer all required questions on this page before continuing.");
+      return;
+    }
+    if (step < stepLabels.length - 1) setStep((current) => current + 1);
+  };
+
+  const previousStep = () => {
+    if (step > 0) setStep((current) => current - 1);
+  };
+
+  const saveInterview = () => {
+    if (!validateStep()) {
+      window.alert("Please complete the interview before saving.");
+      return;
+    }
+
+    const item: FormState = {
+      ...form,
+      id: `DX-${String(interviews.length + 1).padStart(4, "0")}`,
+      createdAt: new Date().toISOString(),
+      syncStatus: "pending",
+    };
+
+    const next = [...interviews, item];
+    setInterviews(next);
+    saveStoredInterviews(next);
+    setView("dashboard");
+    setStep(0);
+    setForm({
+      exhibition: "",
+      company: "",
+      role: "",
+      type: "",
+      currentApproach: [],
+      currentApproachComment: "",
+      measurement: [],
+      measurementComment: "",
+      missingData: [],
+      missingDataComment: "",
+      adaptability: "",
+      problemImportance: "",
+      mostValuable: "",
+      valueWhy: "",
+      concernCategory: [],
+      concernText: "",
+      pilotInterest: "",
+      followUp: "",
+      contact: "",
+      contactConsent: false,
+      measurementPain: "",
+      conceptInterest: "",
+      pilotPotential: "",
+      keyInsight: "",
+      biggestObjection: "",
+      nextAction: "",
+    });
+    window.alert(t.thankYou);
+  };
+
+  const renderChoiceGrid = (
+    key: string,
+    options: string[],
+    labels: Record<string, string>,
+  ) => (
+    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+      {options.map((option) => {
+        const selected = Array.isArray(form[key]) ? (form[key] as string[]).includes(option) : false;
+        return (
+          <label
+            key={option}
+            className={`flex cursor-pointer items-start gap-3 rounded-xl border px-3 py-3 text-sm transition ${
+              selected ? "border-green bg-green/10 text-text" : "border-line bg-bg-2 text-muted"
+            }`}
+          >
+            <input
+              type="checkbox"
+              checked={selected}
+              onChange={() => handleCheckbox(key, option)}
+              className="mt-1 h-4 w-4 accent-green"
+            />
+            <span>{labels[option] ?? option}</span>
+          </label>
+        );
+      })}
+    </div>
+  );
+
+  const summaryCards = [
+    {
+      label: "Interviews",
+      value: interviews.length,
+    },
+    {
+      label: "Avg Need/Pain",
+      value:
+        interviews.length > 0
+          ? (
+              interviews.reduce((sum, item) => sum + Number(item.measurementPain || 0), 0) /
+              interviews.length
+            ).toFixed(1)
+          : "—",
+    },
+    {
+      label: "Avg Interest",
+      value:
+        interviews.length > 0
+          ? (
+              interviews.reduce((sum, item) => sum + Number(item.conceptInterest || 0), 0) /
+              interviews.length
+            ).toFixed(1)
+          : "—",
+    },
+    {
+      label: "Follow-up",
+      value: interviews.filter((item) => item.followUp === "Yes").length,
+    },
+  ];
+
+  return (
+    <>
+      <Breadcrumb trail={[{ label: "Home", href: "/" }, { label: "Interviews" }]} />
+      <PageHero
+        eyebrow="// CUSTOMER DISCOVERY"
+        title={t.title}
+        description={t.subtitle}
+      />
+
+      <div className="px-8 pb-20 md:px-25">
+        {adminView && (
+          <div className="mb-8 flex flex-wrap items-center gap-3">
+            {[
+              { id: "new", label: t.navNew },
+              { id: "dashboard", label: t.navDashboard },
+              { id: "interviews", label: t.navInterviews },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setView(tab.id as "new" | "dashboard" | "interviews")}
+                className={`rounded-md border px-4 py-2 text-sm font-medium ${
+                  view === tab.id
+                    ? "border-green bg-green/10 text-green"
+                    : "border-line bg-bg-2 text-muted hover:text-text"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div className="mb-6 flex flex-wrap items-center gap-3 font-mono text-xs text-muted">
+          <span className="rounded-full border border-line bg-bg-2 px-3 py-1.5">Database: Ready</span>
+          <span className="rounded-full border border-line bg-bg-2 px-3 py-1.5">
+            Pending: {interviews.filter((item) => item.syncStatus === "pending").length}
+          </span>
+        </div>
+
+        {!adminView && (
+          <div className="mb-6 rounded-xl border border-line bg-bg-2 p-4 text-sm text-muted">
+            Public interview form. Only admin users can access the saved data and dashboard view.
+          </div>
+        )}
+
+        {adminView && view === "new" && (
+          <div className="mb-4 rounded-xl border border-line bg-bg-2 p-3 text-sm text-muted">
+            Admin access: this dashboard is restricted to authenticated admin users.
+          </div>
+        )}
+
+        {view === "new" && (
+          <div className="rounded-2xl border border-line bg-bg-2 p-5 md:p-8">
+            <div className="mb-5 flex flex-wrap items-center gap-2">
+              {stepLabels.map((label, index) => (
+                <div key={label} className="flex items-center gap-2">
+                  <span
+                    className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold ${
+                      step === index
+                        ? "bg-green text-[#06140F]"
+                        : "border border-line bg-bg text-muted"
+                    }`}
+                  >
+                    {index + 1}
+                  </span>
+                  {index < stepLabels.length - 1 && <span className="text-line-2">/</span>}
+                </div>
+              ))}
+            </div>
+
+            {step === 0 && (
+              <div className="space-y-6">
+                <h2 className="font-display text-2xl font-semibold">{t.profile}</h2>
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div>
+                    <label className="mb-2 block text-sm text-muted">{t.exhibition}</label>
+                    <input
+                      value={String(form.exhibition ?? "")}
+                      onChange={(e) => handleInput("exhibition", e.target.value)}
+                      className="w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-sm text-muted">{t.company}</label>
+                    <input
+                      value={String(form.company ?? "")}
+                      onChange={(e) => handleInput("company", e.target.value)}
+                      className="w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-sm text-muted">{t.role}</label>
+                    <input
+                      value={String(form.role ?? "")}
+                      onChange={(e) => handleInput("role", e.target.value)}
+                      className="w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-sm text-muted">{t.interviewType}</label>
+                    <select
+                      value={String(form.type ?? "")}
+                      onChange={(e) => handleInput("type", e.target.value)}
+                      className="w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
+                    >
+                      <option value="">{t.select}</option>
+                      {interviewTypes.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {step === 1 && (
+              <div className="space-y-8">
+                <h2 className="font-display text-2xl font-semibold">{t.step2}</h2>
+
+                {activeType !== "V" && (
+                  <div className="space-y-6">
+                    <div className="rounded-xl border border-line bg-bg p-4">
+                      <p className="mb-3 text-base font-semibold">{t.q1}</p>
+                      {renderChoiceGrid("currentApproach", [
+                        "Booth / stand",
+                        "Digital screens",
+                        "Banners / signage",
+                        "Flyers / printed media",
+                        "Promotional staff",
+                        "QR / digital interaction",
+                        "Social media / online promotion",
+                        "Other",
+                      ], {
+                        "Booth / stand": "Booth / stand",
+                        "Digital screens": "Digital screens",
+                        "Banners / signage": "Banners / signage",
+                        "Flyers / printed media": "Flyers / printed media",
+                        "Promotional staff": "Promotional staff",
+                        "QR / digital interaction": "QR / digital interaction",
+                        "Social media / online promotion": "Social media / online promotion",
+                        Other: "Other",
+                      })}
+                      <textarea
+                        value={String(form.currentApproachComment ?? "")}
+                        onChange={(e) => handleInput("currentApproachComment", e.target.value)}
+                        placeholder="Optional comment"
+                        className="mt-4 min-h-28 w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
+                      />
+                    </div>
+
+                    <div className="rounded-xl border border-line bg-bg p-4">
+                      <p className="mb-3 text-base font-semibold">{t.q2}</p>
+                      {renderChoiceGrid("measurement", [
+                        "Booth visits",
+                        "QR scans",
+                        "Leads / registrations",
+                        "Sales / conversions",
+                        "Staff observation",
+                        "Digital analytics",
+                        "Very limited / not measured",
+                        "Other",
+                      ], {
+                        "Booth visits": "Booth visits",
+                        "QR scans": "QR scans",
+                        "Leads / registrations": "Leads / registrations",
+                        "Sales / conversions": "Sales / conversions",
+                        "Staff observation": "Staff observation",
+                        "Digital analytics": "Digital analytics",
+                        "Very limited / not measured": "Very limited / not measured",
+                        Other: "Other",
+                      })}
+                      <textarea
+                        value={String(form.measurementComment ?? "")}
+                        onChange={(e) => handleInput("measurementComment", e.target.value)}
+                        placeholder="Optional comment"
+                        className="mt-4 min-h-28 w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
+                      />
+                    </div>
+
+                    <div className="rounded-xl border border-line bg-bg p-4">
+                      <p className="mb-3 text-base font-semibold">{t.q3}</p>
+                      {renderChoiceGrid("missingData", [
+                        "Attention",
+                        "Engagement",
+                        "Traffic / location patterns",
+                        "Interaction duration",
+                        "Response to different messages",
+                        "Conversion to booth / action",
+                        "Nothing important missing",
+                        "Other",
+                      ], {
+                        Attention: "Attention",
+                        Engagement: "Engagement",
+                        "Traffic / location patterns": "Traffic / location patterns",
+                        "Interaction duration": "Interaction duration",
+                        "Response to different messages": "Response to different messages",
+                        "Conversion to booth / action": "Conversion to booth / action",
+                        "Nothing important missing": "Nothing important missing",
+                        Other: "Other",
+                      })}
+                      <textarea
+                        value={String(form.missingDataComment ?? "")}
+                        onChange={(e) => handleInput("missingDataComment", e.target.value)}
+                        placeholder="Optional comment"
+                        className="mt-4 min-h-28 w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
+                      />
+                    </div>
+
+                    <div className="rounded-xl border border-line bg-bg p-4">
+                      <p className="mb-3 text-base font-semibold">{t.q4}</p>
+                      <select
+                        value={String(form.adaptability ?? "")}
+                        onChange={(e) => handleInput("adaptability", e.target.value)}
+                        className="w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
+                      >
+                        <option value="">{t.select}</option>
+                        <option value="Yes, easily">Yes, easily</option>
+                        <option value="Yes, but with limitations">Yes, but with limitations</option>
+                        <option value="Difficult">Difficult</option>
+                        <option value="Usually not possible">Usually not possible</option>
+                      </select>
+                    </div>
+
+                    <div className="rounded-xl border border-line bg-bg p-4">
+                      <p className="mb-3 text-base font-semibold">{t.q5}</p>
+                      <select
+                        value={String(form.problemImportance ?? "")}
+                        onChange={(e) => handleInput("problemImportance", e.target.value)}
+                        className="w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
+                      >
+                        <option value="">Select 1–5…</option>
+                        <option value="1">1 — Not important</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4 — Important</option>
+                        <option value="5">5 — Very important</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
+
+                {activeType === "V" && (
+                  <div className="space-y-6">
+                    <div className="rounded-xl border border-line bg-bg p-4">
+                      <p className="mb-3 text-base font-semibold">V1. What usually attracts your attention most at an exhibition?</p>
+                      {renderChoiceGrid("visitorAttention", [
+                        "Large displays / screens",
+                        "Movement / unusual displays",
+                        "Offers / promotions",
+                        "Interactive experiences",
+                        "People / demonstrations",
+                        "Other",
+                      ], {
+                        "Large displays / screens": "Large displays / screens",
+                        "Movement / unusual displays": "Movement / unusual displays",
+                        "Offers / promotions": "Offers / promotions",
+                        "Interactive experiences": "Interactive experiences",
+                        "People / demonstrations": "People / demonstrations",
+                        Other: "Other",
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {step === 2 && (
+              <div className="space-y-8">
+                <h2 className="font-display text-2xl font-semibold">{t.step3}</h2>
+                <div className="rounded-xl border border-line bg-bg p-4 text-sm leading-7 text-muted">
+                  Depth X is developing an autonomous aerial marketing platform designed to combine
+                  mobile advertising with anonymous audience measurement and real-time campaign
+                  adaptation.
+                </div>
+
+                <div className="rounded-xl border border-line bg-bg p-4">
+                  <p className="mb-3 text-base font-semibold">{t.q6}</p>
+                  {renderChoiceGrid("mostValuable", [
+                    "Mobile / aerial advertising",
+                    "Audience measurement",
+                    "Real-time analytics",
+                    "Campaign adaptation",
+                    "Continuous operation",
+                    "Multiple media formats",
+                    "I do not currently see significant value",
+                    "Other",
+                  ], {
+                    "Mobile / aerial advertising": "Mobile / aerial advertising",
+                    "Audience measurement": "Audience measurement",
+                    "Real-time analytics": "Real-time analytics",
+                    "Campaign adaptation": "Campaign adaptation",
+                    "Continuous operation": "Continuous operation",
+                    "Multiple media formats": "Multiple media formats",
+                    "I do not currently see significant value": "I do not currently see significant value",
+                    Other: "Other",
+                  })}
+                  <textarea
+                    value={String(form.valueWhy ?? "")}
+                    onChange={(e) => handleInput("valueWhy", e.target.value)}
+                    placeholder="Optional comment"
+                    className="mt-4 min-h-28 w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
+                  />
+                </div>
+
+                <div className="rounded-xl border border-line bg-bg p-4">
+                  <p className="mb-3 text-base font-semibold">{t.q7}</p>
+                  {renderChoiceGrid("concernCategory", [
+                    "Safety",
+                    "Regulation",
+                    "Noise",
+                    "Privacy",
+                    "Cost",
+                    "Technical reliability",
+                    "Weather",
+                    "Audience acceptance",
+                    "No major concern",
+                    "Other",
+                  ], {
+                    Safety: "Safety",
+                    Regulation: "Regulation",
+                    Noise: "Noise",
+                    Privacy: "Privacy",
+                    Cost: "Cost",
+                    "Technical reliability": "Technical reliability",
+                    Weather: "Weather",
+                    "Audience acceptance": "Audience acceptance",
+                    "No major concern": "No major concern",
+                    Other: "Other",
+                  })}
+                  <textarea
+                    value={String(form.concernText ?? "")}
+                    onChange={(e) => handleInput("concernText", e.target.value)}
+                    placeholder="Optional comment"
+                    className="mt-4 min-h-28 w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
+                  />
+                </div>
+
+                {showBranch && (
+                  <div className="rounded-xl border border-line bg-bg p-4">
+                    <p className="mb-3 text-base font-semibold">{t.q8}</p>
+                    <select
+                      value={String(form.pilotInterest ?? "")}
+                      onChange={(e) => handleInput("pilotInterest", e.target.value)}
+                      className="w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
+                    >
+                      <option value="">Select 1–5…</option>
+                      <option value="1">1 — Definitely not</option>
+                      <option value="2">2 — Probably not</option>
+                      <option value="3">3 — Maybe</option>
+                      <option value="4">4 — Yes</option>
+                      <option value="5">5 — Strong interest</option>
+                    </select>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {step === 3 && (
+              <div className="space-y-6">
+                <h2 className="font-display text-2xl font-semibold">{t.review}</h2>
+                <div className="grid gap-5 md:grid-cols-3">
+                  <div>
+                    <label className="mb-2 block text-sm text-muted">{t.pain}</label>
+                    <input
+                      type="number"
+                      min={1}
+                      max={5}
+                      value={String(form.measurementPain ?? "")}
+                      onChange={(e) => handleInput("measurementPain", e.target.value)}
+                      className="w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-sm text-muted">{t.interest}</label>
+                    <input
+                      type="number"
+                      min={1}
+                      max={5}
+                      value={String(form.conceptInterest ?? "")}
+                      onChange={(e) => handleInput("conceptInterest", e.target.value)}
+                      className="w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-sm text-muted">{t.pilot}</label>
+                    <input
+                      type="number"
+                      min={1}
+                      max={5}
+                      value={String(form.pilotPotential ?? "")}
+                      onChange={(e) => handleInput("pilotPotential", e.target.value)}
+                      className="w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm text-muted">{t.insight}</label>
+                  <textarea
+                    value={String(form.keyInsight ?? "")}
+                    onChange={(e) => handleInput("keyInsight", e.target.value)}
+                    className="min-h-28 w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm text-muted">{t.objection}</label>
+                  <textarea
+                    value={String(form.biggestObjection ?? "")}
+                    onChange={(e) => handleInput("biggestObjection", e.target.value)}
+                    className="min-h-28 w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm text-muted">{t.nextAction}</label>
+                  <select
+                    value={String(form.nextAction ?? "")}
+                    onChange={(e) => handleInput("nextAction", e.target.value)}
+                    className="w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
+                  >
+                    <option value="">{t.select}</option>
+                    <option value="Follow up">Follow up</option>
+                    <option value="Potential pilot">Potential pilot</option>
+                    <option value="Introduction to another person">Introduction to another person</option>
+                    <option value="Useful insight only">Useful insight only</option>
+                    <option value="No action">No action</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm text-muted">{t.followUp}</label>
+                  <select
+                    value={String(form.followUp ?? "")}
+                    onChange={(e) => handleInput("followUp", e.target.value)}
+                    className="w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
+                  >
+                    <option value="">{t.select}</option>
+                    <option value="Yes">Yes</option>
+                    <option value="Maybe">Maybe</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm text-muted">{t.contact}</label>
+                  <input
+                    value={String(form.contact ?? "")}
+                    onChange={(e) => handleInput("contact", e.target.value)}
+                    className="w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
+                  />
+                  <label className="mt-4 flex items-start gap-3 text-sm text-muted">
+                    <input
+                      type="checkbox"
+                      checked={Boolean(form.contactConsent)}
+                      onChange={(e) => handleInput("contactConsent", e.target.checked)}
+                      className="mt-1 h-4 w-4 accent-green"
+                    />
+                    <span>{t.consent}</span>
+                  </label>
+                </div>
+              </div>
+            )}
+
+            {view === "new" && (
+              <div className="mt-8 flex items-center justify-between gap-3 border-t border-line pt-6">
+                <button
+                  type="button"
+                  onClick={previousStep}
+                  disabled={step === 0}
+                  className="rounded-md border border-line bg-bg px-4 py-2 text-sm font-medium text-text disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  {t.back}
+                </button>
+
+                {step < stepLabels.length - 1 ? (
+                  <button
+                    type="button"
+                    onClick={nextStep}
+                    className="rounded-md bg-green px-5 py-2.5 text-sm font-semibold text-[#06140F]"
+                  >
+                    {t.next}
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={saveInterview}
+                    className="rounded-md bg-green px-5 py-2.5 text-sm font-semibold text-[#06140F]"
+                  >
+                    {t.save}
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {view === "dashboard" && (
+          <div className="space-y-6">
+            <div className="grid gap-5 md:grid-cols-4">
+              {summaryCards.map((card) => (
+                <div key={card.label} className="rounded-2xl border border-line bg-bg-2 p-5">
+                  <div className="text-3xl font-display font-bold text-green">{card.value}</div>
+                  <div className="mt-2 text-xs font-mono uppercase tracking-wide text-muted">
+                    {card.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="rounded-2xl border border-line bg-bg-2 p-5">
+              <h3 className="font-display text-2xl font-semibold">Interview Mix</h3>
+              <div className="mt-5 space-y-4">
+                {interviewTypes.map((item) => {
+                  const count = interviews.filter((entry) => entry.type === item.value).length;
+                  const percent = interviews.length ? (count / interviews.length) * 100 : 0;
+                  return (
+                    <div key={item.value}>
+                      <div className="mb-2 flex items-center justify-between text-sm text-muted">
+                        <span>{item.label}</span>
+                        <span>{count}</span>
+                      </div>
+                      <div className="h-2.5 overflow-hidden rounded-full bg-bg">
+                        <div
+                          className="h-full rounded-full bg-green"
+                          style={{ width: `${percent}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {view === "interviews" && (
+          <div className="rounded-2xl border border-line bg-bg-2 p-5">
+            <h3 className="font-display text-2xl font-semibold">Saved interviews</h3>
+            {interviews.length === 0 ? (
+              <p className="mt-5 text-muted">{t.noData}</p>
+            ) : (
+              <div className="mt-5 overflow-x-auto">
+                <table className="min-w-full text-left text-sm">
+                  <thead className="text-muted">
+                    <tr className="border-b border-line">
+                      <th className="pb-3 pr-6">ID</th>
+                      <th className="pb-3 pr-6">Date</th>
+                      <th className="pb-3 pr-6">Company</th>
+                      <th className="pb-3 pr-6">Type</th>
+                      <th className="pb-3 pr-6">Pain</th>
+                      <th className="pb-3 pr-6">Interest</th>
+                      <th className="pb-3 pr-6">Follow-up</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[...interviews].reverse().map((item) => (
+                      <tr key={`${item.id}-${item.createdAt}`} className="border-b border-line/80">
+                        <td className="py-3 pr-6">{String(item.id ?? "")}</td>
+                        <td className="py-3 pr-6">
+                          {item.createdAt ? new Date(String(item.createdAt)).toLocaleDateString() : "—"}
+                        </td>
+                        <td className="py-3 pr-6">{String(item.company ?? "—")}</td>
+                        <td className="py-3 pr-6">{String(item.type ?? "—")}</td>
+                        <td className="py-3 pr-6">{String(item.measurementPain ?? "—")}</td>
+                        <td className="py-3 pr-6">{String(item.conceptInterest ?? "—")}</td>
+                        <td className="py-3 pr-6">{String(item.followUp ?? "—")}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </>
+  );
+}

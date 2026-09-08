@@ -8,6 +8,36 @@ import { SITE_URL } from "@/lib/site";
 
 export type ContactActionState = { error: string | null; success?: boolean };
 
+const PERSONAL_EMAIL_DOMAINS = new Set([
+  "gmail.com",
+  "googlemail.com",
+  "yahoo.com",
+  "hotmail.com",
+  "outlook.com",
+  "live.com",
+  "icloud.com",
+  "aol.com",
+  "protonmail.com",
+  "gmx.com",
+  "mail.com",
+  "zoho.com",
+  "fastmail.com",
+  "me.com",
+  "qq.com",
+  "yandex.com",
+]);
+
+function isProfessionalEmail(email: string): boolean {
+  const normalized = email.trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized)) return false;
+
+  const domain = normalized.split("@")[1]?.toLowerCase();
+  if (!domain || domain.startsWith(".")) return false;
+  if (PERSONAL_EMAIL_DOMAINS.has(domain)) return false;
+
+  return true;
+}
+
 export async function submitContactMessageAction(
   _prevState: ContactActionState,
   formData: FormData,
@@ -19,6 +49,12 @@ export async function submitContactMessageAction(
 
   if (!name || !email || !message) {
     return { error: "Please fill in your name, email, and message." };
+  }
+
+  if (!isProfessionalEmail(email)) {
+    return {
+      error: "Please use a professional or institutional email address (for example, your company or university email).",
+    };
   }
 
   if (!hasSupabaseConfig) {

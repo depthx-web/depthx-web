@@ -53,6 +53,7 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
           <NavLink href="/admin/campaigns" label="Campaigns" />
           <SectionLabel>{"// INSIGHTS"}</SectionLabel>
           <NavLink href="/admin/analytics" label="Analytics" />
+          {profile.role === "admin" && <NavLink href="/admin/interviews" label="Interviews" />}
           <SectionLabel>{"// SETTINGS"}</SectionLabel>
           <NavLink href="/admin/site-settings" label="Site Settings" />
           {profile.role === "admin" && <NavLink href="/admin/legal" label="Legal Pages" />}

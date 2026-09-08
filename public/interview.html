@@ -783,6 +783,12 @@ function exportCSV(){
 }
 
 function setup(){
+  fetch('/api/customer-discovery')
+    .then(function(response){
+      if(response.ok)window.location.replace('/admin/interviews');
+    })
+    .catch(function(){});
+
   document.getElementById('interviewId').textContent='';
 
   var sb=document.getElementById('stepbar'),bits=[];

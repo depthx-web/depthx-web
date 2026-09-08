@@ -49,6 +49,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px;bord
 @media(max-width:760px){main{padding:11px}.card{padding:14px}.col6,.col4{grid-column:span 12}.choice-grid{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.qhead{align-items:center}}
 
 .requiredBadge{font-size:11px;font-weight:700;color:#ffd4d4;background:#5a2430;border:1px solid #8b3a48;border-radius:999px;padding:3px 7px;margin-left:8px;white-space:nowrap}.question.missing{outline:2px solid #ff6b7a;outline-offset:2px}.field-missing{outline:2px solid #ff6b7a!important;outline-offset:2px}.reqmark{color:#ff8b98;font-weight:800;margin-left:4px}.tts-note{font-size:11px;color:var(--muted);margin-left:6px}
+@keyframes thankYouProgress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 </style>
 </head>
 <body>
@@ -62,15 +63,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px;bord
 <button id="lang-zh" onclick="setLang('zh')" type="button">🇨🇳 中文</button></div>
 <nav>
 <button data-de="＋ Neues Interview" data-en="+ New Interview" data-zh="＋ 新访谈" onclick="showView('new')">+ New Interview</button>
-<button data-de="Dashboard" data-en="Dashboard" data-zh="仪表板" onclick="showView('dashboard')">Dashboard</button>
-<button data-de="Interviews" data-en="Interviews" data-zh="访谈记录" onclick="showView('interviews')">Interviews</button>
-<button data-de="Ausstehende synchronisieren" data-en="Sync Pending" data-zh="同步待上传" onclick="syncPending()">Sync Pending</button>
-<button data-de="CSV exportieren" data-en="Export CSV" data-zh="导出 CSV" onclick="exportCSV()">Export CSV</button>
 </nav>
-<div class="syncbar">
-<span class="syncpill">Database: <strong id="dbState">Ready</strong></span>
-<span class="syncpill">Pending: <strong id="pendingCount">0</strong></span>
-</div>
 </header>
 <main>
 <section id="view-new">
@@ -293,61 +286,10 @@ Depth X is developing a patent-pending autonomous aerial marketing platform desi
 </form>
 </div>
 </section>
-<section class="hidden" id="view-dashboard">
-<div class="card"><h1>Customer Discovery Dashboard</h1><div class="kpis" id="kpis"></div></div>
-<div class="grid">
-<div class="col6 card"><h2>Interview Mix — E / O / A / V</h2><div id="mix"></div></div>
-<div class="col6 card"><h2>Top Concerns</h2><div id="concerns"></div></div>
-<div class="col12 card"><h2>Key Signals</h2><div id="signals"></div></div>
-</div>
-</section>
-<section class="hidden" id="view-interviews">
-<div class="card"><h1>Interviews</h1><div style="overflow:auto"><table>
-<thead><tr><th>ID</th><th>Date</th><th>Company</th><th>Type</th><th>Pain</th><th>Interest</th><th>Follow-up</th></tr></thead><tbody id="rows"></tbody>
-</table></div></div>
-</section>
 </main>
 <script>
-var KEY='depthx_customer_discovery_v3';
-var LEGACY_KEY='depthx_customer_discovery_v21';
 var step=0, lang='en';
 var pages=Array.prototype.slice.call(document.querySelectorAll('.stepPage'));
-
-function getData(){
-  try{
-    var r=localStorage.getItem(KEY);
-    if(r) return JSON.parse(r);
-
-    var old=localStorage.getItem(LEGACY_KEY);
-    if(old){
-      var imported=JSON.parse(old);
-      if(Object.prototype.toString.call(imported)==='[object Array]'){
-        localStorage.setItem(KEY,JSON.stringify(imported));
-        return imported;
-      }
-    }
-    return [];
-  }catch(e){return []}
-}
-
-function saveData(x){
-  try{
-    localStorage.setItem(KEY,JSON.stringify(x));
-  }catch(e){
-    alert('Could not save locally on this browser.');
-  }
-}
-
-function idForNext(){
-  var a=getData(), max=0;
-  for(var i=0;i<a.length;i++){
-    var m=String(a[i].id||'').match(/^DX-(\d+)$/);
-    if(m) max=Math.max(max,Number(m[1])||0);
-  }
-  var n=String(max+1);
-  while(n.length<4)n='0'+n;
-  return 'DX-'+n;
-}
 
 function toggleClass(el,cls,on){
   if(!el)return;
@@ -580,19 +522,6 @@ function postInterview(obj){
   });
 }
 
-function upsertLocal(obj){
-  var a=getData(), found=false;
-  for(var i=0;i<a.length;i++){
-    if(a[i].id===obj.id){
-      a[i]=obj;
-      found=true;
-      break;
-    }
-  }
-  if(!found)a.push(obj);
-  saveData(a);
-}
-
 function resetInterview(form){
   form.reset();
   step=0;
@@ -602,8 +531,7 @@ function resetInterview(form){
   var id=document.getElementById('interviewId');
   if(id)id.textContent='Interview '+idForNext();
 
-  render();
-  showView('dashboard');
+  showView('new');
 }
 
 function submitForm(e){
@@ -612,7 +540,7 @@ function submitForm(e){
 
   var form=e.target;
   var o=formObject(form);
-  o.id=idForNext();
+  o.id='';
   o.clientUuid=createClientUuid();
   o.createdAt=new Date().toISOString();
   o.questionLanguage=lang;
@@ -630,74 +558,27 @@ function submitForm(e){
     o.syncStatus='synced';
     o.databaseId=result.databaseId||null;
     o.databaseCreatedAt=result.createdAt||null;
-    upsertLocal(o);
-    setDbState('Connected');
-    alert('Interview saved to database successfully.');
-    resetInterview(form);
+    showThankYou();
   }).catch(function(error){
     console.error('Database save failed:',error);
-    o.syncStatus='pending';
-    upsertLocal(o);
-    setDbState('Offline / API error');
-    alert('Database unavailable. Interview saved locally and marked Pending Sync.');
-    resetInterview(form);
+    alert('The interview could not be saved. Please try again.');
   }).then(function(){
     if(saveBtn){
       saveBtn.disabled=false;
       saveBtn.textContent='Save Interview';
     }
-    updateSyncIndicators();
   });
 }
 
-function syncPending(){
-  var a=getData(), pending=[], i;
-  for(i=0;i<a.length;i++){
-    if(a[i].syncStatus==='pending')pending.push(a[i]);
-  }
-
-  if(!pending.length){
-    alert('No pending interviews to sync.');
-    updateSyncIndicators();
-    return;
-  }
-
-  setDbState('Syncing...');
-  var index=0, synced=0, failed=0;
-
-  function next(){
-    if(index>=pending.length){
-      render();
-      updateSyncIndicators();
-      setDbState(failed?'Partial sync':'Connected');
-      alert('Sync complete. Synced: '+synced+'. Remaining: '+failed+'.');
-      return;
-    }
-
-    var obj=pending[index++];
-
-    // Older locally-saved pending interviews may predate V3.1.
-    // Give them one stable UUID before their first retry, then persist it.
-    if(!obj.clientUuid){
-      obj.clientUuid=createClientUuid();
-      upsertLocal(obj);
-    }
-
-    postInterview(obj).then(function(result){
-      obj.syncStatus='synced';
-      obj.databaseId=result.databaseId||obj.databaseId||null;
-      obj.databaseCreatedAt=result.createdAt||obj.databaseCreatedAt||null;
-      upsertLocal(obj);
-      synced++;
-      next();
-    }).catch(function(error){
-      console.error('Pending sync failed:',error);
-      failed++;
-      next();
-    });
-  }
-
-  next();
+function showThankYou(){
+  document.querySelector('main').innerHTML=
+    '<section class="card" style="max-width:640px;margin:48px auto;text-align:center;padding:48px 24px">'+
+    '<div style="font-size:48px;color:#7effa6;margin-bottom:16px">✓</div>'+
+    '<h1>Thank you</h1>'+
+    '<p class="small" style="font-size:16px;line-height:1.7">Your interview has been saved successfully. You will be redirected to the home page shortly.</p>'+
+    '<div style="height:4px;background:#142235;border-radius:4px;overflow:hidden;margin:28px auto 0;max-width:320px"><div style="height:100%;background:#7effa6;animation:thankYouProgress 3.2s linear forwards;transform-origin:left"></div></div>'+
+    '</section>';
+  window.setTimeout(function(){window.location.href='/';},3200);
 }
 
 function avg(a,f){
@@ -902,7 +783,7 @@ function exportCSV(){
 }
 
 function setup(){
-  document.getElementById('interviewId').textContent='Interview '+idForNext();
+  document.getElementById('interviewId').textContent='';
 
   var sb=document.getElementById('stepbar'),bits=[];
   for(var i=0;i<pages.length;i++)bits.push('<span class="step '+(i===0?'on':'')+'"></span>');
@@ -913,14 +794,12 @@ function setup(){
 
   setLang('en');
   updateStep();
-  render();
 
   if(navigator.onLine)setDbState('Ready');
   else setDbState('Offline');
 
   window.addEventListener('online',function(){
     setDbState('Online');
-    updateSyncIndicators();
   });
 
   window.addEventListener('offline',function(){

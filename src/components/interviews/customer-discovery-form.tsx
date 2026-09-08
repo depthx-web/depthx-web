@@ -220,6 +220,12 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
     setInterviews(items);
   }, []);
 
+  useEffect(() => {
+    if (!adminView && view !== "new") {
+      setView("new");
+    }
+  }, [adminView, view]);
+
   const t = translations[lang];
 
   const activeType = String(form.type || "");
@@ -294,7 +300,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
     const next = [...interviews, item];
     setInterviews(next);
     saveStoredInterviews(next);
-    setView("dashboard");
+    setView(adminView ? "dashboard" : "new");
     setStep(0);
     setForm({
       exhibition: "",
@@ -886,7 +892,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
           </div>
         )}
 
-        {view === "dashboard" && (
+        {adminView && view === "dashboard" && (
           <div className="space-y-6">
             <div className="grid gap-5 md:grid-cols-4">
               {summaryCards.map((card) => (
@@ -925,7 +931,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
           </div>
         )}
 
-        {view === "interviews" && (
+        {adminView && view === "interviews" && (
           <div className="rounded-2xl border border-line bg-bg-2 p-5">
             <h3 className="font-display text-2xl font-semibold">Saved interviews</h3>
             {interviews.length === 0 ? (

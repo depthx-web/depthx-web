@@ -174,7 +174,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
   const [saveError, setSaveError] = useState("");
   const [isLoadingInterviews, setIsLoadingInterviews] = useState(adminView);
   const [showThankYou, setShowThankYou] = useState(false);
-  const [recordFilter, setRecordFilter] = useState<"admin" | "user">("admin");
+  const [recordFilter, setRecordFilter] = useState<"admin" | "user">("user");
   const router = useRouter();
   const [form, setForm] = useState<FormState>({
     exhibition: "",
@@ -1020,6 +1020,50 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                   );
                 })}
               </div>
+            </div>
+
+            <div className="rounded-2xl border border-line bg-bg-2 p-5">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h3 className="font-display text-2xl font-semibold">Latest user interviews</h3>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setRecordFilter("user");
+                    setView("interviews");
+                  }}
+                  className="rounded-md border border-line px-3 py-1.5 text-xs font-semibold text-muted hover:text-text"
+                >
+                  View all users
+                </button>
+              </div>
+              {filteredInterviews.length === 0 ? (
+                <p className="mt-5 text-muted">{t.noData}</p>
+              ) : (
+                <div className="mt-5 overflow-x-auto">
+                  <table className="min-w-full text-left text-sm">
+                    <thead className="text-muted">
+                      <tr className="border-b border-line">
+                        <th className="pb-3 pr-6">ID</th>
+                        <th className="pb-3 pr-6">Date</th>
+                        <th className="pb-3 pr-6">Company</th>
+                        <th className="pb-3 pr-6">Type</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredInterviews.slice(0, 5).map((item) => (
+                        <tr key={`${item.id}-${item.createdAt}`} className="border-b border-line/80">
+                          <td className="py-3 pr-6">{String(item.id ?? "")}</td>
+                          <td className="py-3 pr-6">
+                            {item.createdAt ? new Date(String(item.createdAt)).toLocaleDateString() : "—"}
+                          </td>
+                          <td className="py-3 pr-6">{String(item.company ?? "—")}</td>
+                          <td className="py-3 pr-6">{String(item.type ?? "—")}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </div>
         )}

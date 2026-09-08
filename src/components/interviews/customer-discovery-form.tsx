@@ -324,7 +324,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
 
     const item: FormState = {
       ...form,
-      id: `DX-${String(interviews.length + 1).padStart(4, "0")}`,
+      id: "",
       createdAt: new Date().toISOString(),
       syncStatus: "pending",
     };
@@ -340,6 +340,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
         error?: string;
         databaseId?: string;
         createdAt?: string;
+        interviewCode?: string;
         submissionRole?: "admin" | "user";
       };
 
@@ -349,7 +350,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
 
       const savedItem: FormState = {
         ...item,
-        id: result.databaseId,
+        id: result.interviewCode || result.databaseId,
         createdAt: result.createdAt || item.createdAt,
         submissionRole: result.submissionRole || (adminView ? "admin" : "user"),
         syncStatus: "synced",

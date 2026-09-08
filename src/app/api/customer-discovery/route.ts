@@ -41,10 +41,21 @@ export async function GET() {
     return NextResponse.json({ error: "Unable to load interviews" }, { status: 500 });
   }
 
+  const rows = data || [];
+  const codeCounts = new Map<string, number>();
+  rows.forEach((row) => {
+    if (row.interview_code) {
+      codeCounts.set(row.interview_code, (codeCounts.get(row.interview_code) || 0) + 1);
+    }
+  });
+
   return NextResponse.json(
-    (data || []).map((row) => ({
+    rows.map((row) => ({
       ...(row.responses || {}),
-      id: row.interview_code || row.id,
+      id:
+        row.interview_code && codeCounts.get(row.interview_code) === 1
+          ? row.interview_code
+          : `DX-${row.id.slice(0, 8).toUpperCase()}`,
       createdAt: row.created_at,
       submissionRole: row.responses?.submissionRole === "admin" ? "admin" : "user",
       syncStatus: "synced",
@@ -85,7 +96,7 @@ export async function POST(request: NextRequest) {
 
     const row = {
       client_uuid: body.clientUuid,
-      interview_code: body.id || null,
+      interview_code: createInterviewCode(body.clientUuid),
       exhibition: body.exhibition || null,
       company: body.company || null,
       role: body.role || null,
@@ -129,6 +140,7 @@ export async function POST(request: NextRequest) {
       success: true,
       databaseId: data.id,
       createdAt: data.created_at,
+      interviewCode: row.interview_code,
       submissionRole,
     });
   } catch (error) {
@@ -139,6 +151,10 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+function createInterviewCode(clientUuid: string): string {
+  return `DX-${clientUuid.replace(/-/g, "").slice(0, 10).toUpperCase()}`;
 }
 
 function toScore(value: unknown): number | null {

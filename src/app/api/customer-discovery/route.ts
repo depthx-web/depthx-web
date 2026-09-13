@@ -181,7 +181,7 @@ export async function POST(request: NextRequest) {
       responses: { ...body, submissionRole },
     };
 
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from("customer_discovery_interviews")
       .upsert(row, {
         onConflict: "client_uuid",
@@ -189,11 +189,22 @@ export async function POST(request: NextRequest) {
       .select("id, created_at")
       .single();
 
-    if (error) {
+    if (error?.code === "23514" && questionLanguage === "zh") {
+      const fallbackRow = { ...row, question_language: "en" };
+      ({ data, error } = await supabase
+        .from("customer_discovery_interviews")
+        .upsert(fallbackRow, {
+          onConflict: "client_uuid",
+        })
+        .select("id, created_at")
+        .single());
+    }
+
+    if (error || !data) {
       console.error("Supabase upsert error:", error);
 
       return NextResponse.json(
-        { error: error.message },
+        { error: error?.message || "Interview was not saved" },
         { status: 500 }
       );
     }

@@ -403,9 +403,11 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
     const block = event.currentTarget.closest("[data-speech-block]");
     if (!block || !("speechSynthesis" in window)) return;
 
-    const question = block.querySelector("[data-speech-question]")?.textContent?.trim();
+    const question = block.querySelector("[data-speech-question]")?.textContent
+      ?.replace(/🔊/g, "")
+      .trim();
     const description = block.querySelector("[data-speech-description]")?.textContent?.trim();
-    const answers = Array.from(block.querySelectorAll("label span, select option"))
+    const answers = Array.from(block.querySelectorAll("label span, select option:not([value=''])"))
       .map((element) => element.textContent?.trim())
       .filter((text): text is string => Boolean(text));
     const segments = [description, question, ...answers].filter(
@@ -415,17 +417,11 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
 
     window.speechSynthesis.cancel();
     const voiceLanguage = lang === "de" ? "de-DE" : lang === "zh" ? "zh-CN" : "en-GB";
-    segments.forEach((segment, index) => {
-      const utterance = new SpeechSynthesisUtterance(segment);
-      utterance.lang = voiceLanguage;
-      utterance.rate = 0.92;
-      utterance.pitch = 1;
-      utterance.onstart = () => {
-        if (index > 0) window.speechSynthesis.pause();
-        if (index > 0) window.setTimeout(() => window.speechSynthesis.resume(), 450);
-      };
-      window.speechSynthesis.speak(utterance);
-    });
+    const utterance = new SpeechSynthesisUtterance(segments.join(". ... "));
+    utterance.lang = voiceLanguage;
+    utterance.rate = 0.88;
+    utterance.pitch = 1;
+    window.speechSynthesis.speak(utterance);
   };
 
   const speakerButton = () => (

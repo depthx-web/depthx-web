@@ -162,6 +162,11 @@ const interviewTypes = [
 ] as const;
 
 const stepLabels = ["Profile", "Discovery", "Concept", "Review"];
+const languageOptions: { value: Lang; label: string }[] = [
+  { value: "en", label: "English" },
+  { value: "de", label: "Deutsch" },
+  { value: "zh", label: "中文" },
+];
 
 export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boolean }) {
   const [lang, setLang] = useState<Lang>("en");
@@ -238,6 +243,17 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
   }, [adminView, view]);
 
   const t = translations[lang];
+  const localizedInterviewTypes = interviewTypes.map((item) => ({
+    ...item,
+    label:
+      item.value === "E"
+        ? t.e
+        : item.value === "O"
+          ? t.o
+          : item.value === "A"
+            ? t.a
+            : t.v,
+  }));
 
   const activeType = String(form.type || "");
   const showBranch = useMemo(
@@ -513,6 +529,24 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
       />
 
       <div className="px-8 pb-20 md:px-25">
+        <div className="mb-6 flex flex-wrap items-center gap-2" aria-label="Question language">
+          <span className="font-mono text-xs uppercase tracking-wide text-muted">Question language</span>
+          {languageOptions.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => setLang(option.value)}
+              aria-pressed={lang === option.value}
+              className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                lang === option.value
+                  ? "border-green bg-green/10 text-green"
+                  : "border-line bg-bg-2 text-muted hover:text-text"
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
         {showThankYou && !adminView ? (
           <div className="mx-auto max-w-2xl rounded-2xl border border-green/40 bg-green/10 px-6 py-12 text-center shadow-[0_0_60px_rgba(126,255,166,0.12)] animate-[fade-in-up_500ms_ease-out]">
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-green text-3xl text-green">
@@ -627,7 +661,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                       className="w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
                     >
                       <option value="">{t.select}</option>
-                      {interviewTypes.map((item) => (
+                      {localizedInterviewTypes.map((item) => (
                         <option key={item.value} value={item.value}>
                           {item.label}
                         </option>
@@ -1052,7 +1086,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
             <div className="rounded-2xl border border-line bg-bg-2 p-5">
               <h3 className="font-display text-2xl font-semibold">Interview Mix</h3>
               <div className="mt-5 space-y-4">
-                {interviewTypes.map((item) => {
+                {localizedInterviewTypes.map((item) => {
                   const count = interviews.filter((entry) => entry.type === item.value).length;
                   const percent = interviews.length ? (count / interviews.length) * 100 : 0;
                   return (

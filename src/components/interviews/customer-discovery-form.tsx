@@ -257,13 +257,31 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
 
   const speakBlock = (event: React.MouseEvent<HTMLButtonElement>) => {
     const block = event.currentTarget.closest("[data-speech-block]");
-    const text = block?.textContent?.replace(/🔊/g, " ").replace(/\s+/g, " ").trim();
-    if (!text || !("speechSynthesis" in window)) return;
+    if (!block || !("speechSynthesis" in window)) return;
+
+    const question = block.querySelector("[data-speech-question]")?.textContent?.trim();
+    const description = block.querySelector("[data-speech-description]")?.textContent?.trim();
+    const answers = Array.from(block.querySelectorAll("label span, select option"))
+      .map((element) => element.textContent?.trim())
+      .filter((text): text is string => Boolean(text));
+    const segments = [description, question, ...answers].filter(
+      (text): text is string => Boolean(text),
+    );
+    if (!segments.length) return;
 
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = lang === "de" ? "de-DE" : lang === "zh" ? "zh-CN" : "en-GB";
-    window.speechSynthesis.speak(utterance);
+    const voiceLanguage = lang === "de" ? "de-DE" : lang === "zh" ? "zh-CN" : "en-GB";
+    segments.forEach((segment, index) => {
+      const utterance = new SpeechSynthesisUtterance(segment);
+      utterance.lang = voiceLanguage;
+      utterance.rate = 0.92;
+      utterance.pitch = 1;
+      utterance.onstart = () => {
+        if (index > 0) window.speechSynthesis.pause();
+        if (index > 0) window.setTimeout(() => window.speechSynthesis.resume(), 450);
+      };
+      window.speechSynthesis.speak(utterance);
+    });
   };
 
   const speakerButton = () => (
@@ -702,7 +720,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                 {activeType !== "V" && (
                   <div className="space-y-6">
                     <div className="rounded-xl border border-line bg-bg p-4" data-speech-block>
-                      <p className="mb-3 flex items-center text-base font-semibold">{t.q1}{speakerButton()}</p>
+                      <p data-speech-question className="mb-3 flex items-center text-base font-semibold">{t.q1}{speakerButton()}</p>
                       {renderChoiceGrid("currentApproach", [
                         "Booth / stand",
                         "Digital screens",
@@ -731,7 +749,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                     </div>
 
                     <div className="rounded-xl border border-line bg-bg p-4" data-speech-block>
-                      <p className="mb-3 flex items-center text-base font-semibold">{t.q2}{speakerButton()}</p>
+                      <p data-speech-question className="mb-3 flex items-center text-base font-semibold">{t.q2}{speakerButton()}</p>
                       {renderChoiceGrid("measurement", [
                         "Booth visits",
                         "QR scans",
@@ -760,7 +778,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                     </div>
 
                     <div className="rounded-xl border border-line bg-bg p-4" data-speech-block>
-                      <p className="mb-3 flex items-center text-base font-semibold">{t.q3}{speakerButton()}</p>
+                      <p data-speech-question className="mb-3 flex items-center text-base font-semibold">{t.q3}{speakerButton()}</p>
                       {renderChoiceGrid("missingData", [
                         "Attention",
                         "Engagement",
@@ -789,7 +807,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                     </div>
 
                     <div className="rounded-xl border border-line bg-bg p-4" data-speech-block>
-                      <p className="mb-3 flex items-center text-base font-semibold">{t.q4}{speakerButton()}</p>
+                      <p data-speech-question className="mb-3 flex items-center text-base font-semibold">{t.q4}{speakerButton()}</p>
                       <select
                         value={String(form.adaptability ?? "")}
                         onChange={(e) => handleInput("adaptability", e.target.value)}
@@ -804,7 +822,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                     </div>
 
                     <div className="rounded-xl border border-line bg-bg p-4" data-speech-block>
-                      <p className="mb-3 flex items-center text-base font-semibold">{t.q5}{speakerButton()}</p>
+                      <p data-speech-question className="mb-3 flex items-center text-base font-semibold">{t.q5}{speakerButton()}</p>
                       <select
                         value={String(form.problemImportance ?? "")}
                         onChange={(e) => handleInput("problemImportance", e.target.value)}
@@ -824,7 +842,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                 {activeType === "V" && (
                   <div className="space-y-6">
                     <div className="rounded-xl border border-line bg-bg p-4" data-speech-block>
-                      <p className="mb-3 flex items-center text-base font-semibold">V1. What usually attracts your attention most at an exhibition?{speakerButton()}</p>
+                      <p data-speech-question className="mb-3 flex items-center text-base font-semibold">V1. What usually attracts your attention most at an exhibition?{speakerButton()}</p>
                       {renderChoiceGrid("visitorAttention", [
                         "Large displays / screens",
                         "Movement / unusual displays",
@@ -849,14 +867,19 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
             {step === 2 && (
               <div className="space-y-8">
                 <h2 className="font-display text-2xl font-semibold">{t.step3}</h2>
-                <div className="rounded-xl border border-line bg-bg p-4 text-sm leading-7 text-muted">
-                  Depth X is developing an autonomous aerial marketing platform designed to combine
-                  mobile advertising with anonymous audience measurement and real-time campaign
-                  adaptation.
+                <div className="rounded-xl border border-line bg-bg p-4 text-sm leading-7 text-muted" data-speech-block>
+                  <div className="flex items-start justify-between gap-3">
+                    <p data-speech-description>
+                      Depth X is developing an autonomous aerial marketing platform designed to combine
+                      mobile advertising with anonymous audience measurement and real-time campaign
+                      adaptation.
+                    </p>
+                    {speakerButton()}
+                  </div>
                 </div>
 
                 <div className="rounded-xl border border-line bg-bg p-4" data-speech-block>
-                  <p className="mb-3 flex items-center text-base font-semibold">{t.q6}{speakerButton()}</p>
+                  <p data-speech-question className="mb-3 flex items-center text-base font-semibold">{t.q6}{speakerButton()}</p>
                   {renderChoiceGrid("mostValuable", [
                     "Mobile / aerial advertising",
                     "Audience measurement",
@@ -885,7 +908,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                 </div>
 
                 <div className="rounded-xl border border-line bg-bg p-4" data-speech-block>
-                  <p className="mb-3 flex items-center text-base font-semibold">{t.q7}{speakerButton()}</p>
+                  <p data-speech-question className="mb-3 flex items-center text-base font-semibold">{t.q7}{speakerButton()}</p>
                   {renderChoiceGrid("concernCategory", [
                     "Safety",
                     "Regulation",
@@ -919,7 +942,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
 
                 {showBranch && (
                   <div className="rounded-xl border border-line bg-bg p-4" data-speech-block>
-                    <p className="mb-3 flex items-center text-base font-semibold">{t.q8}{speakerButton()}</p>
+                    <p data-speech-question className="mb-3 flex items-center text-base font-semibold">{t.q8}{speakerButton()}</p>
                     <select
                       value={String(form.pilotInterest ?? "")}
                       onChange={(e) => handleInput("pilotInterest", e.target.value)}

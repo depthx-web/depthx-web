@@ -151,6 +151,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const questionLanguage =
+      body.questionLanguage === "de" || body.questionLanguage === "zh"
+        ? body.questionLanguage
+        : "en";
+
     const row = {
       client_uuid: body.clientUuid,
       interview_code: createInterviewCode(body.clientUuid),
@@ -158,7 +163,7 @@ export async function POST(request: NextRequest) {
       company: body.company || null,
       role: body.role || null,
       interviewee_type: body.type,
-      question_language: body.questionLanguage || "en",
+      question_language: questionLanguage,
 
       measurement_pain: toScore(body.measurementPain),
       concept_interest: toScore(body.conceptInterest),

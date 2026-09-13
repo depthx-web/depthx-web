@@ -168,6 +168,140 @@ const languageOptions: { value: Lang; label: string }[] = [
   { value: "zh", label: "中文" },
 ];
 
+const answerTranslations: Record<Lang, Record<string, string>> = {
+  en: {},
+  de: {
+    "Booth / stand": "Messestand",
+    "Digital screens": "Digitale Bildschirme",
+    "Banners / signage": "Banner / Beschilderung",
+    "Flyers / printed media": "Flyer / Printmedien",
+    "Promotional staff": "Promotion-Personal",
+    "QR / digital interaction": "QR / digitale Interaktion",
+    "Social media / online promotion": "Social Media / Online-Werbung",
+    Other: "Sonstiges",
+    "Booth visits": "Standbesuche",
+    "QR scans": "QR-Scans",
+    "Leads / registrations": "Leads / Registrierungen",
+    "Sales / conversions": "Verkäufe / Conversions",
+    "Staff observation": "Beobachtung durch Personal",
+    "Digital analytics": "Digitale Analysen",
+    "Very limited / not measured": "Sehr begrenzt / nicht gemessen",
+    Attention: "Aufmerksamkeit",
+    Engagement: "Interaktion / Engagement",
+    "Traffic / location patterns": "Besucherströme / Standortmuster",
+    "Interaction duration": "Interaktionsdauer",
+    "Response to different messages": "Reaktion auf unterschiedliche Botschaften",
+    "Conversion to booth / action": "Konversion zum Stand / zur Aktion",
+    "Nothing important missing": "Keine wichtigen Daten fehlen",
+    "Yes, easily": "Ja, problemlos",
+    "Yes, but with limitations": "Ja, aber mit Einschränkungen",
+    Difficult: "Schwierig",
+    "Usually not possible": "Normalerweise nicht möglich",
+    "1 — Not important": "1 — Nicht wichtig",
+    "4 — Important": "4 — Wichtig",
+    "5 — Very important": "5 — Sehr wichtig",
+    "Large displays / screens": "Große Displays / Bildschirme",
+    "Movement / unusual displays": "Bewegung / ungewöhnliche Displays",
+    "Offers / promotions": "Angebote / Werbeaktionen",
+    "Interactive experiences": "Interaktive Erlebnisse",
+    "People / demonstrations": "Menschen / Vorführungen",
+    "Mobile / aerial advertising": "Mobile / luftgestützte Werbung",
+    "Audience measurement": "Publikumsmessung",
+    "Real-time analytics": "Echtzeitanalysen",
+    "Campaign adaptation": "Kampagnenanpassung",
+    "Continuous operation": "Dauerbetrieb",
+    "Multiple media formats": "Mehrere Medienformate",
+    "I do not currently see significant value": "Derzeit sehe ich keinen wesentlichen Wert",
+    Safety: "Sicherheit",
+    Regulation: "Regulierung",
+    Noise: "Lärm",
+    Privacy: "Datenschutz",
+    Cost: "Kosten",
+    "Technical reliability": "Technische Zuverlässigkeit",
+    Weather: "Wetter",
+    "Audience acceptance": "Akzeptanz beim Publikum",
+    "No major concern": "Keine großen Bedenken",
+    "1 — Definitely not": "1 — Definitiv nicht",
+    "2 — Probably not": "2 — Wahrscheinlich nicht",
+    "3 — Maybe": "3 — Vielleicht",
+    "4 — Yes": "4 — Ja",
+    "5 — Strong interest": "5 — Starkes Interesse",
+    "Follow up": "Nachfassen",
+    "Potential pilot": "Potenzieller Pilot",
+    "Introduction to another person": "Vorstellung bei einer anderen Person",
+    "Useful insight only": "Nur nützliche Erkenntnis",
+    "No action": "Keine Aktion",
+    Yes: "Ja",
+    Maybe: "Vielleicht",
+    No: "Nein",
+  },
+  zh: {
+    "Booth / stand": "展位 / 展台",
+    "Digital screens": "数字屏幕",
+    "Banners / signage": "横幅 / 标牌",
+    "Flyers / printed media": "传单 / 印刷媒体",
+    "Promotional staff": "推广人员",
+    "QR / digital interaction": "二维码 / 数字互动",
+    "Social media / online promotion": "社交媒体 / 在线推广",
+    Other: "其他",
+    "Booth visits": "展位访问量",
+    "QR scans": "二维码扫描",
+    "Leads / registrations": "潜在客户 / 注册",
+    "Sales / conversions": "销售 / 转化",
+    "Staff observation": "工作人员观察",
+    "Digital analytics": "数字分析",
+    "Very limited / not measured": "非常有限 / 未测量",
+    Attention: "注意力",
+    Engagement: "互动参与",
+    "Traffic / location patterns": "人流 / 位置模式",
+    "Interaction duration": "互动时长",
+    "Response to different messages": "对不同信息的反应",
+    "Conversion to booth / action": "转化到展位 / 行动",
+    "Nothing important missing": "没有重要信息缺失",
+    "Yes, easily": "是的，很容易",
+    "Yes, but with limitations": "是的，但有限制",
+    Difficult: "困难",
+    "Usually not possible": "通常不可能",
+    "1 — Not important": "1 — 不重要",
+    "4 — Important": "4 — 重要",
+    "5 — Very important": "5 — 非常重要",
+    "Large displays / screens": "大型展示 / 屏幕",
+    "Movement / unusual displays": "动态 / 非常规展示",
+    "Offers / promotions": "优惠 / 促销",
+    "Interactive experiences": "互动体验",
+    "People / demonstrations": "人员 / 演示",
+    "Mobile / aerial advertising": "移动 / 空中广告",
+    "Audience measurement": "受众测量",
+    "Real-time analytics": "实时分析",
+    "Campaign adaptation": "活动调整",
+    "Continuous operation": "持续运行",
+    "Multiple media formats": "多种媒体形式",
+    "I do not currently see significant value": "目前看不到明显价值",
+    Safety: "安全",
+    Regulation: "法规",
+    Noise: "噪音",
+    Privacy: "隐私",
+    Cost: "成本",
+    "Technical reliability": "技术可靠性",
+    Weather: "天气",
+    "Audience acceptance": "受众接受度",
+    "No major concern": "没有重大顾虑",
+    "1 — Definitely not": "1 — 肯定不会",
+    "2 — Probably not": "2 — 可能不会",
+    "3 — Maybe": "3 — 也许",
+    "4 — Yes": "4 — 是",
+    "5 — Strong interest": "5 — 非常感兴趣",
+    "Follow up": "后续跟进",
+    "Potential pilot": "潜在试点",
+    "Introduction to another person": "介绍给其他联系人",
+    "Useful insight only": "仅作为有用洞察",
+    "No action": "无需行动",
+    Yes: "是",
+    Maybe: "也许",
+    No: "否",
+  },
+};
+
 export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boolean }) {
   const [lang, setLang] = useState<Lang>("en");
   const [step, setStep] = useState(0);
@@ -254,6 +388,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
             ? t.a
             : t.v,
   }));
+  const answer = (value: string) => answerTranslations[lang][value] || value;
 
   const speakBlock = (event: React.MouseEvent<HTMLButtonElement>) => {
     const block = event.currentTarget.closest("[data-speech-block]");
@@ -468,7 +603,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
               onChange={() => handleCheckbox(key, option)}
               className="mt-1 h-4 w-4 accent-green"
             />
-            <span>{labels[option] ?? option}</span>
+            <span>{answer(labels[option] ?? option)}</span>
           </label>
         );
       })}
@@ -814,10 +949,10 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                         className="w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
                       >
                         <option value="">{t.select}</option>
-                        <option value="Yes, easily">Yes, easily</option>
-                        <option value="Yes, but with limitations">Yes, but with limitations</option>
-                        <option value="Difficult">Difficult</option>
-                        <option value="Usually not possible">Usually not possible</option>
+                        <option value="Yes, easily">{answer("Yes, easily")}</option>
+                        <option value="Yes, but with limitations">{answer("Yes, but with limitations")}</option>
+                        <option value="Difficult">{answer("Difficult")}</option>
+                        <option value="Usually not possible">{answer("Usually not possible")}</option>
                       </select>
                     </div>
 
@@ -828,12 +963,12 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                         onChange={(e) => handleInput("problemImportance", e.target.value)}
                         className="w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
                       >
-                        <option value="">Select 1–5…</option>
-                        <option value="1">1 — Not important</option>
+                        <option value="">{t.select} 1–5…</option>
+                        <option value="1">{answer("1 — Not important")}</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
-                        <option value="4">4 — Important</option>
-                        <option value="5">5 — Very important</option>
+                        <option value="4">{answer("4 — Important")}</option>
+                        <option value="5">{answer("5 — Very important")}</option>
                       </select>
                     </div>
                   </div>
@@ -948,12 +1083,12 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                       onChange={(e) => handleInput("pilotInterest", e.target.value)}
                       className="w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
                     >
-                      <option value="">Select 1–5…</option>
-                      <option value="1">1 — Definitely not</option>
-                      <option value="2">2 — Probably not</option>
-                      <option value="3">3 — Maybe</option>
-                      <option value="4">4 — Yes</option>
-                      <option value="5">5 — Strong interest</option>
+                      <option value="">{t.select} 1–5…</option>
+                      <option value="1">{answer("1 — Definitely not")}</option>
+                      <option value="2">{answer("2 — Probably not")}</option>
+                      <option value="3">{answer("3 — Maybe")}</option>
+                      <option value="4">{answer("4 — Yes")}</option>
+                      <option value="5">{answer("5 — Strong interest")}</option>
                     </select>
                   </div>
                 )}
@@ -1025,11 +1160,11 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                     className="w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
                   >
                     <option value="">{t.select}</option>
-                    <option value="Follow up">Follow up</option>
-                    <option value="Potential pilot">Potential pilot</option>
-                    <option value="Introduction to another person">Introduction to another person</option>
-                    <option value="Useful insight only">Useful insight only</option>
-                    <option value="No action">No action</option>
+                    <option value="Follow up">{answer("Follow up")}</option>
+                    <option value="Potential pilot">{answer("Potential pilot")}</option>
+                    <option value="Introduction to another person">{answer("Introduction to another person")}</option>
+                    <option value="Useful insight only">{answer("Useful insight only")}</option>
+                    <option value="No action">{answer("No action")}</option>
                   </select>
                 </div>
 
@@ -1041,9 +1176,9 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                     className="w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
                   >
                     <option value="">{t.select}</option>
-                    <option value="Yes">Yes</option>
-                    <option value="Maybe">Maybe</option>
-                    <option value="No">No</option>
+                    <option value="Yes">{answer("Yes")}</option>
+                    <option value="Maybe">{answer("Maybe")}</option>
+                    <option value="No">{answer("No")}</option>
                   </select>
                 </div>
 

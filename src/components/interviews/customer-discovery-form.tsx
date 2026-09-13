@@ -265,7 +265,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
   const requiredForStep = (index: number) => {
     const requiredMap: Record<number, string[]> = {
       0: ["exhibition", "type"],
-      1: ["adapatability"],
+      1: activeType === "V" ? [] : ["adaptability"],
       2: ["mostValuable"],
       3: ["measurementPain", "conceptInterest", "pilotPotential", "keyInsight", "biggestObjection", "nextAction"],
     };

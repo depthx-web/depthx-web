@@ -551,7 +551,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
         description={t.subtitle}
       />
 
-      <div className="px-8 pb-20 md:px-25">
+      <div className="px-4 pb-20 sm:px-8 md:px-25">
         <div className="mb-6 flex flex-wrap items-center gap-2" aria-label="Question language">
           <span className="font-mono text-xs uppercase tracking-wide text-muted">Question language</span>
           {languageOptions.map((option) => (

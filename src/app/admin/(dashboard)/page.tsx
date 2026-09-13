@@ -25,12 +25,12 @@ export default async function AdminDashboardPage() {
         Signed in as <span className="text-text">{profile.role}</span>. Pick a content type to
         edit below.
       </p>
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {counts.map((c) => (
           <Link
             key={c.slug}
             href={`/admin/${c.slug}`}
-            className="rounded-xl border border-line bg-bg-2 p-5 hover:border-line-2"
+            className="rounded-xl border border-line bg-bg-2 p-4 hover:border-line-2 sm:p-5"
           >
             <div className="font-display text-3xl font-bold text-green">{c.count}</div>
             <div className="mt-1 font-mono text-xs text-muted">{c.label}</div>

@@ -13,34 +13,34 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
 
   return (
     <div className="min-h-screen">
-      <div className="sticky top-0 z-20 flex h-[58px] items-center justify-between border-b border-line bg-bg px-6">
-        <Link href="/admin" className="font-display text-base font-bold">
+      <div className="sticky top-0 z-20 flex min-h-[58px] flex-wrap items-center justify-between gap-3 border-b border-line bg-bg px-4 py-3 sm:px-6 sm:py-2">
+        <Link href="/admin" className="shrink-0 font-display text-base font-bold">
           Depth<span className="text-amber">X</span>{" "}
           <span className="font-mono text-xs font-normal text-muted">Admin</span>
         </Link>
-        <div className="flex items-center gap-4 font-mono text-xs text-muted">
+        <div className="flex items-center gap-2 font-mono text-xs text-muted sm:gap-4">
           <ThemeToggle />
-          <span>
+          <span className="hidden sm:inline">
             {profile.email} ·{" "}
             <span className={profile.role === "admin" ? "text-green" : "text-blue"}>
               {profile.role}
             </span>
           </span>
-          <Link href="/" className="hover:text-text">
+          <Link href="/" className="hidden hover:text-text sm:inline">
             View site
           </Link>
           <form action={logoutAction}>
             <button
               type="submit"
-              className="rounded-md border border-line px-3 py-1.5 font-semibold text-text transition-all duration-150 hover:border-amber hover:bg-amber/10 hover:text-amber active:scale-95"
+              className="rounded-md border border-line px-2.5 py-1.5 font-semibold text-text transition-all duration-150 hover:border-amber hover:bg-amber/10 hover:text-amber active:scale-95 sm:px-3"
             >
               Sign out
             </button>
           </form>
         </div>
       </div>
-      <div className="grid grid-cols-[220px_1fr]">
-        <nav className="sticky top-[58px] h-[calc(100vh-58px)] overflow-y-auto border-r border-line px-4 py-6">
+      <div className="grid min-w-0 grid-cols-1 md:grid-cols-[220px_minmax(0,1fr)]">
+        <nav className="order-first flex gap-1 overflow-x-auto border-b border-line px-3 py-2 md:sticky md:top-[58px] md:h-[calc(100vh-58px)] md:flex-col md:overflow-y-auto md:overflow-x-hidden md:border-r md:border-b-0 md:px-4 md:py-6">
           <NavLink href="/admin" label="Dashboard" />
           <SectionLabel>{"// CONTENT"}</SectionLabel>
           {RESOURCE_CONFIGS.map((r) => (
@@ -59,7 +59,7 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
           {profile.role === "admin" && <NavLink href="/admin/legal" label="Legal Pages" />}
           {profile.role === "admin" && <NavLink href="/admin/users" label="Users & Roles" />}
         </nav>
-        <main className="px-8 py-8">{children}</main>
+        <main className="min-w-0 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">{children}</main>
       </div>
     </div>
   );
@@ -67,7 +67,7 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mb-2.5 mt-7 px-3 font-mono text-[11px] font-semibold tracking-widest text-amber">
+    <p className="mb-2.5 mt-7 hidden px-3 font-mono text-[11px] font-semibold tracking-widest text-amber md:block">
       {children}
     </p>
   );
@@ -77,7 +77,7 @@ function NavLink({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
-      className="block rounded-md px-3 py-2 text-sm text-muted hover:bg-bg-2 hover:text-text"
+      className="block shrink-0 rounded-md px-3 py-2 text-sm text-muted hover:bg-bg-2 hover:text-text md:w-full"
     >
       {label}
     </Link>

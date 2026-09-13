@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { createPublicClient } from "@/lib/supabase/public";
 import { createAdminClient, hasServiceRoleConfig } from "@/lib/supabase/admin";
 import { hasSupabaseConfig } from "@/lib/supabase/env";
 import { sendEmail } from "@/lib/email/send";
@@ -36,11 +35,6 @@ export async function GET(request: NextRequest) {
           text: appendEmailFooter(FAREWELL_BODY),
         });
       }
-    } else {
-      // No service role configured — still honor the unsubscribe, just
-      // without a farewell email (can't read the email back to send one).
-      const supabase = createPublicClient();
-      await supabase.from("newsletter_subscribers").delete().eq("id", id);
     }
   }
 

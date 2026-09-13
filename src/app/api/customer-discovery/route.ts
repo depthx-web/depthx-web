@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { createClient as createAuthClient } from "@/lib/supabase/server";
+import { SUPABASE_PUBLISHABLE_KEY } from "@/lib/supabase/env";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -52,6 +53,7 @@ export async function GET() {
   return NextResponse.json(
     rows.map((row) => ({
       ...(row.responses || {}),
+      databaseId: row.id,
       id:
         row.interview_code && codeCounts.get(row.interview_code) === 1
           ? row.interview_code
@@ -61,6 +63,61 @@ export async function GET() {
       syncStatus: "synced",
     })),
   );
+}
+
+export async function DELETE(request: NextRequest) {
+  const authClient = await createAuthClient();
+  const { data: claims } = await authClient.auth.getClaims();
+  const userId = claims?.claims?.sub;
+
+  if (!userId) {
+    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+  }
+
+  const { data: profile } = await authClient
+    .from("profiles")
+    .select("id, email, role")
+    .eq("id", userId)
+    .single();
+
+  if (profile?.role !== "admin") {
+    return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+  }
+
+  const body = (await request.json()) as { password?: string; ids?: string[]; all?: boolean };
+  if (!body.password) {
+    return NextResponse.json({ error: "Admin password is required" }, { status: 400 });
+  }
+
+  const passwordClient = createClient(supabaseUrl, SUPABASE_PUBLISHABLE_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+  const { data: verified, error: passwordError } = await passwordClient.auth.signInWithPassword({
+    email: profile.email,
+    password: body.password,
+  });
+
+  if (passwordError || verified.user?.id !== userId) {
+    return NextResponse.json({ error: "Incorrect admin password" }, { status: 401 });
+  }
+
+  const ids = Array.isArray(body.ids) ? body.ids.filter(Boolean) : [];
+  let query = supabase.from("customer_discovery_interviews").delete();
+  if (body.all) {
+    query = query.not("id", "is", null);
+  } else if (ids.length) {
+    query = query.in("id", ids);
+  } else {
+    return NextResponse.json({ error: "Select at least one interview or choose all" }, { status: 400 });
+  }
+
+  const { error } = await query;
+  if (error) {
+    console.error("Supabase interview delete error:", error);
+    return NextResponse.json({ error: "Unable to delete interviews" }, { status: 500 });
+  }
+
+  return NextResponse.json({ success: true });
 }
 
 export async function POST(request: NextRequest) {

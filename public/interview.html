@@ -783,11 +783,8 @@ function exportCSV(){
 }
 
 function setup(){
-  fetch('/api/customer-discovery')
-    .then(function(response){
-      if(response.ok)window.location.replace('/admin/interviews');
-    })
-    .catch(function(){});
+  window.location.replace('/interview');
+  return;
 
   document.getElementById('interviewId').textContent='';
 

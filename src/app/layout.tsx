@@ -36,6 +36,11 @@ export const metadata: Metadata = {
     template: `%s · ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
+  icons: {
+    icon: "/depthx-favicon.png",
+    shortcut: "/depthx-favicon.png",
+    apple: "/depthx-favicon.png",
+  },
   openGraph: {
     type: "website",
     siteName: SITE_NAME,

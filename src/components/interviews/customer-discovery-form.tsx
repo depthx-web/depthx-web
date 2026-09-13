@@ -175,6 +175,11 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
   const [isLoadingInterviews, setIsLoadingInterviews] = useState(adminView);
   const [showThankYou, setShowThankYou] = useState(false);
   const [recordFilter, setRecordFilter] = useState<"admin" | "user">("user");
+  const [selectedInterviewIds, setSelectedInterviewIds] = useState<string[]>([]);
+  const [resetMode, setResetMode] = useState<"selected" | "all" | null>(null);
+  const [resetPassword, setResetPassword] = useState("");
+  const [resetError, setResetError] = useState("");
+  const [isResetting, setIsResetting] = useState(false);
   const router = useRouter();
   const [form, setForm] = useState<FormState>({
     exhibition: "",
@@ -451,6 +456,52 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
   const filteredInterviews = interviews.filter((item) =>
     recordFilter === "admin" ? item.submissionRole === "admin" : item.submissionRole !== "admin",
   );
+
+  const openReset = (mode: "selected" | "all") => {
+    if (mode === "selected" && !selectedInterviewIds.length) {
+      setResetError("Select at least one interview first.");
+      return;
+    }
+    setResetMode(mode);
+    setResetPassword("");
+    setResetError("");
+  };
+
+  const deleteInterviews = async () => {
+    if (!resetMode || !resetPassword) {
+      setResetError("Enter your admin password to continue.");
+      return;
+    }
+
+    setIsResetting(true);
+    setResetError("");
+    try {
+      const response = await fetch("/api/customer-discovery", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          password: resetPassword,
+          all: resetMode === "all",
+          ids: resetMode === "selected" ? selectedInterviewIds : undefined,
+        }),
+      });
+      const result = (await response.json()) as { error?: string };
+      if (!response.ok) throw new Error(result.error || "Unable to delete interviews.");
+
+      if (resetMode === "all") {
+        setInterviews([]);
+      } else {
+        setInterviews((items) => items.filter((item) => !selectedInterviewIds.includes(String(item.databaseId))));
+      }
+      setSelectedInterviewIds([]);
+      setResetMode(null);
+      setResetPassword("");
+    } catch (error) {
+      setResetError(error instanceof Error ? error.message : "Unable to delete interviews.");
+    } finally {
+      setIsResetting(false);
+    }
+  };
 
   return (
     <>
@@ -1093,6 +1144,61 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                 ))}
               </div>
             </div>
+            <div className="mt-5 flex flex-wrap items-center gap-3 border-y border-line py-4">
+              <button
+                type="button"
+                onClick={() => openReset("selected")}
+                className="rounded-md border border-red-400/50 px-3 py-2 text-xs font-semibold text-red-300 hover:bg-red-400/10"
+              >
+                Delete selected
+              </button>
+              <button
+                type="button"
+                onClick={() => openReset("all")}
+                className="rounded-md bg-red-500/15 px-3 py-2 text-xs font-semibold text-red-300 hover:bg-red-500/25"
+              >
+                Reset all interview data
+              </button>
+              {selectedInterviewIds.length > 0 && (
+                <span className="text-xs text-muted">{selectedInterviewIds.length} selected</span>
+              )}
+            </div>
+            {resetMode && (
+              <div className="mt-5 rounded-xl border border-red-400/40 bg-red-400/10 p-4">
+                <h4 className="font-semibold text-red-200">
+                  {resetMode === "all" ? "Delete all interview data?" : "Delete selected interviews?"}
+                </h4>
+                <p className="mt-2 text-sm text-muted">
+                  This cannot be undone. Confirm with your current admin password.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <input
+                    type="password"
+                    value={resetPassword}
+                    onChange={(event) => setResetPassword(event.target.value)}
+                    placeholder="Admin password"
+                    autoComplete="current-password"
+                    className="min-w-64 rounded-md border border-line bg-bg px-3 py-2 text-sm text-text outline-none focus:border-red-300"
+                  />
+                  <button
+                    type="button"
+                    onClick={deleteInterviews}
+                    disabled={isResetting}
+                    className="rounded-md bg-red-500 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+                  >
+                    {isResetting ? "Deleting…" : "Confirm delete"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setResetMode(null)}
+                    className="rounded-md border border-line px-4 py-2 text-sm text-muted hover:text-text"
+                  >
+                    Cancel
+                  </button>
+                </div>
+                {resetError && <p className="mt-3 text-sm text-red-300" role="alert">{resetError}</p>}
+              </div>
+            )}
             {filteredInterviews.length === 0 ? (
               <p className="mt-5 text-muted">{t.noData}</p>
             ) : (
@@ -1100,6 +1206,9 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                 <table className="min-w-full text-left text-sm">
                   <thead className="text-muted">
                     <tr className="border-b border-line">
+                      <th className="pb-3 pr-3">
+                        <span className="sr-only">Select</span>
+                      </th>
                       <th className="pb-3 pr-6">ID</th>
                       <th className="pb-3 pr-6">Date</th>
                       <th className="pb-3 pr-6">Company</th>
@@ -1112,6 +1221,22 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                   <tbody>
                     {[...filteredInterviews].reverse().map((item) => (
                       <tr key={`${item.id}-${item.createdAt}`} className="border-b border-line/80">
+                        <td className="py-3 pr-3">
+                          <input
+                            type="checkbox"
+                            checked={selectedInterviewIds.includes(String(item.databaseId ?? ""))}
+                            onChange={(event) => {
+                              const id = String(item.databaseId ?? "");
+                              setSelectedInterviewIds((current) =>
+                                event.target.checked
+                                  ? [...current, id]
+                                  : current.filter((selectedId) => selectedId !== id),
+                              );
+                            }}
+                            className="h-4 w-4 accent-green"
+                            aria-label={`Select ${String(item.id ?? "interview")}`}
+                          />
+                        </td>
                         <td className="py-3 pr-6">{String(item.id ?? "")}</td>
                         <td className="py-3 pr-6">
                           {item.createdAt ? new Date(String(item.createdAt)).toLocaleDateString() : "—"}

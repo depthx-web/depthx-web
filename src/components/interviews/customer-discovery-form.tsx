@@ -41,6 +41,9 @@ const translations = {
     q6: "Which part of the concept would create the most value for you — if any?",
     q7: "What would be your biggest concern about using a system like this?",
     q8: "If the system were successfully built, technically validated and appropriately approved, would you consider exploring a controlled pilot?",
+    qV1: "What usually attracts your attention most at an exhibition?",
+    conceptDescription: "Depth X is developing an autonomous aerial marketing platform designed to combine mobile advertising with anonymous audience measurement and real-time campaign adaptation.",
+    optionalComment: "Optional comment",
     review: "Interviewer Review",
     pain: "Measurement / Need Pain (1–5)",
     interest: "Concept Interest (1–5)",
@@ -89,6 +92,9 @@ const translations = {
     q6: "Welcher Teil des Konzepts würde für Sie den größten Mehrwert schaffen?",
     q7: "Was wäre Ihre größte Sorge bei der Nutzung eines solchen Systems?",
     q8: "Wenn das System technisch validiert und genehmigt wäre, würden Sie einen kontrollierten Pilotversuch prüfen?",
+    qV1: "Was zieht Ihre Aufmerksamkeit auf einer Messe normalerweise am meisten auf sich?",
+    conceptDescription: "Depth X entwickelt eine autonome Luftmarketing-Plattform, die mobile Werbung mit anonymer Publikumsmessung und Echtzeit-Anpassung von Kampagnen verbinden soll.",
+    optionalComment: "Optionaler Kommentar",
     review: "Bewertung durch Interviewer",
     pain: "Messproblem / Bedarf (1–5)",
     interest: "Interesse am Konzept (1–5)",
@@ -137,6 +143,9 @@ const translations = {
     q6: "这个概念的哪一部分对您最有价值？",
     q7: "使用这类系统时，您最大的顾虑是什么？",
     q8: "如果系统已成功构建并获得批准，您是否愿意考虑受控试点？",
+    qV1: "在展会上，通常什么最能吸引您的注意力？",
+    conceptDescription: "Depth X 正在开发一个自主空中营销平台，将移动广告与匿名受众测量和实时活动调整结合起来。",
+    optionalComment: "可选备注",
     review: "访谈者评估",
     pain: "需求痛点（1–5）",
     interest: "概念兴趣（1–5）",
@@ -878,7 +887,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                       <textarea
                         value={String(form.currentApproachComment ?? "")}
                         onChange={(e) => handleInput("currentApproachComment", e.target.value)}
-                        placeholder="Optional comment"
+                        placeholder={t.optionalComment}
                         className="mt-4 min-h-28 w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
                       />
                     </div>
@@ -907,7 +916,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                       <textarea
                         value={String(form.measurementComment ?? "")}
                         onChange={(e) => handleInput("measurementComment", e.target.value)}
-                        placeholder="Optional comment"
+                        placeholder={t.optionalComment}
                         className="mt-4 min-h-28 w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
                       />
                     </div>
@@ -936,7 +945,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                       <textarea
                         value={String(form.missingDataComment ?? "")}
                         onChange={(e) => handleInput("missingDataComment", e.target.value)}
-                        placeholder="Optional comment"
+                        placeholder={t.optionalComment}
                         className="mt-4 min-h-28 w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
                       />
                     </div>
@@ -977,7 +986,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                 {activeType === "V" && (
                   <div className="space-y-6">
                     <div className="rounded-xl border border-line bg-bg p-4" data-speech-block>
-                      <p data-speech-question className="mb-3 flex items-center text-base font-semibold">V1. What usually attracts your attention most at an exhibition?{speakerButton()}</p>
+                      <p data-speech-question className="mb-3 flex items-center text-base font-semibold">V1. {t.qV1}{speakerButton()}</p>
                       {renderChoiceGrid("visitorAttention", [
                         "Large displays / screens",
                         "Movement / unusual displays",
@@ -1004,11 +1013,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                 <h2 className="font-display text-2xl font-semibold">{t.step3}</h2>
                 <div className="rounded-xl border border-line bg-bg p-4 text-sm leading-7 text-muted" data-speech-block>
                   <div className="flex items-start justify-between gap-3">
-                    <p data-speech-description>
-                      Depth X is developing an autonomous aerial marketing platform designed to combine
-                      mobile advertising with anonymous audience measurement and real-time campaign
-                      adaptation.
-                    </p>
+                    <p data-speech-description>{t.conceptDescription}</p>
                     {speakerButton()}
                   </div>
                 </div>
@@ -1037,7 +1042,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                   <textarea
                     value={String(form.valueWhy ?? "")}
                     onChange={(e) => handleInput("valueWhy", e.target.value)}
-                    placeholder="Optional comment"
+                    placeholder={t.optionalComment}
                     className="mt-4 min-h-28 w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
                   />
                 </div>
@@ -1070,7 +1075,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                   <textarea
                     value={String(form.concernText ?? "")}
                     onChange={(e) => handleInput("concernText", e.target.value)}
-                    placeholder="Optional comment"
+                    placeholder={t.optionalComment}
                     className="mt-4 min-h-28 w-full rounded-xl border border-line bg-bg px-3 py-3 text-text outline-none focus:border-green"
                   />
                 </div>

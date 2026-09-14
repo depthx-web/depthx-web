@@ -311,6 +311,176 @@ const answerTranslations: Record<Lang, Record<string, string>> = {
   },
 };
 
+type InterviewType = "E" | "O" | "A" | "V";
+type QuestionKind = "text" | "scale" | "yesNo" | "choices";
+type QuestionSpec = {
+  key: string;
+  prompt: string;
+  kind: QuestionKind;
+  options?: { value: string; label: string }[];
+  reasonKey?: string;
+};
+
+const categoryQuestions: Record<Lang, Record<InterviewType, QuestionSpec[]>> = {
+  en: {
+    E: [
+      { key: "e1_attraction", prompt: "How do you currently attract visitors' attention to your booth or campaign?", kind: "text" },
+      { key: "e2_measurement", prompt: "How do you currently measure the performance of your advertising or visitor engagement?", kind: "text" },
+      { key: "e3_missing_engagement_data", prompt: "What information about audience engagement would you like to know but cannot currently measure?", kind: "text" },
+      { key: "e4_campaign_adaptation", prompt: "Can you adapt your campaign during an exhibition based on audience response? How?", kind: "text" },
+      { key: "e5_data_importance", prompt: "How important is better audience engagement data to you?", kind: "scale" },
+      { key: "e6_solution_value", prompt: "Which part of the solution would be most valuable to you?", kind: "text" },
+      { key: "e7_barrier", prompt: "What is your biggest concern or barrier to using such a system?", kind: "text" },
+      { key: "e8_pilot_interest", prompt: "If the system were built, validated and received the necessary approvals, how interested would you be in testing it in a campaign or exhibition?", kind: "scale", reasonKey: "e8_pilot_reason" },
+      { key: "e9_use_case", prompt: "Could you imagine using this system at your booth or in one of your campaigns?", kind: "yesNo" },
+      { key: "e10_willingness_to_pay", prompt: "If the system demonstrated improved engagement and useful analytics, would that provide enough value for you to pay for the service?", kind: "yesNo" },
+      { key: "e11_pilot_contact", prompt: "May we contact you later regarding a potential pilot?", kind: "yesNo" },
+    ],
+    O: [
+      { key: "o1_exhibitor_visibility", prompt: "How do you currently help exhibitors increase visibility and attract visitors?", kind: "text" },
+      { key: "o2_exhibitor_data", prompt: "What data do you currently provide exhibitors to measure audience engagement?", kind: "text" },
+      { key: "o3_missing_insights", prompt: "What data or insights do you think are currently missing?", kind: "text" },
+      { key: "o4_event_adaptation", prompt: "To what extent can activities or campaigns at the event be adapted based on visitor behavior?", kind: "text" },
+      { key: "o5_measurement_importance", prompt: "How important is providing exhibitors with better audience engagement measurement?", kind: "scale" },
+      { key: "o6_solution_value", prompt: "Which part of the solution would be most valuable for exhibitions or events?", kind: "text" },
+      { key: "o7_uav_concern", prompt: "What would be your biggest concern about operating UAVs inside or around an event venue?", kind: "text" },
+      { key: "o8_pilot_interest", prompt: "If the system were built, validated and received the necessary approvals, how interested would you be in hosting a pilot?", kind: "scale", reasonKey: "o8_pilot_reason" },
+      { key: "o9_pilot_location", prompt: "Where inside or around the event do you think such a pilot would be most useful?", kind: "text" },
+      { key: "o10_pilot_requirement", prompt: "What is the most important requirement that would need to be met before allowing a pilot at your event?", kind: "text" },
+      { key: "o11_pilot_contact", prompt: "May we contact you later to discuss a possible pilot?", kind: "yesNo" },
+    ],
+    A: [
+      { key: "a1_physical_offerings", prompt: "What types of physical advertising or campaigns do you currently offer your clients?", kind: "text" },
+      { key: "a2_campaign_measurement", prompt: "How do you currently measure the performance of these campaigns?", kind: "text" },
+      { key: "a3_client_data_requests", prompt: "What data do clients ask for that is difficult to provide for physical advertising?", kind: "text" },
+      { key: "a4_campaign_adaptation", prompt: "To what extent can you adapt campaigns while they are running based on audience response?", kind: "text" },
+      { key: "a5_measurement_importance", prompt: "How important is making physical advertising more measurable and adaptable?", kind: "scale" },
+      { key: "a6_solution_value", prompt: "Which part of the solution would be most valuable to your agency or clients?", kind: "text" },
+      { key: "a7_service_barrier", prompt: "What is the biggest concern or barrier that could prevent your agency from offering this service?", kind: "text" },
+      { key: "a8_pilot_interest", prompt: "If the system were built, validated and received the necessary approvals, how interested would you be in testing it with one of your clients?", kind: "scale", reasonKey: "a8_pilot_reason" },
+      { key: "a9_service_offering", prompt: "Could you imagine offering Depth X as part of your services to clients?", kind: "yesNo" },
+      { key: "a10_proof_required", prompt: "What would we need to prove technically or commercially before you would be willing to offer this to a client?", kind: "text" },
+      { key: "a11_pilot_contact", prompt: "May we contact you later regarding a pilot or possible partnership?", kind: "yesNo" },
+    ],
+    V: [
+      { key: "v1_attention", prompt: "What usually attracts your attention at exhibitions?", kind: "choices", options: [{ value: "Screens", label: "Screens" }, { value: "Moving displays", label: "Moving displays" }, { value: "Lighting", label: "Lighting" }, { value: "Sound", label: "Sound" }, { value: "People", label: "People" }, { value: "Other", label: "Other" }] },
+      { key: "v2_moving_aerial_attention", prompt: "If you saw a moving aerial advertising display compared with a fixed banner or screen, which would attract your attention more?", kind: "text" },
+      { key: "v3_uav_discomfort", prompt: "What might make you uncomfortable about a UAV-based display?", kind: "choices", options: [{ value: "Safety", label: "Safety" }, { value: "Noise", label: "Noise" }, { value: "Privacy", label: "Privacy" }, { value: "UAVs flying close to people", label: "UAVs flying close to people" }, { value: "No major concern", label: "No major concern" }, { value: "Other", label: "Other" }] },
+      { key: "v4_anonymous_measurement", prompt: "Would you be comfortable if the system measured audience engagement anonymously and in aggregate, without identifying individuals?", kind: "yesNo" },
+      { key: "v5_interaction", prompt: "If the display caught your attention, would you be willing to interact with it, for example by scanning a QR code?", kind: "yesNo" },
+      { key: "v6_like", prompt: "What do you like most about the idea?", kind: "text" },
+      { key: "v7_concern", prompt: "What is your biggest concern about the idea?", kind: "text" },
+    ],
+  },
+  de: {
+    E: [
+      { key: "e1_attraction", prompt: "Wie gewinnen Sie derzeit die Aufmerksamkeit von Besuchern für Ihren Messestand oder Ihre Kampagne?", kind: "text" },
+      { key: "e2_measurement", prompt: "Wie messen Sie derzeit die Leistung Ihrer Werbung oder die Interaktion der Besucher?", kind: "text" },
+      { key: "e3_missing_engagement_data", prompt: "Welche Informationen über die Interaktion des Publikums würden Sie gerne kennen, können diese derzeit aber nicht messen?", kind: "text" },
+      { key: "e4_campaign_adaptation", prompt: "Können Sie Ihre Kampagne während einer Messe anhand der Reaktion des Publikums anpassen? Wie?", kind: "text" },
+      { key: "e5_data_importance", prompt: "Wie wichtig sind bessere Daten über die Interaktion des Publikums für Sie?", kind: "scale" },
+      { key: "e6_solution_value", prompt: "Welcher Teil der Lösung wäre für Sie am wertvollsten?", kind: "text" },
+      { key: "e7_barrier", prompt: "Was wäre Ihre größte Sorge oder Hürde bei der Nutzung eines solchen Systems?", kind: "text" },
+      { key: "e8_pilot_interest", prompt: "Wenn das System entwickelt, validiert und entsprechend genehmigt wäre, wie interessiert wären Sie daran, es in einer Kampagne oder Messe zu testen?", kind: "scale", reasonKey: "e8_pilot_reason" },
+      { key: "e9_use_case", prompt: "Könnten Sie sich vorstellen, dieses System an Ihrem Messestand oder in einer Ihrer Kampagnen einzusetzen?", kind: "yesNo" },
+      { key: "e10_willingness_to_pay", prompt: "Wenn das System nachweislich mehr Interaktion und nützliche Analysen liefert, wäre dieser Mehrwert ausreichend, um für den Service zu bezahlen?", kind: "yesNo" },
+      { key: "e11_pilot_contact", prompt: "Dürfen wir Sie später bezüglich eines möglichen Pilotprojekts kontaktieren?", kind: "yesNo" },
+    ],
+    O: [
+      { key: "o1_exhibitor_visibility", prompt: "Wie unterstützen Sie Aussteller derzeit dabei, ihre Sichtbarkeit zu erhöhen und Besucher anzuziehen?", kind: "text" },
+      { key: "o2_exhibitor_data", prompt: "Welche Daten stellen Sie Ausstellern derzeit zur Verfügung, um die Interaktion des Publikums zu messen?", kind: "text" },
+      { key: "o3_missing_insights", prompt: "Welche Daten oder Erkenntnisse fehlen Ihrer Meinung nach derzeit?", kind: "text" },
+      { key: "o4_event_adaptation", prompt: "In welchem Umfang können Aktivitäten oder Kampagnen auf der Veranstaltung anhand des Besucherverhaltens angepasst werden?", kind: "text" },
+      { key: "o5_measurement_importance", prompt: "Wie wichtig ist es, Ausstellern bessere Möglichkeiten zur Messung der Publikumsinteraktion anzubieten?", kind: "scale" },
+      { key: "o6_solution_value", prompt: "Welcher Teil der Lösung wäre für Messen oder Veranstaltungen am wertvollsten?", kind: "text" },
+      { key: "o7_uav_concern", prompt: "Was wäre Ihre größte Sorge beim Betrieb von UAVs innerhalb oder im Umfeld eines Veranstaltungsortes?", kind: "text" },
+      { key: "o8_pilot_interest", prompt: "Wenn das System entwickelt, validiert und entsprechend genehmigt wäre, wie interessiert wären Sie daran, ein Pilotprojekt zu ermöglichen?", kind: "scale", reasonKey: "o8_pilot_reason" },
+      { key: "o9_pilot_location", prompt: "Wo innerhalb oder im Umfeld der Veranstaltung wäre ein solches Pilotprojekt Ihrer Meinung nach am sinnvollsten?", kind: "text" },
+      { key: "o10_pilot_requirement", prompt: "Welche wichtigste Voraussetzung müsste erfüllt sein, bevor Sie ein Pilotprojekt auf Ihrer Veranstaltung zulassen würden?", kind: "text" },
+      { key: "o11_pilot_contact", prompt: "Dürfen wir Sie später kontaktieren, um ein mögliches Pilotprojekt zu besprechen?", kind: "yesNo" },
+    ],
+    A: [
+      { key: "a1_physical_offerings", prompt: "Welche Arten von physischer Werbung oder Kampagnen bieten Sie Ihren Kunden derzeit an?", kind: "text" },
+      { key: "a2_campaign_measurement", prompt: "Wie messen Sie derzeit die Leistung dieser Kampagnen?", kind: "text" },
+      { key: "a3_client_data_requests", prompt: "Welche Daten verlangen Kunden, die bei physischer Werbung nur schwer bereitgestellt werden können?", kind: "text" },
+      { key: "a4_campaign_adaptation", prompt: "In welchem Umfang können Sie laufende Kampagnen anhand der Reaktion des Publikums anpassen?", kind: "text" },
+      { key: "a5_measurement_importance", prompt: "Wie wichtig ist es, physische Werbung messbarer und anpassungsfähiger zu machen?", kind: "scale" },
+      { key: "a6_solution_value", prompt: "Welcher Teil der Lösung wäre für Ihre Agentur oder Ihre Kunden am wertvollsten?", kind: "text" },
+      { key: "a7_service_barrier", prompt: "Was wäre die größte Sorge oder Hürde, die Ihre Agentur davon abhalten könnte, diesen Service anzubieten?", kind: "text" },
+      { key: "a8_pilot_interest", prompt: "Wenn das System entwickelt, validiert und entsprechend genehmigt wäre, wie interessiert wären Sie daran, es mit einem Ihrer Kunden zu testen?", kind: "scale", reasonKey: "a8_pilot_reason" },
+      { key: "a9_service_offering", prompt: "Könnten Sie sich vorstellen, Depth X als Teil Ihres Leistungsangebots für Kunden anzubieten?", kind: "yesNo" },
+      { key: "a10_proof_required", prompt: "Was müssten wir technisch oder kommerziell nachweisen, bevor Sie bereit wären, dies einem Kunden anzubieten?", kind: "text" },
+      { key: "a11_pilot_contact", prompt: "Dürfen wir Sie später bezüglich eines Pilotprojekts oder einer möglichen Partnerschaft kontaktieren?", kind: "yesNo" },
+    ],
+    V: [
+      { key: "v1_attention", prompt: "Was zieht auf Messen normalerweise Ihre Aufmerksamkeit auf sich?", kind: "choices", options: [{ value: "Screens", label: "Bildschirme" }, { value: "Moving displays", label: "Bewegte Präsentationen" }, { value: "Lighting", label: "Beleuchtung" }, { value: "Sound", label: "Ton" }, { value: "People", label: "Personen" }, { value: "Other", label: "Sonstiges" }] },
+      { key: "v2_moving_aerial_attention", prompt: "Wenn Sie eine bewegte Werbedarstellung in der Luft mit einem festen Banner oder Bildschirm vergleichen, welche würde Ihre Aufmerksamkeit stärker auf sich ziehen?", kind: "text" },
+      { key: "v3_uav_discomfort", prompt: "Was könnte Ihnen bei einer UAV-basierten Präsentation unangenehm sein?", kind: "choices", options: [{ value: "Safety", label: "Sicherheit" }, { value: "Noise", label: "Lärm" }, { value: "Privacy", label: "Datenschutz" }, { value: "UAVs flying close to people", label: "UAVs, die nahe an Menschen fliegen" }, { value: "No major concern", label: "Keine großen Bedenken" }, { value: "Other", label: "Sonstiges" }] },
+      { key: "v4_anonymous_measurement", prompt: "Wären Sie damit einverstanden, wenn das System die Publikumsinteraktion anonym und aggregiert misst, ohne einzelne Personen zu identifizieren?", kind: "yesNo" },
+      { key: "v5_interaction", prompt: "Wenn die Präsentation Ihre Aufmerksamkeit weckt, wären Sie bereit, damit zu interagieren, zum Beispiel durch das Scannen eines QR-Codes?", kind: "yesNo" },
+      { key: "v6_like", prompt: "Was gefällt Ihnen an der Idee am besten?", kind: "text" },
+      { key: "v7_concern", prompt: "Was ist Ihre größte Sorge bezüglich der Idee?", kind: "text" },
+    ],
+  },
+  zh: {
+    E: [
+      { key: "e1_attraction", prompt: "您目前如何吸引参观者关注您的展位或营销活动？", kind: "text" },
+      { key: "e2_measurement", prompt: "您目前如何衡量广告效果或访客互动？", kind: "text" },
+      { key: "e3_missing_engagement_data", prompt: "关于受众互动，您希望了解哪些目前无法衡量的信息？", kind: "text" },
+      { key: "e4_campaign_adaptation", prompt: "您能否在展会期间根据观众反应调整营销活动？如果可以，是如何调整的？", kind: "text" },
+      { key: "e5_data_importance", prompt: "更好的受众互动数据对您有多重要？", kind: "scale" },
+      { key: "e6_solution_value", prompt: "该解决方案的哪一部分对您最有价值？", kind: "text" },
+      { key: "e7_barrier", prompt: "使用这种系统时，您最大的顾虑或障碍是什么？", kind: "text" },
+      { key: "e8_pilot_interest", prompt: "如果该系统完成开发、验证并获得必要许可，您有多大兴趣在营销活动或展会中进行测试？", kind: "scale", reasonKey: "e8_pilot_reason" },
+      { key: "e9_use_case", prompt: "您能想象在展位或某次营销活动中使用该系统吗？", kind: "yesNo" },
+      { key: "e10_willingness_to_pay", prompt: "如果该系统能够证明提升互动并提供有价值的数据分析，您是否认为其价值足以值得付费？", kind: "yesNo" },
+      { key: "e11_pilot_contact", prompt: "我们以后可以就潜在的试点项目与您联系吗？", kind: "yesNo" },
+    ],
+    O: [
+      { key: "o1_exhibitor_visibility", prompt: "您目前如何帮助参展商提高曝光度并吸引访客？", kind: "text" },
+      { key: "o2_exhibitor_data", prompt: "您目前向参展商提供哪些数据来衡量受众互动？", kind: "text" },
+      { key: "o3_missing_insights", prompt: "您认为目前还缺少哪些数据或洞察？", kind: "text" },
+      { key: "o4_event_adaptation", prompt: "活动或营销内容在多大程度上可以根据访客行为进行调整？", kind: "text" },
+      { key: "o5_measurement_importance", prompt: "为参展商提供更好的受众互动衡量方式有多重要？", kind: "scale" },
+      { key: "o6_solution_value", prompt: "该解决方案的哪一部分对展会或活动最有价值？", kind: "text" },
+      { key: "o7_uav_concern", prompt: "在活动场地内或周边运行无人机系统时，您最大的顾虑是什么？", kind: "text" },
+      { key: "o8_pilot_interest", prompt: "如果该系统完成开发、验证并获得必要许可，您有多大兴趣承办试点项目？", kind: "scale", reasonKey: "o8_pilot_reason" },
+      { key: "o9_pilot_location", prompt: "您认为在活动场地内或周边哪个位置最适合进行这种试点？", kind: "text" },
+      { key: "o10_pilot_requirement", prompt: "在允许此类试点进入您的活动之前，最重要的前提条件是什么？", kind: "text" },
+      { key: "o11_pilot_contact", prompt: "我们以后可以联系您讨论潜在的试点项目吗？", kind: "yesNo" },
+    ],
+    A: [
+      { key: "a1_physical_offerings", prompt: "您目前为客户提供哪些类型的线下广告或实体营销活动？", kind: "text" },
+      { key: "a2_campaign_measurement", prompt: "您目前如何衡量这些营销活动的效果？", kind: "text" },
+      { key: "a3_client_data_requests", prompt: "客户通常希望获得哪些在线下广告中难以提供的数据？", kind: "text" },
+      { key: "a4_campaign_adaptation", prompt: "在营销活动进行过程中，您在多大程度上能够根据受众反应进行调整？", kind: "text" },
+      { key: "a5_measurement_importance", prompt: "让线下广告变得更可衡量、更具适应性有多重要？", kind: "scale" },
+      { key: "a6_solution_value", prompt: "该解决方案的哪一部分对您的代理机构或客户最有价值？", kind: "text" },
+      { key: "a7_service_barrier", prompt: "哪个最大顾虑或障碍可能阻止您的代理机构提供此服务？", kind: "text" },
+      { key: "a8_pilot_interest", prompt: "如果该系统完成开发、验证并获得必要许可，您有多大兴趣与某个客户一起测试？", kind: "scale", reasonKey: "a8_pilot_reason" },
+      { key: "a9_service_offering", prompt: "您能想象将 Depth X 作为面向客户的服务之一吗？", kind: "yesNo" },
+      { key: "a10_proof_required", prompt: "在您愿意向客户提供这一方案之前，我们需要在技术或商业方面证明什么？", kind: "text" },
+      { key: "a11_pilot_contact", prompt: "我们以后可以就试点项目或潜在合作与您联系吗？", kind: "yesNo" },
+    ],
+    V: [
+      { key: "v1_attention", prompt: "在展会上，什么通常最能吸引您的注意？", kind: "choices", options: [{ value: "Screens", label: "屏幕" }, { value: "Moving displays", label: "动态展示" }, { value: "Lighting", label: "灯光" }, { value: "Sound", label: "声音" }, { value: "People", label: "人员" }, { value: "Other", label: "其他" }] },
+      { key: "v2_moving_aerial_attention", prompt: "如果将移动的空中广告展示与固定横幅或屏幕相比，哪一种更能吸引您的注意？", kind: "text" },
+      { key: "v3_uav_discomfort", prompt: "对基于无人机的展示，哪些因素可能让您感到不适？", kind: "choices", options: [{ value: "Safety", label: "安全" }, { value: "Noise", label: "噪音" }, { value: "Privacy", label: "隐私" }, { value: "UAVs flying close to people", label: "无人机靠近人群飞行" }, { value: "No major concern", label: "没有重大顾虑" }, { value: "Other", label: "其他" }] },
+      { key: "v4_anonymous_measurement", prompt: "如果系统仅以匿名和汇总方式衡量受众互动，不识别个人身份，您是否会感到舒适？", kind: "yesNo" },
+      { key: "v5_interaction", prompt: "如果该展示吸引了您的注意，您是否愿意进行互动，例如扫描二维码？", kind: "yesNo" },
+      { key: "v6_like", prompt: "您最喜欢这个想法的哪一点？", kind: "text" },
+      { key: "v7_concern", prompt: "您对这个想法最大的顾虑是什么？", kind: "text" },
+    ],
+  },
+};
+
+const categoryAnswerDefaults = Object.fromEntries(
+  categoryQuestions.en.E.concat(categoryQuestions.en.O, categoryQuestions.en.A, categoryQuestions.en.V).flatMap((question) => [
+    [question.key, question.kind === "choices" ? [] : ""],
+    ...(question.reasonKey ? [[question.reasonKey, ""]] : []),
+  ]),
+) as FormState;
+
 export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boolean }) {
   const [lang, setLang] = useState<Lang>("en");
   const [step, setStep] = useState(0);
@@ -446,7 +616,10 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
     key: string,
     value: string | string[] | boolean,
   ) => {
-    setForm((current) => ({ ...current, [key]: value }));
+    setForm((current) => {
+      if (key !== "type") return { ...current, [key]: value };
+      return { ...current, ...categoryAnswerDefaults, type: value };
+    });
   };
 
   const handleCheckbox = (key: string, value: string) => {
@@ -460,13 +633,10 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
   };
 
   const requiredForStep = (index: number) => {
-    const requiredMap: Record<number, string[]> = {
-      0: ["exhibition", "type"],
-      1: activeType === "V" ? [] : ["adaptability"],
-      2: ["mostValuable"],
-      3: ["measurementPain", "conceptInterest", "pilotPotential", "keyInsight", "biggestObjection", "nextAction"],
-    };
-    return requiredMap[index] ?? [];
+    if (index === 0) return ["exhibition", "type"];
+    if (index === 1) return activeQuestions.slice(0, activeType === "V" ? 3 : 5).map((question) => question.key);
+    if (index === 2) return activeQuestions.slice(activeType === "V" ? 3 : 5).map((question) => question.key);
+    return ["measurementPain", "conceptInterest", "pilotPotential", "keyInsight", "biggestObjection", "nextAction"];
   };
 
   const validateStep = () => {
@@ -503,6 +673,14 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
 
     const item: FormState = {
       ...form,
+      pilotInterest:
+        activeType === "E"
+          ? String(form.e8_pilot_interest ?? "")
+          : activeType === "O"
+            ? String(form.o8_pilot_interest ?? "")
+            : activeType === "A"
+              ? String(form.a8_pilot_interest ?? "")
+              : "",
       id: "",
       createdAt: new Date().toISOString(),
       syncStatus: "pending",
@@ -614,6 +792,65 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
       })}
     </div>
   );
+
+  const activeQuestions = activeType === "E" || activeType === "O" || activeType === "A" || activeType === "V"
+    ? categoryQuestions[lang][activeType]
+    : [];
+
+  const renderCategoryQuestion = (question: QuestionSpec, index: number) => {
+    const value = form[question.key];
+    const questionLabel = `${activeType}${index + 1}. ${question.prompt}`;
+    const options = question.options || [];
+
+    return (
+      <div key={question.key} className="rounded-xl border border-line bg-bg p-4" data-speech-block>
+        <p data-speech-question className="mb-3 flex items-center text-base font-semibold">
+          {questionLabel}{speakerButton()}
+        </p>
+        {question.kind === "text" && (
+          <textarea
+            value={String(value ?? "")}
+            onChange={(event) => handleInput(question.key, event.target.value)}
+            className="min-h-28 w-full rounded-xl border border-line bg-bg-2 px-3 py-3 text-text outline-none focus:border-green"
+          />
+        )}
+        {(question.kind === "scale" || question.kind === "yesNo") && (
+          <select
+            value={String(value ?? "")}
+            onChange={(event) => handleInput(question.key, event.target.value)}
+            className="w-full rounded-xl border border-line bg-bg-2 px-3 py-3 text-text outline-none focus:border-green"
+          >
+            <option value="">{t.select}{question.kind === "scale" ? " 1–5…" : ""}</option>
+            {question.kind === "scale"
+              ? ["1", "2", "3", "4", "5"].map((score) => <option key={score} value={score}>{score}</option>)
+              : ["Yes", "Maybe", "No"].map((answerValue) => <option key={answerValue} value={answerValue}>{answer(answerValue)}</option>)}
+          </select>
+        )}
+        {question.kind === "choices" && renderChoiceGrid(
+          question.key,
+          options.map((option) => option.value),
+          Object.fromEntries(options.map((option) => [option.value, option.label])),
+        )}
+        {question.kind === "choices" && options.some((option) => option.value === "Other") &&
+          Array.isArray(value) && value.includes("Other") && (
+            <textarea
+              value={String(form[`${question.key}_other`] ?? "")}
+              onChange={(event) => handleInput(`${question.key}_other`, event.target.value)}
+              placeholder={t.optionalComment}
+              className="mt-4 min-h-24 w-full rounded-xl border border-line bg-bg-2 px-3 py-3 text-text outline-none focus:border-green"
+            />
+          )}
+        {question.reasonKey && (
+          <textarea
+            value={String(form[question.reasonKey] ?? "")}
+            onChange={(event) => handleInput(question.reasonKey!, event.target.value)}
+            placeholder={t.optionalComment}
+            className="mt-4 min-h-24 w-full rounded-xl border border-line bg-bg-2 px-3 py-3 text-text outline-none focus:border-green"
+          />
+        )}
+      </div>
+    );
+  };
 
   const summaryCards = [
     {
@@ -856,7 +1093,11 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
             {step === 1 && (
               <div className="space-y-8">
                 <h2 className="font-display text-2xl font-semibold">{t.step2}</h2>
+                <div className="space-y-6">
+                  {activeQuestions.slice(0, activeType === "V" ? 3 : 5).map(renderCategoryQuestion)}
+                </div>
 
+                {false && (<>
                 {activeType !== "V" && (
                   <div className="space-y-6">
                     <div className="rounded-xl border border-line bg-bg p-4" data-speech-block>
@@ -1001,12 +1242,23 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                     </div>
                   </div>
                 )}
+                </>)}
               </div>
             )}
 
             {step === 2 && (
               <div className="space-y-8">
                 <h2 className="font-display text-2xl font-semibold">{t.step3}</h2>
+                <div className="rounded-xl border border-line bg-bg p-4 text-sm leading-7 text-muted" data-speech-block>
+                  <div className="flex items-start justify-between gap-3">
+                    <p data-speech-description>{t.conceptDescription}</p>
+                    {speakerButton()}
+                  </div>
+                </div>
+                <div className="space-y-6">
+                  {activeQuestions.slice(activeType === "V" ? 3 : 5).map(renderCategoryQuestion)}
+                </div>
+                {false && (<>
                 <div className="rounded-xl border border-line bg-bg p-4 text-sm leading-7 text-muted" data-speech-block>
                   <div className="flex items-start justify-between gap-3">
                     <p data-speech-description>{t.conceptDescription}</p>
@@ -1093,6 +1345,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                     </select>
                   </div>
                 )}
+                </>)}
               </div>
             )}
 

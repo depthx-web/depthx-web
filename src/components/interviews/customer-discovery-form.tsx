@@ -312,13 +312,14 @@ const answerTranslations: Record<Lang, Record<string, string>> = {
 };
 
 type InterviewType = "E" | "O" | "A" | "V";
-type QuestionKind = "text" | "scale" | "yesNo" | "choices";
+type QuestionKind = "text" | "scale" | "radio" | "yesNo" | "choices";
 type QuestionSpec = {
   key: string;
   prompt: string;
   kind: QuestionKind;
   options?: { value: string; label: string }[];
   reasonKey?: string;
+  commentKey?: string;
 };
 
 const categoryQuestions: Record<Lang, Record<InterviewType, QuestionSpec[]>> = {
@@ -481,6 +482,57 @@ const categoryAnswerDefaults = Object.fromEntries(
   ]),
 ) as FormState;
 
+const categoryOptionValues: Record<string, string[]> = {
+  e1_attraction: ["digital_screens", "printed_banners", "product_demonstrations", "promotional_staff", "giveaways", "interactive_experiences", "lighting_effects", "social_media_promotion", "live_presentations", "other"],
+  e2_measurement: ["foot_traffic", "leads_collected", "qr_scans", "website_visits", "social_media_engagement", "surveys", "sales_conversions", "staff_observations", "event_organizer_reports", "not_measured", "other"],
+  e3_missing_engagement_data: ["noticed_campaign_count", "attention_duration", "audience_engagement_level", "visitor_movement", "effective_content", "time_of_day_performance", "post_engagement_conversion", "campaign_variation_comparison", "anonymous_demographic_trends", "other"],
+  e4_campaign_adaptation: ["real_time", "delayed", "minor_changes_only", "no", "not_sure"],
+  e6_solution_value: ["mobile_aerial_advertising", "audience_attention_measurement", "real_time_analytics", "adaptive_campaign_content", "multi_uav_operation", "near_continuous_operation", "qr_interactive_engagement", "campaign_reporting", "other"],
+  e7_barrier: ["safety", "regulation_approvals", "noise", "privacy", "cost", "technical_reliability", "audience_acceptance", "weather", "indoor_operation_constraints", "other", "no_major_concern"],
+  e9_use_case: ["definitely_yes", "probably_yes", "maybe", "probably_not", "definitely_not"],
+  e10_willingness_to_pay: ["definitely_yes", "probably_yes", "maybe_depends_on_price", "probably_not", "definitely_not"],
+  o1_exhibitor_visibility: ["event_app", "digital_signage", "printed_signage", "sponsorship_placements", "stage_presentations", "networking_activities", "event_marketing", "booth_placement", "interactive_installations", "other"],
+  o2_exhibitor_data: ["visitor_counts", "booth_traffic", "app_interactions", "qr_scans", "lead_data", "session_attendance", "survey_results", "event_statistics", "no_engagement_data", "other"],
+  o3_missing_insights: ["real_time_visitor_movement", "individual_campaign_attention", "engagement_duration", "effective_locations", "effective_content", "traffic_patterns", "real_time_campaign_performance", "anonymous_audience_behavior", "other"],
+  o4_event_adaptation: ["highly_adaptable_realtime", "some_adjustments", "limited_adjustments", "fixed_after_start", "not_sure"],
+  o6_solution_value: ["new_advertising_format", "exhibitor_analytics", "sponsorship_inventory", "visitor_engagement", "real_time_event_analytics", "adaptive_advertising", "new_revenue_opportunity", "other"],
+  o7_uav_concern: ["safety", "aviation_regulatory_approval", "venue_approval", "noise", "privacy", "insurance_liability", "visitor_acceptance", "emergency_procedures", "technical_reliability", "indoor_flight_restrictions", "other"],
+  o9_pilot_location: ["entrance_area", "outdoor_exhibition_area", "hall_transition_areas", "large_open_indoor_area", "sponsor_zone", "networking_area", "demonstration_zone", "other"],
+  o10_pilot_requirement: ["safety_certification", "regulatory_approval", "insurance", "low_noise", "clear_emergency_procedures", "privacy_safeguards", "proven_technical_reliability", "defined_operating_area", "successful_prior_testing", "other"],
+  a1_physical_offerings: ["outdoor_advertising", "dooh", "event_advertising", "exhibition_campaigns", "experiential_marketing", "promotional_activations", "printed_advertising", "mobile_advertising", "interactive_installations", "sponsorship_campaigns", "other"],
+  a2_campaign_measurement: ["foot_traffic", "leads", "qr_scans", "website_traffic", "social_media_engagement", "surveys", "sales_conversions", "brand_awareness_studies", "third_party_analytics", "client_feedback", "limited_measurement", "other"],
+  a3_client_data_requests: ["attention", "engagement_duration", "real_time_performance", "audience_movement", "attribution", "interaction_rate", "content_comparison", "location_performance", "anonymous_audience_behavior", "other"],
+  a4_campaign_adaptation: ["real_time_adaptation", "same_day_changes", "longer_changes", "very_limited_adaptability", "mostly_fixed"],
+  a6_solution_value: ["new_advertising_format", "audience_analytics", "real_time_measurement", "adaptive_campaigns", "multi_uav_operation", "near_continuous_operation", "interactive_engagement", "client_reporting", "other"],
+  a7_service_barrier: ["regulation", "safety", "cost", "client_acceptance", "privacy", "noise", "technical_reliability", "scalability", "weather", "campaign_integration", "other", "no_major_concern"],
+  a9_service_offering: ["definitely_yes", "probably_yes", "maybe", "probably_not", "definitely_not"],
+  a10_proof_required: ["safety", "regulatory_compliance", "technical_reliability", "audience_engagement", "measurable_roi", "client_demand", "pricing_viability", "scalability", "privacy_safeguards", "successful_pilot_results", "other"],
+  v1_attention: ["screens", "moving_displays", "lighting", "sound", "people_presenters", "product_demonstrations", "interactive_experiences", "unusual_technology", "giveaways", "other"],
+  v2_moving_aerial_attention: ["moving_aerial_display", "fixed_banner", "digital_screen", "no_difference", "not_sure"],
+  v3_uav_discomfort: ["safety", "noise", "privacy", "flying_close_to_people", "uav_size", "unexpected_movement", "cameras_sensors", "crowded_environment", "no_major_concern", "other"],
+  v4_anonymous_measurement: ["completely_comfortable", "mostly_comfortable", "neutral", "somewhat_uncomfortable", "very_uncomfortable"],
+  v5_interaction: ["definitely_yes", "probably_yes", "maybe", "probably_not", "definitely_not"],
+  v6_like: ["innovative", "attracts_attention", "interactive", "visually_interesting", "more_dynamic", "useful_information", "no_major_benefit", "other"],
+  v7_concern: ["safety", "noise", "privacy", "reliability", "too_distracting", "too_intrusive", "flying_near_people", "no_major_concern", "other"],
+};
+
+const categoryOptionTranslations: Record<Lang, Record<string, string>> = {
+  en: {},
+  de: {
+    digital_screens: "Digitale Bildschirme", printed_banners: "Gedruckte Banner / Beschilderung", product_demonstrations: "Produktvorführungen", promotional_staff: "Promotion-Personal", giveaways: "Giveaways", interactive_experiences: "Interaktive Erlebnisse", lighting_effects: "Licht- / visuelle Effekte", social_media_promotion: "Social-Media-Werbung", live_presentations: "Live-Präsentationen", other: "Sonstiges", foot_traffic: "Besucheraufkommen", leads_collected: "Gesammelte Leads", qr_scans: "QR-Scans", website_visits: "Website-Besuche", social_media_engagement: "Social-Media-Interaktion", surveys: "Umfragen", sales_conversions: "Verkäufe / Conversions", staff_observations: "Beobachtungen des Personals", event_organizer_reports: "Berichte des Veranstalters", not_measured: "Wir messen es nicht", noticed_campaign_count: "Anzahl der Personen, die die Kampagne bemerkt haben", attention_duration: "Aufmerksamkeitsdauer", audience_engagement_level: "Grad der Publikumsinteraktion", visitor_movement: "Besucherbewegungen / Besucherströme", effective_content: "Wirksamster Inhalt", time_of_day_performance: "Leistung nach Tageszeit", post_engagement_conversion: "Conversion nach Interaktion", campaign_variation_comparison: "Vergleich von Kampagnenvarianten", anonymous_demographic_trends: "Anonyme demografische Trends", real_time: "Ja, in Echtzeit", delayed: "Ja, aber nur mit Verzögerung", minor_changes_only: "Nur geringfügige Änderungen", no: "Nein", not_sure: "Nicht sicher", mobile_aerial_advertising: "Mobile Luftwerbung", audience_attention_measurement: "Messung der Publikumsaufmerksamkeit", real_time_analytics: "Echtzeitanalysen", adaptive_campaign_content: "Anpassbarer Kampagneninhalt", multi_uav_operation: "Betrieb mehrerer UAVs", near_continuous_operation: "Nahezu kontinuierlicher Betrieb", qr_interactive_engagement: "QR- / interaktive Interaktion", campaign_reporting: "Kampagnenberichte", safety: "Sicherheit", regulation_approvals: "Regulierung / Genehmigungen", noise: "Lärm", privacy: "Datenschutz", cost: "Kosten", technical_reliability: "Technische Zuverlässigkeit", audience_acceptance: "Akzeptanz beim Publikum", weather: "Wetter", indoor_operation_constraints: "Einschränkungen im Innenbereich", no_major_concern: "Keine großen Bedenken", definitely_yes: "Definitiv ja", probably_yes: "Wahrscheinlich ja", maybe: "Vielleicht", probably_not: "Wahrscheinlich nicht", definitely_not: "Definitiv nicht", event_app: "Veranstaltungs-App", digital_signage: "Digitale Beschilderung", printed_signage: "Gedruckte Beschilderung", sponsorship_placements: "Sponsoring-Platzierungen", stage_presentations: "Bühnen- / Präsentationsmöglichkeiten", networking_activities: "Networking-Aktivitäten", event_marketing: "Veranstaltungsmarketing", booth_placement: "Standplatzierung", interactive_installations: "Interaktive Installationen", visitor_counts: "Besucherzahlen", booth_traffic: "Standbesuche", app_interactions: "App-Interaktionen", lead_data: "Lead-Daten", session_attendance: "Teilnahme an Sitzungen", survey_results: "Umfrageergebnisse", event_statistics: "Veranstaltungsstatistiken", no_engagement_data: "Keine spezifischen Interaktionsdaten", real_time_visitor_movement: "Besucherbewegungen in Echtzeit", individual_campaign_attention: "Aufmerksamkeit für einzelne Kampagnen", engagement_duration: "Dauer der Interaktion", effective_locations: "Wirksamste Standorte", traffic_patterns: "Besucherströme", real_time_campaign_performance: "Kampagnenleistung in Echtzeit", highly_adaptable_realtime: "In Echtzeit hochgradig anpassbar", some_adjustments: "Einige Anpassungen möglich", limited_adjustments: "Nur begrenzte Anpassungen", fixed_after_start: "Nach Veranstaltungsbeginn meist festgelegt", new_advertising_format: "Neues Werbeformat", exhibitor_analytics: "Analysen für Aussteller", sponsorship_inventory: "Zusätzliche Sponsoring-Flächen", visitor_engagement: "Publikumsinteraktion", real_time_event_analytics: "Echtzeit-Eventanalysen", adaptive_advertising: "Anpassbare Werbung", new_revenue_opportunity: "Neue Umsatzmöglichkeit", aviation_regulatory_approval: "Luftfahrt- / behördliche Genehmigung", venue_approval: "Genehmigung des Veranstaltungsortes", insurance_liability: "Versicherung / Haftung", emergency_procedures: "Notfallverfahren", indoor_flight_restrictions: "Einschränkungen für Innenflüge", entrance_area: "Eingangsbereich", outdoor_exhibition_area: "Ausstellungsbereich im Freien", hall_transition_areas: "Übergangsbereiche zwischen Hallen", large_open_indoor_area: "Großer offener Innenbereich", sponsor_zone: "Sponsorenbereich", networking_area: "Networking-Bereich", demonstration_zone: "Vorführbereich", safety_certification: "Sicherheitszertifizierung", regulatory_approval: "Behördliche Genehmigung", insurance: "Versicherung", low_noise: "Geringe Geräuschentwicklung", clear_emergency_procedures: "Klare Notfallverfahren", privacy_safeguards: "Datenschutzmaßnahmen", proven_technical_reliability: "Nachgewiesene technische Zuverlässigkeit", defined_operating_area: "Definierter Betriebsbereich", successful_prior_testing: "Erfolgreiche Vorabtests", outdoor_advertising: "Außenwerbung", dooh: "DOOH", event_advertising: "Veranstaltungswerbung", exhibition_campaigns: "Messekampagnen", experiential_marketing: "Erlebnis-Marketing", promotional_activations: "Werbeaktivierungen", printed_advertising: "Printwerbung", mobile_advertising: "Mobile Werbung", sponsorship_campaigns: "Sponsoring-Kampagnen", leads: "Leads", website_traffic: "Website-Traffic", brand_awareness_studies: "Markenbekanntheitsstudien", third_party_analytics: "Analysen von Drittanbietern", client_feedback: "Kundenfeedback", limited_measurement: "Begrenzte Messung", attention: "Aufmerksamkeit", attribution: "Attribution", interaction_rate: "Interaktionsrate", content_comparison: "Inhaltsvergleich", location_performance: "Standortleistung", real_time_performance: "Leistung in Echtzeit", same_day_changes: "Änderungen am selben Tag", longer_changes: "Änderungen dauern länger", very_limited_adaptability: "Sehr begrenzte Anpassbarkeit", mostly_fixed: "Kampagnen sind meist festgelegt", audience_analytics: "Publikumsanalysen", real_time_measurement: "Echtzeitmessung", adaptive_campaigns: "Anpassbare Kampagnen", client_reporting: "Kundenberichte", client_acceptance: "Kundenakzeptanz", scalability: "Skalierbarkeit", campaign_integration: "Integration in bestehende Kampagnen", regulatory_compliance: "Einhaltung gesetzlicher Vorgaben", measurable_roi: "Messbarer ROI", client_demand: "Kundennachfrage", pricing_viability: "Tragfähige Preisgestaltung", successful_pilot_results: "Erfolgreiche Pilotresultate", screens: "Bildschirme", moving_displays: "Bewegte Displays", lighting: "Beleuchtung", sound: "Ton", people_presenters: "Personen / Präsentierende", unusual_technology: "Ungewöhnliche Technologie", moving_aerial_display: "Bewegte Luftdarstellung", fixed_banner: "Festes Banner", digital_screen: "Digitaler Bildschirm", no_difference: "Kein Unterschied", completely_comfortable: "Vollkommen wohl", mostly_comfortable: "Überwiegend wohl", neutral: "Neutral", somewhat_uncomfortable: "Etwas unwohl", very_uncomfortable: "Sehr unwohl", flying_close_to_people: "Fliegen nahe an Menschen", uav_size: "Größe des UAVs", unexpected_movement: "Unerwartete Bewegung", cameras_sensors: "Kameras / Sensoren", crowded_environment: "Belebte Umgebung", innovative: "Innovativ", attracts_attention: "Zieht Aufmerksamkeit an", visually_interesting: "Visuell interessant", more_dynamic: "Dynamischer als traditionelle Werbung", useful_information: "Könnte nützliche Informationen liefern", no_major_benefit: "Kein wesentlicher Vorteil", reliability: "Zuverlässigkeit", too_distracting: "Zu ablenkend", too_intrusive: "Zu aufdringlich", flying_near_people: "Fliegen nahe an Menschen",
+  },
+  zh: {
+    digital_screens: "数字屏幕", printed_banners: "印刷横幅 / 标牌", product_demonstrations: "产品演示", promotional_staff: "推广人员", giveaways: "赠品", interactive_experiences: "互动体验", lighting_effects: "灯光 / 视觉效果", social_media_promotion: "社交媒体推广", live_presentations: "现场演示", other: "其他", foot_traffic: "人流量 / 访客数量", leads_collected: "收集的潜在客户", qr_scans: "二维码扫描", website_visits: "网站访问", social_media_engagement: "社交媒体互动", surveys: "调查", sales_conversions: "销售 / 转化", staff_observations: "员工观察", event_organizer_reports: "活动主办方报告", not_measured: "我们不进行测量", noticed_campaign_count: "注意到活动的人数", attention_duration: "注意持续时间", audience_engagement_level: "受众互动程度", visitor_movement: "访客移动 / 人流模式", effective_content: "最有效的内容", time_of_day_performance: "不同时段表现", post_engagement_conversion: "互动后的转化", campaign_variation_comparison: "活动版本比较", anonymous_demographic_trends: "匿名人口趋势", real_time: "是，实时", delayed: "是，但有延迟", minor_changes_only: "只能进行小幅调整", no: "否", not_sure: "不确定", mobile_aerial_advertising: "移动空中广告", audience_attention_measurement: "受众注意力测量", real_time_analytics: "实时分析", adaptive_campaign_content: "自适应活动内容", multi_uav_operation: "多无人机运行", near_continuous_operation: "接近持续运行", qr_interactive_engagement: "二维码 / 互动参与", campaign_reporting: "活动报告", safety: "安全", regulation_approvals: "法规 / 审批", noise: "噪音", privacy: "隐私", cost: "成本", technical_reliability: "技术可靠性", audience_acceptance: "受众接受度", weather: "天气", indoor_operation_constraints: "室内运行限制", no_major_concern: "没有重大顾虑", definitely_yes: "肯定是", probably_yes: "可能是", maybe: "也许", probably_not: "可能不是", definitely_not: "肯定不是", event_app: "活动应用", digital_signage: "数字标牌", printed_signage: "印刷标牌", sponsorship_placements: "赞助展示位置", stage_presentations: "舞台 / 演示机会", networking_activities: "交流活动", event_marketing: "活动营销", booth_placement: "展位位置", visitor_counts: "访客数量", booth_traffic: "展位人流", app_interactions: "应用互动", lead_data: "潜在客户数据", session_attendance: "场次参加人数", survey_results: "调查结果", event_statistics: "活动统计", no_engagement_data: "没有具体互动数据", real_time_visitor_movement: "实时访客移动", individual_campaign_attention: "对单项活动的注意力", engagement_duration: "互动持续时间", effective_locations: "最有效的位置", traffic_patterns: "人流模式", real_time_campaign_performance: "实时活动表现", highly_adaptable_realtime: "可实时高度调整", some_adjustments: "可以进行部分调整", limited_adjustments: "只能进行有限调整", fixed_after_start: "活动开始后通常固定", new_advertising_format: "新广告形式", exhibitor_analytics: "参展商分析", sponsorship_inventory: "额外赞助资源", visitor_engagement: "访客互动", real_time_event_analytics: "实时活动分析", adaptive_advertising: "自适应广告", new_revenue_opportunity: "新的收入机会", aviation_regulatory_approval: "航空 / 法规审批", venue_approval: "场地审批", insurance_liability: "保险 / 责任", emergency_procedures: "紧急程序", indoor_flight_restrictions: "室内飞行限制", entrance_area: "入口区域", outdoor_exhibition_area: "室外展区", hall_transition_areas: "展馆之间的过渡区域", large_open_indoor_area: "大型开放室内区域", sponsor_zone: "赞助商区域", networking_area: "交流区域", demonstration_zone: "特别演示区域", safety_certification: "安全认证", regulatory_approval: "法规审批", insurance: "保险", low_noise: "低噪音", clear_emergency_procedures: "明确的紧急程序", privacy_safeguards: "隐私保护措施", proven_technical_reliability: "已验证的技术可靠性", defined_operating_area: "明确的运行区域", successful_prior_testing: "成功的前期测试", outdoor_advertising: "户外广告", dooh: "数字户外广告", event_advertising: "活动广告", exhibition_campaigns: "展会活动", experiential_marketing: "体验式营销", promotional_activations: "促销活动", printed_advertising: "印刷广告", mobile_advertising: "移动广告", sponsorship_campaigns: "赞助活动", leads: "潜在客户", website_traffic: "网站流量", brand_awareness_studies: "品牌认知研究", third_party_analytics: "第三方分析", client_feedback: "客户反馈", limited_measurement: "有限的测量", attention: "注意力", attribution: "归因", interaction_rate: "互动率", content_comparison: "内容比较", location_performance: "位置表现", real_time_performance: "实时表现", same_day_changes: "当天调整", longer_changes: "调整需要更长时间", very_limited_adaptability: "适应性非常有限", mostly_fixed: "活动基本固定", audience_analytics: "受众分析", real_time_measurement: "实时测量", adaptive_campaigns: "自适应活动", client_reporting: "客户报告", client_acceptance: "客户接受度", scalability: "可扩展性", campaign_integration: "整合到现有活动", regulatory_compliance: "法规合规", measurable_roi: "可衡量的投资回报", client_demand: "客户需求", pricing_viability: "定价可行性", successful_pilot_results: "成功的试点结果", screens: "屏幕", moving_displays: "动态展示", lighting: "灯光", sound: "声音", people_presenters: "人员 / 演示者", unusual_technology: "非凡技术", moving_aerial_display: "移动空中展示", fixed_banner: "固定横幅", digital_screen: "数字屏幕", no_difference: "没有区别", completely_comfortable: "完全舒适", mostly_comfortable: "基本舒适", neutral: "中立", somewhat_uncomfortable: "有些不适", very_uncomfortable: "非常不适", flying_close_to_people: "靠近人群飞行", uav_size: "无人机大小", unexpected_movement: "意外移动", cameras_sensors: "摄像头 / 传感器", crowded_environment: "拥挤环境", innovative: "创新", attracts_attention: "吸引注意力", visually_interesting: "视觉上有趣", more_dynamic: "比传统广告更动态", useful_information: "可以提供有用信息", no_major_benefit: "看不到主要好处", reliability: "可靠性", too_distracting: "太分散注意力", too_intrusive: "太具侵扰性", flying_near_people: "在人群附近飞行"
+  },
+};
+
+const categoryQuestionOverrides: Record<string, Partial<QuestionSpec>> = {
+  e1_attraction: { kind: "choices", commentKey: "e1_attraction_comment" }, e2_measurement: { kind: "choices", commentKey: "e2_measurement_comment" }, e3_missing_engagement_data: { kind: "choices", commentKey: "e3_missing_engagement_data_comment" }, e4_campaign_adaptation: { kind: "radio", commentKey: "e4_campaign_adaptation_comment" }, e6_solution_value: { kind: "choices", commentKey: "e6_solution_value_comment" }, e7_barrier: { kind: "choices", commentKey: "e7_barrier_comment" }, e9_use_case: { kind: "radio" }, e10_willingness_to_pay: { kind: "radio", commentKey: "e10_willingness_to_pay_comment" }, e11_pilot_contact: { kind: "radio" },
+  o1_exhibitor_visibility: { kind: "choices", commentKey: "o1_exhibitor_visibility_comment" }, o2_exhibitor_data: { kind: "choices", commentKey: "o2_exhibitor_data_comment" }, o3_missing_insights: { kind: "choices", commentKey: "o3_missing_insights_comment" }, o4_event_adaptation: { kind: "radio" }, o6_solution_value: { kind: "choices", commentKey: "o6_solution_value_comment" }, o7_uav_concern: { kind: "choices", commentKey: "o7_uav_concern_comment" }, o9_pilot_location: { kind: "choices", commentKey: "o9_pilot_location_comment" }, o10_pilot_requirement: { kind: "choices", commentKey: "o10_pilot_requirement_comment" }, o11_pilot_contact: { kind: "radio" },
+  a1_physical_offerings: { kind: "choices", commentKey: "a1_physical_offerings_comment" }, a2_campaign_measurement: { kind: "choices", commentKey: "a2_campaign_measurement_comment" }, a3_client_data_requests: { kind: "choices", commentKey: "a3_client_data_requests_comment" }, a4_campaign_adaptation: { kind: "radio" }, a6_solution_value: { kind: "choices", commentKey: "a6_solution_value_comment" }, a7_service_barrier: { kind: "choices", commentKey: "a7_service_barrier_comment" }, a9_service_offering: { kind: "radio" }, a10_proof_required: { kind: "choices", commentKey: "a10_proof_required_comment" }, a11_pilot_contact: { kind: "radio" },
+  v1_attention: { kind: "choices", commentKey: "v1_attention_comment" }, v2_moving_aerial_attention: { kind: "radio" }, v3_uav_discomfort: { kind: "choices", commentKey: "v3_uav_discomfort_comment" }, v4_anonymous_measurement: { kind: "radio" }, v5_interaction: { kind: "radio" }, v6_like: { kind: "choices", commentKey: "v6_like_comment" }, v7_concern: { kind: "choices", commentKey: "v7_concern_comment" },
+};
+
 export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boolean }) {
   const [lang, setLang] = useState<Lang>("en");
   const [step, setStep] = useState(0);
@@ -567,7 +619,11 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
             ? t.a
             : t.v,
   }));
-  const answer = (value: string) => answerTranslations[lang][value] || value;
+  const answer = (value: string) => {
+    const localized = categoryOptionTranslations[lang][value] || answerTranslations[lang][value];
+    if (localized) return localized;
+    return value.replace(/_/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+  };
 
   const speakBlock = (event: React.MouseEvent<HTMLButtonElement>) => {
     const block = event.currentTarget.closest("[data-speech-block]");
@@ -794,7 +850,17 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
   );
 
   const activeQuestions = activeType === "E" || activeType === "O" || activeType === "A" || activeType === "V"
-    ? categoryQuestions[lang][activeType]
+    ? categoryQuestions[lang][activeType].map((question) => {
+        const override = categoryQuestionOverrides[question.key] || {};
+        const values = categoryOptionValues[question.key];
+        return {
+          ...question,
+          ...override,
+          options: values
+            ? values.map((value) => ({ value, label: value }))
+            : override.options || question.options,
+        };
+      })
     : [];
 
   const renderCategoryQuestion = (question: QuestionSpec, index: number) => {
@@ -814,7 +880,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
             className="min-h-28 w-full rounded-xl border border-line bg-bg-2 px-3 py-3 text-text outline-none focus:border-green"
           />
         )}
-        {(question.kind === "scale" || question.kind === "yesNo") && (
+        {(question.kind === "scale" || question.kind === "radio" || question.kind === "yesNo") && (
           <select
             value={String(value ?? "")}
             onChange={(event) => handleInput(question.key, event.target.value)}
@@ -823,7 +889,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
             <option value="">{t.select}{question.kind === "scale" ? " 1–5…" : ""}</option>
             {question.kind === "scale"
               ? ["1", "2", "3", "4", "5"].map((score) => <option key={score} value={score}>{score}</option>)
-              : ["Yes", "Maybe", "No"].map((answerValue) => <option key={answerValue} value={answerValue}>{answer(answerValue)}</option>)}
+              : (options.length ? options : [{ value: "Yes", label: "Yes" }, { value: "No", label: "No" }]).map((option) => <option key={option.value} value={option.value}>{answer(option.label)}</option>)}
           </select>
         )}
         {question.kind === "choices" && renderChoiceGrid(
@@ -831,8 +897,16 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
           options.map((option) => option.value),
           Object.fromEntries(options.map((option) => [option.value, option.label])),
         )}
-        {question.kind === "choices" && options.some((option) => option.value === "Other") &&
-          Array.isArray(value) && value.includes("Other") && (
+        {question.commentKey && (
+          <textarea
+            value={String(form[question.commentKey] ?? "")}
+            onChange={(event) => handleInput(question.commentKey!, event.target.value)}
+            placeholder={t.optionalComment}
+            className="mt-4 min-h-24 w-full rounded-xl border border-line bg-bg-2 px-3 py-3 text-text outline-none focus:border-green"
+          />
+        )}
+        {question.kind === "choices" && options.some((option) => option.value === "other") &&
+          Array.isArray(value) && value.includes("other") && (
             <textarea
               value={String(form[`${question.key}_other`] ?? "")}
               onChange={(event) => handleInput(`${question.key}_other`, event.target.value)}

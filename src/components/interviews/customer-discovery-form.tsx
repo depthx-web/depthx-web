@@ -550,6 +550,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
   const [resetPassword, setResetPassword] = useState("");
   const [resetError, setResetError] = useState("");
   const [isResetting, setIsResetting] = useState(false);
+  const [selectedInterview, setSelectedInterview] = useState<FormState | null>(null);
   const router = useRouter();
   const [form, setForm] = useState<FormState>({
     exhibition: "",
@@ -964,6 +965,12 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
   const filteredInterviews = interviews.filter((item) =>
     recordFilter === "admin" ? item.submissionRole === "admin" : item.submissionRole !== "admin",
   );
+
+  const formatInterviewValue = (value: FormState[string]) => {
+    if (Array.isArray(value)) return value.length ? value.join(", ") : "—";
+    if (typeof value === "boolean") return value ? "Yes" : "No";
+    return String(value ?? "—");
+  };
 
   const openReset = (mode: "selected" | "all") => {
     if (mode === "selected" && !selectedInterviewIds.length) {
@@ -1641,6 +1648,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                         <th className="pb-3 pr-6">Date</th>
                         <th className="pb-3 pr-6">Company</th>
                         <th className="pb-3 pr-6">Type</th>
+                        <th className="pb-3 pr-6">Details</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1652,6 +1660,15 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                           </td>
                           <td className="py-3 pr-6">{String(item.company ?? "—")}</td>
                           <td className="py-3 pr-6">{String(item.type ?? "—")}</td>
+                          <td className="py-3 pr-6">
+                            <button
+                              type="button"
+                              onClick={() => setSelectedInterview(item)}
+                              className="whitespace-nowrap rounded-md border border-line px-3 py-1.5 text-xs font-semibold text-muted hover:border-green hover:text-green"
+                            >
+                              View full data
+                            </button>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -1759,6 +1776,7 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                       <th className="pb-3 pr-6">Pain</th>
                       <th className="pb-3 pr-6">Interest</th>
                       <th className="pb-3 pr-6">Follow-up</th>
+                      <th className="pb-3 pr-6">Details</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1789,12 +1807,62 @@ export function CustomerDiscoveryForm({ adminView = false }: { adminView?: boole
                         <td className="py-3 pr-6">{String(item.measurementPain ?? "—")}</td>
                         <td className="py-3 pr-6">{String(item.conceptInterest ?? "—")}</td>
                         <td className="py-3 pr-6">{String(item.followUp ?? "—")}</td>
+                        <td className="py-3 pr-6">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedInterview(item)}
+                            className="whitespace-nowrap rounded-md border border-line px-3 py-1.5 text-xs font-semibold text-muted hover:border-green hover:text-green"
+                          >
+                            View full data
+                          </button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             )}
+          </div>
+        )}
+        {adminView && selectedInterview && (
+          <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 sm:items-center sm:p-6">
+            <div className="max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-t-2xl border border-line bg-bg p-5 shadow-2xl sm:rounded-2xl sm:p-7">
+              <div className="flex items-start justify-between gap-4 border-b border-line pb-4">
+                <div>
+                  <p className="font-mono text-xs uppercase tracking-wide text-muted">Complete interview record</p>
+                  <h3 className="mt-1 font-display text-2xl font-semibold text-text">
+                    {String(selectedInterview.id ?? "Interview")}
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedInterview(null)}
+                  className="rounded-md border border-line px-3 py-1.5 text-sm text-muted hover:text-text"
+                >
+                  Close
+                </button>
+              </div>
+              <dl className="mt-5 grid gap-4 sm:grid-cols-2">
+                {Object.entries(selectedInterview)
+                  .filter(([key]) => key !== "responses")
+                  .map(([key, value]) => (
+                    <div key={key} className="rounded-lg border border-line bg-bg-2 p-3">
+                      <dt className="font-mono text-[11px] uppercase tracking-wide text-muted">{key}</dt>
+                      <dd className="mt-1 whitespace-pre-wrap break-words text-sm text-text">
+                        {formatInterviewValue(value)}
+                      </dd>
+                    </div>
+                  ))}
+              </dl>
+              {selectedInterview.responses && (
+                <div className="mt-5 rounded-lg border border-line bg-bg-2 p-4">
+                  <h4 className="font-mono text-xs uppercase tracking-wide text-muted">Raw response payload</h4>
+                  <pre className="mt-3 overflow-x-auto whitespace-pre-wrap break-words text-xs leading-6 text-text">
+                    {JSON.stringify(selectedInterview.responses, null, 2)}
+                  </pre>
+                </div>
+              )}
+            </div>
           </div>
         )}
           </>

@@ -182,17 +182,23 @@ function mapSiteSettings(row: Record<string, unknown>): SiteSettings {
 
 const PROJECT_SELECT = "*, research_domain:research_domains(*), publications(*)";
 
+// Keep the verified public company story authoritative while the matching
+// database migration is applied to production. Set USE_VERIFIED_STORY=false
+// after the live CMS rows have been reviewed and aligned. Admin workflows,
+// forms, subscribers, messages, and legal pages continue to use Supabase.
+const useVerifiedStory = process.env.USE_VERIFIED_STORY !== "false";
+
 // ---------- public data-access functions ----------
 
 export async function getSiteSettings(): Promise<SiteSettings> {
-  if (!hasSupabaseConfig) return mockSiteSettings;
+  if (useVerifiedStory || !hasSupabaseConfig) return mockSiteSettings;
   const db = await supabase();
   const { data } = await db.from("site_settings").select("*").eq("id", 1).single();
   return data ? mapSiteSettings(data) : mockSiteSettings;
 }
 
 export async function getProjects(): Promise<Project[]> {
-  if (!hasSupabaseConfig) return mockProjects.filter((p) => p.visible);
+  if (useVerifiedStory || !hasSupabaseConfig) return mockProjects.filter((p) => p.visible);
   const db = await supabase();
   const { data } = await db
     .from("projects")
@@ -203,7 +209,9 @@ export async function getProjects(): Promise<Project[]> {
 }
 
 export async function getProject(slug: string): Promise<Project | undefined> {
-  if (!hasSupabaseConfig) return mockProjects.find((p) => p.slug === slug && p.visible);
+  if (useVerifiedStory || !hasSupabaseConfig) {
+    return mockProjects.find((p) => p.slug === slug && p.visible);
+  }
   const db = await supabase();
   const { data } = await db
     .from("projects")
@@ -220,7 +228,7 @@ export async function getFeaturedProject(): Promise<Project | undefined> {
 }
 
 export async function getResearchDomains(): Promise<ResearchDomain[]> {
-  if (!hasSupabaseConfig) {
+  if (useVerifiedStory || !hasSupabaseConfig) {
     return [...mockResearchDomains].filter((d) => d.visible).sort((a, b) => a.order - b.order);
   }
   const db = await supabase();
@@ -233,7 +241,7 @@ export async function getResearchDomains(): Promise<ResearchDomain[]> {
 }
 
 export async function getPublications(): Promise<Publication[]> {
-  if (!hasSupabaseConfig) return mockPublications.filter((p) => p.visible);
+  if (useVerifiedStory || !hasSupabaseConfig) return mockPublications.filter((p) => p.visible);
   const db = await supabase();
   const { data } = await db
     .from("publications")
@@ -244,7 +252,7 @@ export async function getPublications(): Promise<Publication[]> {
 }
 
 export async function getTeamMembers(): Promise<TeamMember[]> {
-  if (!hasSupabaseConfig) {
+  if (useVerifiedStory || !hasSupabaseConfig) {
     return [...mockTeamMembers].filter((m) => m.visible).sort((a, b) => a.order - b.order);
   }
   const db = await supabase();
@@ -257,7 +265,7 @@ export async function getTeamMembers(): Promise<TeamMember[]> {
 }
 
 export async function getNewsPosts(): Promise<NewsPost[]> {
-  if (!hasSupabaseConfig) {
+  if (useVerifiedStory || !hasSupabaseConfig) {
     return mockNewsPosts.filter((n) => n.published).sort((a, b) => (a.date < b.date ? 1 : -1));
   }
   const db = await supabase();
@@ -270,7 +278,9 @@ export async function getNewsPosts(): Promise<NewsPost[]> {
 }
 
 export async function getNewsPost(slug: string): Promise<NewsPost | undefined> {
-  if (!hasSupabaseConfig) return mockNewsPosts.find((n) => n.slug === slug && n.published);
+  if (useVerifiedStory || !hasSupabaseConfig) {
+    return mockNewsPosts.find((n) => n.slug === slug && n.published);
+  }
   const db = await supabase();
   const { data } = await db
     .from("news_posts")
@@ -282,14 +292,14 @@ export async function getNewsPost(slug: string): Promise<NewsPost | undefined> {
 }
 
 export async function getTestimonials(): Promise<Testimonial[]> {
-  if (!hasSupabaseConfig) return mockTestimonials.filter((t) => t.visible);
+  if (useVerifiedStory || !hasSupabaseConfig) return mockTestimonials.filter((t) => t.visible);
   const db = await supabase();
   const { data } = await db.from("testimonials").select("*").eq("visible", true);
   return (data ?? []).map(mapTestimonial);
 }
 
 export async function getFaqItems(): Promise<FaqItem[]> {
-  if (!hasSupabaseConfig) {
+  if (useVerifiedStory || !hasSupabaseConfig) {
     return [...mockFaqItems].filter((f) => f.visible).sort((a, b) => a.order - b.order);
   }
   const db = await supabase();
@@ -302,7 +312,9 @@ export async function getFaqItems(): Promise<FaqItem[]> {
 }
 
 export async function getPartnershipTypes(): Promise<PartnershipType[]> {
-  if (!hasSupabaseConfig) return mockPartnershipTypes.filter((p) => p.visible);
+  if (useVerifiedStory || !hasSupabaseConfig) {
+    return mockPartnershipTypes.filter((p) => p.visible);
+  }
   const db = await supabase();
   const { data } = await db.from("partnership_types").select("*").eq("visible", true);
   return (data ?? []).map(mapPartnershipType);

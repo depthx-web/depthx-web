@@ -142,7 +142,7 @@ function drawFooter(
   muted: ReturnType<typeof rgb>,
   contactEmail: string,
 ): void {
-  let y = margin;
+  const y = margin;
   page.drawText("Depth X Ltd. — Registered in England & Wales, Company No. 16162223", {
     x: margin,
     y,

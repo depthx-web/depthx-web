@@ -2,24 +2,19 @@ import type { SiteSettings } from "@/lib/types";
 import { defaultSectionVisibility } from "@/lib/section-visibility";
 
 export const siteSettings: SiteSettings = {
-  heroHeadline: "Deep-tech innovation,",
-  heroHeadlineAccent: "protected and ready to license.",
+  heroHeadline: "Research. Develop. Protect.",
+  heroHeadlineAccent: "Prepare for commercialization.",
   heroSubtext:
-    "Depth X converts rigorous research into patented systems — with a live portfolio currently open for licensing and investment.",
+    "Depth X develops research-driven technologies, protects them through intellectual property, and validates them before commercialization through specialized operating companies.",
   stats: [
-    { label: "Patents Filed", value: "07" },
-    { label: "Patents Granted", value: "03" },
-    { label: "Open for Licensing", value: "02" },
-    { label: "Research Domains", value: "03" },
+    { label: "Patent Applications Filed", value: "02" },
+    { label: "Technologies in Development", value: "02" },
+    { label: "Active Prototype Priority", value: "01" },
+    { label: "Research Domains", value: "04" },
   ],
-  trustBarLogos: [
-    { name: "Univ. Research Lab" },
-    { name: "Innovation Agency" },
-    { name: "Industrial Partner Co." },
-    { name: "Applied Systems Institute" },
-  ],
+  trustBarLogos: [],
   footerText:
-    "Bridging science and real-world systems through deep innovation — from theoretical research to verified, deployable technologies.",
+    "Research and development that moves protected technology toward validated products and specialized commercial operation.",
   contactEmails: {
     investor: "invest@depthx.co.uk",
     researcher: "research@depthx.co.uk",

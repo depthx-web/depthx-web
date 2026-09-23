@@ -2,51 +2,39 @@ import type { NewsPost } from "@/lib/types";
 
 export const newsPosts: NewsPost[] = [
   {
-    _id: "news-patent-granted-adaptive",
-    slug: "patent-granted-adaptive-interaction-system",
-    title: "Patent granted for adaptive interaction system",
-    tag: "IP MILESTONE",
+    _id: "news-uav-collaboration",
+    slug: "emqopter-uav-prototype-collaboration",
+    title: "emQopter prepared to build the four-UAV prototype",
+    tag: "COLLABORATION",
     excerpt:
-      "Our hybrid physical–digital systems project has received full patent protection following successful pilot validation.",
+      "Depth X has identified emQopter GmbH as the external technical collaborator prepared to deliver the complete prototype.",
     body:
-      "Our hybrid physical–digital systems project has received full patent protection following successful pilot validation.",
-    date: "2024-11-01",
+      "Depth X has identified emQopter GmbH as the external technical collaborator prepared to deliver the complete four-UAV prototype. This is a defined technical collaboration, not a corporate partnership or founding-team relationship. The next step is to finalize scope and move into prototype construction and validation.",
+    date: "2026-09-23",
     published: true,
   },
   {
-    _id: "news-aerial-testing",
-    slug: "aerial-coordination-platform-enters-testing",
-    title: "New aerial coordination platform enters testing",
-    tag: "RESEARCH",
+    _id: "news-commercialization-priority",
+    slug: "uav-first-commercialization-priority",
+    title: "UAV platform set as the first commercialization priority",
+    tag: "ROADMAP",
     excerpt:
-      "The distributed aerial platform has moved into its next validation phase ahead of patent filing.",
+      "Depth X will focus its resources on the aerial marketing platform before advancing the smart-vending technology to launch.",
     body:
-      "The distributed aerial platform has moved into its next validation phase ahead of patent filing.",
-    date: "2026-03-01",
+      "Depth X develops and protects technologies before licensing them to specialized operating companies. The autonomous aerial marketing platform is the first commercialization priority. The AI-powered smart vending and virtual clothing try-on system remains the second project in the pipeline.",
+    date: "2026-09-23",
     published: true,
   },
   {
-    _id: "news-conference-paper",
-    slug: "paper-accepted-autonomous-systems-conference",
-    title: "Paper accepted at Autonomous Systems conference",
-    tag: "PUBLICATION",
+    _id: "news-ip-ownership",
+    slug: "depthx-ip-ownership-path",
+    title: "Clarifying the Depth X intellectual-property path",
+    tag: "IP",
     excerpt:
-      "Our coordination model research has been accepted for presentation at this year's international conference.",
+      "Both applications are founder-filed today, with assignment to Depth X intended after formal grant.",
     body:
-      "Our coordination model research has been accepted for presentation at this year's international conference.",
-    date: "2025-06-01",
-    published: true,
-  },
-  {
-    _id: "news-lab-partnership",
-    slug: "new-collaboration-with-research-laboratory",
-    title: "New collaboration with a research laboratory",
-    tag: "PARTNERSHIP",
-    excerpt:
-      "We've begun a joint validation programme with an academic partner in cyber-physical decision systems.",
-    body:
-      "We've begun a joint validation programme with an academic partner in cyber-physical decision systems.",
-    date: "2025-09-01",
+      "The German and international applications associated with the two Depth X technologies are currently filed in founder Marwen Ayadi's name. Following formal grant, the patents are intended to be assigned to Depth X, which would retain the IP and license validated technologies to specialized operating companies.",
+    date: "2026-09-23",
     published: true,
   },
 ];

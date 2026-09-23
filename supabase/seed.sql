@@ -1,108 +1,84 @@
--- Optional: seeds a fresh database with the same placeholder content the
--- site already ships with (src/lib/mock-data/), so the Admin Panel isn't
--- empty on first connect. Run after 0001_init.sql.
+-- Optional canonical content for a fresh local database. Run after all
+-- migrations. This mirrors the verified public website fixtures.
 
-insert into research_domains (id, name, slug, description, "order") values
+insert into research_domains (id, name, slug, description, "order", visible) values
   ('11111111-1111-1111-1111-111111111101', 'Hybrid Physical–Digital Systems', 'hybrid-physical-digital-systems',
-   'We combine sensor fusion with real-time behavioral modeling to study how physical environments, human presence, and digital decision layers can operate as one system — then validate that model against live commercial deployments.', 1),
+   'We study how physical environments, human presence, sensing, and digital decision layers can operate as one system, then test those relationships through future prototypes and pilots.', 1, true),
   ('11111111-1111-1111-1111-111111111102', 'Autonomous & Intelligent Platforms', 'autonomous-intelligent-platforms',
-   'Our research develops shared decision layers for coordinating autonomous and semi-autonomous units — including aerial and distributed platforms — with an emphasis on failure-mode testing before any system operates in public or urban airspace.', 2),
+   'Our research develops shared decision layers for coordinating autonomous and semi-autonomous units, including aerial and distributed platforms, with an emphasis on failure-mode testing.', 2, true),
   ('11111111-1111-1111-1111-111111111103', 'Cyber-Physical Interaction & Decision Systems', 'cyber-physical-interaction-decision-systems',
-   'We build and test the interpretation layer that lets intelligent systems read human behavior and environmental signals and turn that reading into a real-time, real-world response.', 3);
+   'We study the interpretation layer that lets intelligent systems read human behavior and environmental signals and turn that reading into a real-world response.', 3, true),
+  ('11111111-1111-1111-1111-111111111104', 'Hybrid Marketing Science', 'hybrid-marketing-science',
+   'We connect physical marketing with measurement, analytics, and adaptive decision-making to develop campaigns that can learn from real-world interaction.', 4, true)
+on conflict (slug) do nothing;
 
-insert into projects (id, title, slug, status, research_domain_id, short_description, overview, patent_number, filed_date, granted_date, readiness_stage, featured, visible) values
-  ('22222222-2222-2222-2222-222222222201', 'Adaptive interaction system for smart commercial environments', 'adaptive-interaction', 'granted',
-   '11111111-1111-1111-1111-111111111101',
-   'A platform integrating physical presence and user behavior with real-time digital decision-making, enabling a new layer of interaction between space, technology, and commerce.',
-   'This system was developed to close the gap between physical retail environments and digital decision engines. It combines sensor fusion with real-time behavioral modeling to adapt commercial spaces to visitor context, validated across three pilot deployments.',
-   'GB2024-0091X', '2024-01-15', '2024-11-01', 3, true, true),
-  ('22222222-2222-2222-2222-222222222202', 'Distributed semi-autonomous aerial coordination platform', 'aerial-coordination', 'pending',
-   '11111111-1111-1111-1111-111111111102',
-   'A coordination system for distributed aerial platforms capable of operating safely and efficiently within complex urban and public environments.',
-   'The platform coordinates multiple semi-autonomous aerial units using a shared decision layer, allowing safe operation in constrained urban airspace. Current work focuses on failure-mode validation ahead of full patent grant.',
-   null, '2026-03-01', null, 2, false, true),
-  ('22222222-2222-2222-2222-222222222203', 'Real-time behavioral interpretation engine for intelligent systems', 'behavioral-engine', 'licensing',
-   '11111111-1111-1111-1111-111111111103',
-   'A system that interprets human behavior and environmental signals in real time, ready for commercial integration through direct licensing.',
-   'A granted, production-validated engine for interpreting behavioral and environmental signals in real time. Already integrated in two pilot deployments and open for licensing by qualified commercial partners.',
-   'GB2023-0044P', '2023-06-01', '2024-02-01', 3, false, true);
+insert into projects (
+  id, title, slug, status, research_domain_id, short_description, overview,
+  patent_number, patent_number_kind, readiness_stage, featured, visible
+) values
+  (
+    '22222222-2222-2222-2222-222222222201',
+    'Autonomous Aerial Marketing Platform',
+    'autonomous-aerial-advertising-system',
+    'pending',
+    '11111111-1111-1111-1111-111111111104',
+    'A patent-pending multi-UAV platform for persistent aerial advertising, anonymous audience measurement, and adaptive campaign execution.',
+    'Depth X is developing the system as its first commercialization priority. The project is currently pre-prototype, with the four-UAV MVP architecture and roadmap defined. emQopter GmbH is the external technical collaborator prepared to build the complete prototype. The related German and international patent applications are currently filed in founder Marwen Ayadi''s name and are intended to be assigned to Depth X after formal grant.',
+    null, 'application', 2, true, true
+  ),
+  (
+    '22222222-2222-2222-2222-222222222202',
+    'AI-Powered Smart Vending System for Virtual Clothing Try-On',
+    'smart-vending-virtual-clothing-try-on',
+    'pending',
+    '11111111-1111-1111-1111-111111111104',
+    'A smart retail concept combining automated vending with AI-enabled virtual clothing try-on and an adaptive customer experience.',
+    'This technology is the second commercialization project in the Depth X pipeline. Development and launch will follow the UAV platform so resources remain focused on one market entry at a time. The related application is currently filed in founder Marwen Ayadi''s name and is intended to be assigned to Depth X after formal grant, before licensing to a specialized operating company.',
+    'DE 10 2025 004 854.8', 'application', 2, false, true
+  )
+on conflict (slug) do nothing;
 
-insert into publications (title, venue, year, abstract, related_project_id) values
-  ('Real-time behavioral signal interpretation in cyber-physical environments', 'Journal of Applied Systems Research', 2026,
-   'This paper presents a framework for interpreting behavioral and environmental signals in real time within cyber-physical systems, combining sensor fusion with decision models validated across live pilot deployments. We show the proposed interpretation layer reduces response latency while maintaining accuracy under variable environmental conditions.',
-   '22222222-2222-2222-2222-222222222203'),
-  ('Coordination models for distributed semi-autonomous aerial platforms', 'International Conference on Autonomous Systems', 2025,
-   'We introduce a coordination model for distributed semi-autonomous aerial platforms operating in constrained urban airspace. The model uses a shared decision layer to manage multi-unit coordination and failure-mode recovery, with results reported from controlled urban trials ahead of full commercial deployment.',
-   '22222222-2222-2222-2222-222222222202'),
-  ('Hybrid physical–digital interaction: a framework for commercial environments', 'Techno-Economic Systems Review', 2025,
-   'This work proposes a framework for hybrid physical–digital interaction in commercial environments, integrating sensor fusion with real-time behavioral modeling to adapt physical spaces to visitor context. Findings from three pilot deployments show measurable improvements in space utilization and visitor engagement.',
-   '22222222-2222-2222-2222-222222222201');
-
-insert into team_members (name, role, bio, "order") values
-  ('Dr. A. Karim', 'Founder & Research Director', 'Leads the hybrid physical–digital systems programme and oversees IP strategy across all active projects.', 1),
-  ('S. Mensah', 'Head of Autonomous Systems', 'Directs research on distributed and semi-autonomous aerial platforms, with a focus on urban safety validation.', 2),
-  ('Dr. R. Lindqvist', 'Head of Cyber-Physical Systems', 'Focuses on real-time behavioral interpretation and decision systems, bridging academic and applied research.', 3),
-  ('J. Tanaka', 'IP & Partnerships Lead', 'Manages the patent pipeline and serves as the primary point of contact for licensing and investment inquiries.', 4);
+insert into team_members (name, role, bio, "order", visible) values
+  ('Marwen Ayadi', 'Founder', 'Leads Depth X research, patent strategy, product direction, system concepts, customer discovery, and commercialization planning.', 1, true);
 
 insert into news_posts (title, slug, tag, excerpt, body, date, published) values
-  ('Patent granted for adaptive interaction system', 'patent-granted-adaptive-interaction-system', 'IP MILESTONE',
-   'Our hybrid physical–digital systems project has received full patent protection following successful pilot validation.',
-   'Our hybrid physical–digital systems project has received full patent protection following successful pilot validation.',
-   '2024-11-01', true),
-  ('New aerial coordination platform enters testing', 'aerial-coordination-platform-enters-testing', 'RESEARCH',
-   'The distributed aerial platform has moved into its next validation phase ahead of patent filing.',
-   'The distributed aerial platform has moved into its next validation phase ahead of patent filing.',
-   '2026-03-01', true),
-  ('Paper accepted at Autonomous Systems conference', 'paper-accepted-autonomous-systems-conference', 'PUBLICATION',
-   'Our coordination model research has been accepted for presentation at this year''s international conference.',
-   'Our coordination model research has been accepted for presentation at this year''s international conference.',
-   '2025-06-01', true),
-  ('New collaboration with a research laboratory', 'new-collaboration-with-research-laboratory', 'PARTNERSHIP',
-   'We''ve begun a joint validation programme with an academic partner in cyber-physical decision systems.',
-   'We''ve begun a joint validation programme with an academic partner in cyber-physical decision systems.',
-   '2025-09-01', true);
+  ('emQopter prepared to build the four-UAV prototype', 'emqopter-uav-prototype-collaboration', 'COLLABORATION',
+   'Depth X has identified emQopter GmbH as the external technical collaborator prepared to deliver the complete prototype.',
+   'Depth X has identified emQopter GmbH as the external technical collaborator prepared to deliver the complete four-UAV prototype. This is a defined technical collaboration, not a corporate partnership or founding-team relationship.', '2026-09-23', true),
+  ('UAV platform set as the first commercialization priority', 'uav-first-commercialization-priority', 'ROADMAP',
+   'Depth X will focus its resources on the aerial marketing platform before advancing the smart-vending technology to launch.',
+   'The autonomous aerial marketing platform is the first commercialization priority. The AI-powered smart vending and virtual clothing try-on system remains the second project in the pipeline.', '2026-09-23', true),
+  ('Clarifying the Depth X intellectual-property path', 'depthx-ip-ownership-path', 'IP',
+   'Both applications are founder-filed today, with assignment to Depth X intended after formal grant.',
+   'The German and international applications associated with the two Depth X technologies are currently filed in founder Marwen Ayadi''s name. Following formal grant, the patents are intended to be assigned to Depth X.', '2026-09-23', true)
+on conflict (slug) do nothing;
 
-insert into testimonials (quote, attribution_name, attribution_role) values
-  ('The validation process was rigorous — by the time we reviewed the licensing terms, the technical due diligence was already done for us.', 'Industrial Partner', 'Pilot Deployment'),
-  ('Depth X''s documentation of IP status made our investment committee review straightforward — every project''s stage was clear from day one.', 'Early-Stage Investor', ''),
-  ('A rare combination of academic rigor and commercial readiness in the same research team.', 'Research Laboratory Partner', '');
+insert into faq_items (question, answer, category, "order", visible) values
+  ('Who currently owns the patent applications?', 'Both applications are currently filed in founder Marwen Ayadi''s name. Following formal grant, the patents are intended to be assigned to Depth X.', 'licensing', 1, true),
+  ('Do you require an NDA before sharing technical details?', 'Yes — full technical documentation is shared only after a mutual NDA is signed, following an initial inquiry and fit assessment.', 'licensing', 2, true),
+  ('How will the technologies reach the market?', 'Depth X plans to validate each technology first and then license it to a specialized operating company. The UAV platform is the first commercialization priority.', 'licensing', 3, true),
+  ('What is the current stage of the UAV platform?', 'The platform is currently pre-prototype. The next milestones are prototype construction with emQopter, technical validation, and a controlled exhibition pilot.', 'general', 4, true);
 
-insert into faq_items (question, answer, category, "order") values
-  ('What does "Available for Licensing" mean exactly?', 'The technology has either a granted patent or a fully validated system, and Depth X is open to negotiating commercial licensing terms with qualified companies or investors.', 'licensing', 1),
-  ('Do you require an NDA before sharing technical details?', 'Yes — full technical documentation is shared only after a mutual NDA is signed, following an initial inquiry and fit assessment.', 'licensing', 2),
-  ('Can licenses be exclusive?', 'Exclusivity is negotiable and depends on the project, market, and proposed terms. This is discussed during the term sheet stage.', 'licensing', 3),
-  ('What stage should a project be at before you''ll discuss investment?', 'We''re open to conversations at any project stage — from experimental validation through to granted patents — but documentation and terms differ by stage.', 'general', 4);
-
-insert into partnership_types (name, description) values
-  ('Joint Research', 'Co-develop new research questions and share experimental infrastructure with our lab.'),
-  ('Experimental Validation', 'Provide real-world environments or data to help validate a system under development.'),
-  ('Technology Licensing', 'License a granted patent or validated system for commercial deployment.');
+insert into partnership_types (name, description, visible) values
+  ('Research Collaboration', 'Explore research questions, experimental methods, and evidence needed to advance a technology concept.', true),
+  ('Prototype & Validation', 'Contribute specialist engineering, testing environments, or data for a defined prototype and validation scope.', true),
+  ('Commercial Operation', 'Operate a validated technology under a future license while Depth X retains ownership of the assigned intellectual property.', true);
 
 update site_settings set
-  hero_headline = 'Deep-tech innovation,',
-  hero_headline_accent = 'protected and ready to license.',
-  hero_subtext = 'Depth X converts rigorous research into patented systems — with a live portfolio currently open for licensing and investment.',
-  stats = '[
-    {"label": "Patents Filed", "value": "07"},
-    {"label": "Patents Granted", "value": "03"},
-    {"label": "Open for Licensing", "value": "02"},
-    {"label": "Research Domains", "value": "03"}
-  ]'::jsonb,
-  trust_bar_logos = '[
-    {"name": "Univ. Research Lab"},
-    {"name": "Innovation Agency"},
-    {"name": "Industrial Partner Co."},
-    {"name": "Applied Systems Institute"}
-  ]'::jsonb,
-  footer_text = 'Bridging science and real-world systems through deep innovation — from theoretical research to verified, deployable technologies.',
+  hero_headline = 'Research. Develop. Protect.',
+  hero_headline_accent = 'Prepare for commercialization.',
+  hero_subtext = 'Depth X develops research-driven technologies, protects them through intellectual property, and validates them before commercialization through specialized operating companies. The autonomous aerial marketing platform is the first commercialization priority.',
+  stats = '[{"label":"Patent Applications Filed","value":"02"},{"label":"Technologies in Development","value":"02"},{"label":"Active Prototype Priority","value":"01"},{"label":"Research Domains","value":"04"}]'::jsonb,
+  trust_bar_logos = '[]'::jsonb,
+  footer_text = 'Depth X is a founder-led research, technology development, and IP commercialization company.',
   contact_email_investor = 'invest@depthx.co.uk',
   contact_email_researcher = 'research@depthx.co.uk',
   contact_email_company = 'partnerships@depthx.co.uk',
   section_visibility = (
     select jsonb_object_agg(key, true) from jsonb_array_elements_text('[
-      "home.trustBar","home.flagshipProject","home.featuredProjects","home.whatWeDo","home.contactToggle",
-      "investors.testimonials","investors.faq","investors.portfolioTable",
-      "projects.filters","collaboration.partnerLogos","global.newsInNav","global.teamInNav"
+      "home.flagshipProject","home.featuredProjects","home.whatWeDo","home.contactToggle",
+      "investors.faq","investors.portfolioTable","projects.filters",
+      "global.newsInNav","global.teamInNav"
     ]'::jsonb) as key
   )
 where id = 1;

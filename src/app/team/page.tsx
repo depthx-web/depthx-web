@@ -9,7 +9,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
     title: "Team",
     description:
-      "Depth X stays lean by design — every project is led directly by researchers with hands-on domain expertise.",
+      "Depth X is founder-led and works with specialist external collaborators where each project needs technical depth.",
     path: "/team",
     keywords: mergeKeywords(team),
   });
@@ -22,9 +22,9 @@ export default async function TeamPage() {
     <>
       <Breadcrumb trail={[{ label: "Home", href: "/" }, { label: "Team" }]} />
       <PageHero
-        eyebrow="// THE PEOPLE BEHIND THE RESEARCH"
-        title="A small team, deliberately."
-        description="Depth X stays lean by design — every project is led directly by researchers with hands-on domain expertise."
+        eyebrow="// FOUNDER-LED R&D"
+        title="Founder-led, specialist-supported."
+        description="Marwen Ayadi leads research, patents, product direction, and commercialization strategy. Depth X adds specialist external collaborators for defined technical scopes."
       />
       {isSectionVisible(settings.sectionVisibility, "team.grid") && (
         <section className="px-8 pb-25 md:px-25">

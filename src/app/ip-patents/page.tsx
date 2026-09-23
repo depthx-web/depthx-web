@@ -8,15 +8,15 @@ import { pageMetadata } from "@/lib/page-metadata";
 export const metadata: Metadata = pageMetadata({
   title: "IP & Patents",
   description:
-    "We document each technology's journey from validated research to filed and granted patent — so partners always know exactly where a project stands.",
+    "Two patent applications are currently filed in founder Marwen Ayadi's name and are intended for assignment to Depth X after formal grant.",
   path: "/ip-patents",
 });
 
 const STATUS_DEFINITIONS = [
   {
-    label: "Patent Granted",
+    label: "Founder-Filed Applications",
     color: "border-t-green",
-    desc: "Full legal protection has been secured. The technology is validated, documented, and ready for commercial deployment or licensing.",
+    desc: "Both current patent applications are filed in founder Marwen Ayadi's name. Depth X does not yet own them.",
   },
   {
     label: "Patent Pending",
@@ -24,9 +24,9 @@ const STATUS_DEFINITIONS = [
     desc: "An application has been filed and is under review. Technical details are available under NDA for qualified partners.",
   },
   {
-    label: "Available for Licensing",
+    label: "Assignment Planned",
     color: "border-t-blue",
-    desc: "Depth X is actively negotiating commercial licensing agreements with companies and investors for this technology.",
+    desc: "Following formal grant, the patents are intended to be assigned to Depth X, subject to the required legal documentation and register updates.",
   },
 ];
 
@@ -39,13 +39,20 @@ export default async function IpPatentsPage() {
       <Breadcrumb trail={[{ label: "Home", href: "/" }, { label: "IP & Patents" }]} />
       <PageHero
         eyebrow="// INTELLECTUAL PROPERTY"
-        title="Every innovation, tracked and protected."
-        description="We document each technology's journey from validated research to filed and granted patent — so partners always know exactly where a project stands."
+        title="Two applications filed. Ownership path defined."
+        description="Both patent applications are currently filed in founder Marwen Ayadi's name. Following formal grant, they are intended to be assigned to Depth X."
       />
       <section className="px-8 pb-25 md:px-25">
         {isSectionVisible(visibility, "ip.stats") && (
           <div className="mb-16">
-            <StatGrid stats={settings.stats} />
+            <StatGrid
+              stats={[
+                { label: "Applications Filed", value: "02" },
+                { label: "Current Applicant", value: "FOUNDER" },
+                { label: "Patents Granted", value: "00" },
+                { label: "Planned Assignee", value: "DEPTH X" },
+              ]}
+            />
           </div>
         )}
         {isSectionVisible(visibility, "ip.statusDefinitions") && (
@@ -77,8 +84,8 @@ export default async function IpPatentsPage() {
               Get the full portfolio in one document
             </h3>
             <p className="mb-5 max-w-xl text-sm leading-7 text-muted">
-              A single-page summary of every project&apos;s status, patent number, and licensing
-              terms — built for internal review.
+              A single-page summary of each project&apos;s priority, application status, and planned
+              commercialization route.
             </p>
             <div className="flex flex-wrap gap-3">
               <a

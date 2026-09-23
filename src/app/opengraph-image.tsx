@@ -3,7 +3,7 @@ import { SITE_DESCRIPTION } from "@/lib/site";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Depth X Innovations";
+export const alt = "Depth X — Research, Development, IP and Commercialization";
 
 export default async function OpengraphImage() {
   return new ImageResponse(
@@ -30,7 +30,7 @@ export default async function OpengraphImage() {
             marginBottom: 28,
           }}
         >
-          PATENTED · VALIDATED · READY TO LICENSE
+          RESEARCH · DEVELOPMENT · IP · COMMERCIALIZATION
         </div>
         <div style={{ display: "flex", fontSize: 76, fontWeight: 700, lineHeight: 1.15 }}>
           Depth<span style={{ color: "#E8A33D" }}>X</span>

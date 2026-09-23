@@ -3,23 +3,23 @@ import type { PartnershipType } from "@/lib/types";
 export const partnershipTypes: PartnershipType[] = [
   {
     _id: "partnership-joint-research",
-    name: "Joint Research",
+    name: "Research Collaboration",
     description:
-      "Co-develop new research questions and share experimental infrastructure with our lab.",
+      "Explore research questions, experimental methods, and evidence needed to advance a technology concept.",
     visible: true,
   },
   {
     _id: "partnership-experimental-validation",
-    name: "Experimental Validation",
+    name: "Prototype & Validation",
     description:
-      "Provide real-world environments or data to help validate a system under development.",
+      "Contribute specialist engineering, testing environments, or data for a defined prototype and validation scope.",
     visible: true,
   },
   {
     _id: "partnership-technology-licensing",
-    name: "Technology Licensing",
+    name: "Commercial Operation",
     description:
-      "License a granted patent or validated system for commercial deployment.",
+      "Operate a validated technology under a future license while Depth X retains ownership of the assigned intellectual property.",
     visible: true,
   },
 ];

@@ -2,10 +2,10 @@ import type { FaqItem } from "@/lib/types";
 
 export const faqItems: FaqItem[] = [
   {
-    _id: "faq-available-for-licensing",
-    question: 'What does "Available for Licensing" mean exactly?',
+    _id: "faq-patent-owner",
+    question: "Who currently owns the patent applications?",
     answer:
-      "The technology has either a granted patent or a fully validated system, and Depth X is open to negotiating commercial licensing terms with qualified companies or investors.",
+      "Both applications are currently filed in founder Marwen Ayadi's name. Following formal grant, the patents are intended to be assigned to Depth X.",
     category: "licensing",
     order: 1,
     visible: true,
@@ -21,9 +21,9 @@ export const faqItems: FaqItem[] = [
   },
   {
     _id: "faq-exclusive",
-    question: "Can licenses be exclusive?",
+    question: "How will the technologies reach the market?",
     answer:
-      "Exclusivity is negotiable and depends on the project, market, and proposed terms. This is discussed during the term sheet stage.",
+      "Depth X plans to validate each technology first and then license it to a specialized operating company. The UAV platform is the first commercialization priority.",
     category: "licensing",
     order: 3,
     visible: true,
@@ -33,7 +33,7 @@ export const faqItems: FaqItem[] = [
     question:
       "What stage should a project be at before you'll discuss investment?",
     answer:
-      "We're open to conversations at any project stage — from experimental validation through to granted patents — but documentation and terms differ by stage.",
+      "Depth X is currently pre-prototype on the UAV platform. The next milestones are prototype construction with emQopter, technical validation, and a controlled exhibition pilot.",
     category: "general",
     order: 4,
     visible: true,

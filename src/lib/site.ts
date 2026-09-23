@@ -5,4 +5,4 @@ export const SITE_URL = (
 ).replace(/\/$/, "");
 
 export const SITE_DESCRIPTION =
-  "Depth X converts rigorous research into patented systems — with a live portfolio open for licensing and investment.";
+  "Depth X researches, develops, and protects new technologies, then prepares them for commercialization through specialized operating companies.";

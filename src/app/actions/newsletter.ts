@@ -15,7 +15,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const WELCOME_BODY = `Thanks for subscribing to Depth X updates.
 
-You'll hear from us occasionally when there's something worth sharing — a patent granted, a new research domain, or a licensing opportunity opening up. No spam, no noise.`;
+You'll hear from us occasionally when there's meaningful progress — a prototype milestone, a research update, an IP milestone, or a commercialization opportunity. No spam, no noise.`;
 
 export async function subscribeNewsletterAction(
   _prevState: NewsletterActionState,

@@ -1,71 +1,41 @@
 import type { Project } from "@/lib/types";
 import { researchDomains } from "@/lib/mock-data/research-domains";
-import { publications } from "@/lib/mock-data/publications";
 
-const hybrid = researchDomains[0];
-const autonomous = researchDomains[1];
-const cyberPhysical = researchDomains[2];
+const hybridMarketing =
+  researchDomains.find((domain) => domain.slug === "hybrid-marketing-science") ??
+  researchDomains[0];
 
 export const projects: Project[] = [
   {
-    _id: "project-adaptive-interaction",
-    title: "Adaptive interaction system for smart commercial environments",
-    slug: "adaptive-interaction",
-    status: "granted",
-    researchDomain: hybrid,
+    _id: "project-autonomous-aerial-marketing",
+    title: "Autonomous Aerial Marketing Platform",
+    slug: "autonomous-aerial-advertising-system",
+    status: "pending",
+    researchDomain: hybridMarketing,
     shortDescription:
-      "A platform integrating physical presence and user behavior with real-time digital decision-making, enabling a new layer of interaction between space, technology, and commerce.",
+      "A patent-pending multi-UAV platform for persistent aerial advertising, anonymous audience measurement, and adaptive campaign execution.",
     overview:
-      "This system was developed to close the gap between physical retail environments and digital decision engines. It combines sensor fusion with real-time behavioral modeling to adapt commercial spaces to visitor context, validated across three pilot deployments.",
-    patentNumber: "GB2024-0091X",
-    patentNumberKind: "patent",
-    filedDate: "2024-01-15",
-    grantedDate: "2024-11-01",
-    readinessStage: 3,
-    relatedPublications: publications.filter(
-      (p) => p.relatedProjectSlug === "adaptive-interaction",
-    ),
+      "Depth X is developing the system as its first commercialization priority. The project is currently pre-prototype, with the four-UAV MVP architecture and roadmap defined. emQopter GmbH is the external technical collaborator prepared to build the complete prototype. The related German and international patent applications are currently filed in founder Marwen Ayadi's name and are intended to be assigned to Depth X after formal grant.",
+    patentNumberKind: "application",
+    readinessStage: 2,
+    relatedPublications: [],
     featured: true,
     visible: true,
   },
   {
-    _id: "project-aerial-coordination",
-    title: "Distributed semi-autonomous aerial coordination platform",
-    slug: "aerial-coordination",
+    _id: "project-smart-vending-virtual-try-on",
+    title: "AI-Powered Smart Vending System for Virtual Clothing Try-On",
+    slug: "smart-vending-virtual-clothing-try-on",
     status: "pending",
-    researchDomain: autonomous,
+    researchDomain: hybridMarketing,
     shortDescription:
-      "A coordination system for distributed aerial platforms capable of operating safely and efficiently within complex urban and public environments.",
+      "A smart retail concept combining automated vending with AI-enabled virtual clothing try-on and an adaptive customer experience.",
     overview:
-      "The platform coordinates multiple semi-autonomous aerial units using a shared decision layer, allowing safe operation in constrained urban airspace. Current work focuses on failure-mode validation ahead of full patent grant.",
+      "This technology is the second commercialization project in the Depth X pipeline. Development and launch will follow the UAV platform so resources remain focused on one market entry at a time. The related application is currently filed in founder Marwen Ayadi's name and is intended to be assigned to Depth X after formal grant, before licensing to a specialized operating company.",
+    patentNumber: "DE 10 2025 004 854.8",
     patentNumberKind: "application",
-    filedDate: "2026-03-01",
     readinessStage: 2,
-    relatedPublications: publications.filter(
-      (p) => p.relatedProjectSlug === "aerial-coordination",
-    ),
-    featured: false,
-    visible: true,
-  },
-  {
-    _id: "project-behavioral-engine",
-    title:
-      "Real-time behavioral interpretation engine for intelligent systems",
-    slug: "behavioral-engine",
-    status: "licensing",
-    researchDomain: cyberPhysical,
-    shortDescription:
-      "A system that interprets human behavior and environmental signals in real time, ready for commercial integration through direct licensing.",
-    overview:
-      "A granted, production-validated engine for interpreting behavioral and environmental signals in real time. Already integrated in two pilot deployments and open for licensing by qualified commercial partners.",
-    patentNumber: "GB2023-0044P",
-    patentNumberKind: "patent",
-    filedDate: "2023-06-01",
-    grantedDate: "2024-02-01",
-    readinessStage: 3,
-    relatedPublications: publications.filter(
-      (p) => p.relatedProjectSlug === "behavioral-engine",
-    ),
+    relatedPublications: [],
     featured: false,
     visible: true,
   },

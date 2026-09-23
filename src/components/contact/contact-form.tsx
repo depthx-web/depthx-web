@@ -32,7 +32,7 @@ export function ContactForm({
         <strong className="mb-1 block font-display text-[15px] text-green">
           Message received.
         </strong>
-        Thanks for reaching out — our team typically responds within 2 business days.
+        Thanks for reaching out — the founder typically responds within 2 business days.
       </div>
     );
   }

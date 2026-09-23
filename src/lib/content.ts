@@ -135,6 +135,11 @@ function mapSiteSettings(row: Record<string, unknown>): SiteSettings {
 }
 
 const PROJECT_SELECT = "*, research_domain:research_domains(*), publications(*)";
+const REMOVED_NEWS_SLUGS = new Set([
+  "emqopter-uav-prototype-collaboration",
+  "uav-first-commercialization-priority",
+  "depthx-ip-ownership-path",
+]);
 
 // ---------- public data-access functions ----------
 
@@ -234,7 +239,9 @@ export async function getNewsPosts(): Promise<NewsPost[]> {
     .select("*")
     .eq("published", true)
     .order("date", { ascending: false });
-  const livePosts = (data ?? []).map(mapNewsPost);
+  const livePosts = (data ?? [])
+    .map(mapNewsPost)
+    .filter((post) => !REMOVED_NEWS_SLUGS.has(post.slug));
   const verifiedPosts = mockNewsPosts.filter((post) => post.published);
   const verifiedSlugs = new Set(verifiedPosts.map((post) => post.slug));
   return [...verifiedPosts, ...livePosts.filter((post) => !verifiedSlugs.has(post.slug))].sort(

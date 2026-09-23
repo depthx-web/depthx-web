@@ -82,43 +82,6 @@ values (
   true
 );
 
-insert into news_posts (title, slug, tag, excerpt, body, date, published)
-values
-  (
-    'emQopter prepared to build the four-UAV prototype',
-    'emqopter-uav-prototype-collaboration',
-    'COLLABORATION',
-    'Depth X has identified emQopter GmbH as the external technical collaborator prepared to deliver the complete prototype.',
-    'Depth X has identified emQopter GmbH as the external technical collaborator prepared to deliver the complete four-UAV prototype. This is a defined technical collaboration, not a corporate partnership or founding-team relationship. The next step is to finalize scope and move into prototype construction and validation.',
-    '2026-09-23',
-    true
-  ),
-  (
-    'UAV platform set as the first commercialization priority',
-    'uav-first-commercialization-priority',
-    'ROADMAP',
-    'Depth X will focus its resources on the aerial marketing platform before advancing the smart-vending technology to launch.',
-    'Depth X develops and protects technologies before licensing them to specialized operating companies. The autonomous aerial marketing platform is the first commercialization priority. The AI-powered smart vending and virtual clothing try-on system remains the second project in the pipeline.',
-    '2026-09-23',
-    true
-  ),
-  (
-    'Clarifying the Depth X intellectual-property path',
-    'depthx-ip-ownership-path',
-    'IP',
-    'Both applications are founder-filed today, with assignment to Depth X intended after formal grant.',
-    'The German and international applications associated with the two Depth X technologies are currently filed in founder Marwen Ayadi''s name. Following formal grant, the patents are intended to be assigned to Depth X, which would retain the IP and license validated technologies to specialized operating companies.',
-    '2026-09-23',
-    true
-  )
-on conflict (slug) do update
-set title = excluded.title,
-    tag = excluded.tag,
-    excerpt = excluded.excerpt,
-    body = excluded.body,
-    date = excluded.date,
-    published = true;
-
 update faq_items set visible = false;
 insert into faq_items (question, answer, category, "order", visible)
 values

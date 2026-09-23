@@ -41,18 +41,6 @@ on conflict (slug) do nothing;
 insert into team_members (name, role, bio, "order", visible) values
   ('Marwen Ayadi', 'Founder', 'Leads Depth X research, patent strategy, product direction, system concepts, customer discovery, and commercialization planning.', 1, true);
 
-insert into news_posts (title, slug, tag, excerpt, body, date, published) values
-  ('emQopter prepared to build the four-UAV prototype', 'emqopter-uav-prototype-collaboration', 'COLLABORATION',
-   'Depth X has identified emQopter GmbH as the external technical collaborator prepared to deliver the complete prototype.',
-   'Depth X has identified emQopter GmbH as the external technical collaborator prepared to deliver the complete four-UAV prototype. This is a defined technical collaboration, not a corporate partnership or founding-team relationship.', '2026-09-23', true),
-  ('UAV platform set as the first commercialization priority', 'uav-first-commercialization-priority', 'ROADMAP',
-   'Depth X will focus its resources on the aerial marketing platform before advancing the smart-vending technology to launch.',
-   'The autonomous aerial marketing platform is the first commercialization priority. The AI-powered smart vending and virtual clothing try-on system remains the second project in the pipeline.', '2026-09-23', true),
-  ('Clarifying the Depth X intellectual-property path', 'depthx-ip-ownership-path', 'IP',
-   'Both applications are founder-filed today, with assignment to Depth X intended after formal grant.',
-   'The German and international applications associated with the two Depth X technologies are currently filed in founder Marwen Ayadi''s name. Following formal grant, the patents are intended to be assigned to Depth X.', '2026-09-23', true)
-on conflict (slug) do nothing;
-
 insert into faq_items (question, answer, category, "order", visible) values
   ('Who currently owns the patent applications?', 'Both applications are currently filed in founder Marwen Ayadi''s name. Following formal grant, the patents are intended to be assigned to Depth X.', 'licensing', 1, true),
   ('Do you require an NDA before sharing technical details?', 'Yes — full technical documentation is shared only after a mutual NDA is signed, following an initial inquiry and fit assessment.', 'licensing', 2, true),

@@ -91,19 +91,6 @@ function mapProject(row: Record<string, unknown>): Project {
   };
 }
 
-function mapTeamMember(row: Record<string, unknown>): TeamMember {
-  return {
-    _id: String(row.id),
-    name: String(row.name),
-    role: String(row.role ?? ""),
-    bio: String(row.bio ?? ""),
-    photoUrl: row.photo_url ? String(row.photo_url) : undefined,
-    order: Number(row.order ?? 0),
-    keywords: row.keywords ? String(row.keywords) : undefined,
-    visible: row.visible === undefined ? true : Boolean(row.visible),
-  };
-}
-
 function mapNewsPost(row: Record<string, unknown>): NewsPost {
   return {
     _id: String(row.id),
@@ -116,39 +103,6 @@ function mapNewsPost(row: Record<string, unknown>): NewsPost {
     published: Boolean(row.published),
     imageUrl: row.image_url ? String(row.image_url) : undefined,
     keywords: row.keywords ? String(row.keywords) : undefined,
-  };
-}
-
-function mapTestimonial(row: Record<string, unknown>): Testimonial {
-  return {
-    _id: String(row.id),
-    quote: String(row.quote),
-    attributionName: String(row.attribution_name ?? ""),
-    attributionRole: String(row.attribution_role ?? ""),
-    keywords: row.keywords ? String(row.keywords) : undefined,
-    visible: row.visible === undefined ? true : Boolean(row.visible),
-  };
-}
-
-function mapFaqItem(row: Record<string, unknown>): FaqItem {
-  return {
-    _id: String(row.id),
-    question: String(row.question),
-    answer: String(row.answer ?? ""),
-    category: row.category as FaqItem["category"],
-    order: Number(row.order ?? 0),
-    keywords: row.keywords ? String(row.keywords) : undefined,
-    visible: row.visible === undefined ? true : Boolean(row.visible),
-  };
-}
-
-function mapPartnershipType(row: Record<string, unknown>): PartnershipType {
-  return {
-    _id: String(row.id),
-    name: String(row.name),
-    description: String(row.description ?? ""),
-    keywords: row.keywords ? String(row.keywords) : undefined,
-    visible: row.visible === undefined ? true : Boolean(row.visible),
   };
 }
 
@@ -182,44 +136,52 @@ function mapSiteSettings(row: Record<string, unknown>): SiteSettings {
 
 const PROJECT_SELECT = "*, research_domain:research_domains(*), publications(*)";
 
-// Keep the verified public company story authoritative while the matching
-// database migration is applied to production. Set USE_VERIFIED_STORY=false
-// after the live CMS rows have been reviewed and aligned. Admin workflows,
-// forms, subscribers, messages, and legal pages continue to use Supabase.
-const useVerifiedStory = process.env.USE_VERIFIED_STORY !== "false";
-
 // ---------- public data-access functions ----------
 
 export async function getSiteSettings(): Promise<SiteSettings> {
-  if (useVerifiedStory || !hasSupabaseConfig) return mockSiteSettings;
+  if (!hasSupabaseConfig) return mockSiteSettings;
   const db = await supabase();
   const { data } = await db.from("site_settings").select("*").eq("id", 1).single();
-  return data ? mapSiteSettings(data) : mockSiteSettings;
+  if (!data) return mockSiteSettings;
+  const live = mapSiteSettings(data);
+  return {
+    ...live,
+    heroHeadline: mockSiteSettings.heroHeadline,
+    heroHeadlineAccent: mockSiteSettings.heroHeadlineAccent,
+    heroSubtext: mockSiteSettings.heroSubtext,
+    stats: mockSiteSettings.stats,
+    footerText: mockSiteSettings.footerText,
+  };
 }
 
 export async function getProjects(): Promise<Project[]> {
-  if (useVerifiedStory || !hasSupabaseConfig) return mockProjects.filter((p) => p.visible);
+  if (!hasSupabaseConfig) return mockProjects.filter((p) => p.visible);
   const db = await supabase();
   const { data } = await db
     .from("projects")
     .select(PROJECT_SELECT)
     .eq("visible", true)
     .order("created_at", { ascending: false });
-  return (data ?? []).map(mapProject);
+  const liveProjects = (data ?? []).map(mapProject);
+  return mockProjects
+    .filter((project) => project.visible)
+    .map((project) => {
+      const live = liveProjects.find((candidate) => candidate.slug === project.slug);
+      if (!live) return project;
+      return {
+        ...live,
+        ...project,
+        patentNumber: live.patentNumber ?? project.patentNumber,
+        filedDate: live.filedDate ?? project.filedDate,
+        relatedPublications: live.relatedPublications,
+        simulatorHtml: live.simulatorHtml,
+      };
+    });
 }
 
 export async function getProject(slug: string): Promise<Project | undefined> {
-  if (useVerifiedStory || !hasSupabaseConfig) {
-    return mockProjects.find((p) => p.slug === slug && p.visible);
-  }
-  const db = await supabase();
-  const { data } = await db
-    .from("projects")
-    .select(PROJECT_SELECT)
-    .eq("slug", slug)
-    .eq("visible", true)
-    .single();
-  return data ? mapProject(data) : undefined;
+  const projects = await getProjects();
+  return projects.find((project) => project.slug === slug);
 }
 
 export async function getFeaturedProject(): Promise<Project | undefined> {
@@ -228,7 +190,7 @@ export async function getFeaturedProject(): Promise<Project | undefined> {
 }
 
 export async function getResearchDomains(): Promise<ResearchDomain[]> {
-  if (useVerifiedStory || !hasSupabaseConfig) {
+  if (!hasSupabaseConfig) {
     return [...mockResearchDomains].filter((d) => d.visible).sort((a, b) => a.order - b.order);
   }
   const db = await supabase();
@@ -237,11 +199,18 @@ export async function getResearchDomains(): Promise<ResearchDomain[]> {
     .select("*")
     .eq("visible", true)
     .order("order", { ascending: true });
-  return (data ?? []).map(mapResearchDomain);
+  const liveDomains = (data ?? []).map(mapResearchDomain);
+  return mockResearchDomains
+    .filter((domain) => domain.visible)
+    .map((domain) => {
+      const live = liveDomains.find((candidate) => candidate.slug === domain.slug);
+      return live ? { ...live, ...domain } : domain;
+    })
+    .sort((a, b) => a.order - b.order);
 }
 
 export async function getPublications(): Promise<Publication[]> {
-  if (useVerifiedStory || !hasSupabaseConfig) return mockPublications.filter((p) => p.visible);
+  if (!hasSupabaseConfig) return mockPublications.filter((p) => p.visible);
   const db = await supabase();
   const { data } = await db
     .from("publications")
@@ -252,20 +221,11 @@ export async function getPublications(): Promise<Publication[]> {
 }
 
 export async function getTeamMembers(): Promise<TeamMember[]> {
-  if (useVerifiedStory || !hasSupabaseConfig) {
-    return [...mockTeamMembers].filter((m) => m.visible).sort((a, b) => a.order - b.order);
-  }
-  const db = await supabase();
-  const { data } = await db
-    .from("team_members")
-    .select("*")
-    .eq("visible", true)
-    .order("order", { ascending: true });
-  return (data ?? []).map(mapTeamMember);
+  return [...mockTeamMembers].filter((m) => m.visible).sort((a, b) => a.order - b.order);
 }
 
 export async function getNewsPosts(): Promise<NewsPost[]> {
-  if (useVerifiedStory || !hasSupabaseConfig) {
+  if (!hasSupabaseConfig) {
     return mockNewsPosts.filter((n) => n.published).sort((a, b) => (a.date < b.date ? 1 : -1));
   }
   const db = await supabase();
@@ -274,50 +234,29 @@ export async function getNewsPosts(): Promise<NewsPost[]> {
     .select("*")
     .eq("published", true)
     .order("date", { ascending: false });
-  return (data ?? []).map(mapNewsPost);
+  const livePosts = (data ?? []).map(mapNewsPost);
+  const verifiedPosts = mockNewsPosts.filter((post) => post.published);
+  const verifiedSlugs = new Set(verifiedPosts.map((post) => post.slug));
+  return [...verifiedPosts, ...livePosts.filter((post) => !verifiedSlugs.has(post.slug))].sort(
+    (a, b) => (a.date < b.date ? 1 : -1),
+  );
 }
 
 export async function getNewsPost(slug: string): Promise<NewsPost | undefined> {
-  if (useVerifiedStory || !hasSupabaseConfig) {
-    return mockNewsPosts.find((n) => n.slug === slug && n.published);
-  }
-  const db = await supabase();
-  const { data } = await db
-    .from("news_posts")
-    .select("*")
-    .eq("slug", slug)
-    .eq("published", true)
-    .single();
-  return data ? mapNewsPost(data) : undefined;
+  const posts = await getNewsPosts();
+  return posts.find((post) => post.slug === slug);
 }
 
 export async function getTestimonials(): Promise<Testimonial[]> {
-  if (useVerifiedStory || !hasSupabaseConfig) return mockTestimonials.filter((t) => t.visible);
-  const db = await supabase();
-  const { data } = await db.from("testimonials").select("*").eq("visible", true);
-  return (data ?? []).map(mapTestimonial);
+  return mockTestimonials.filter((testimonial) => testimonial.visible);
 }
 
 export async function getFaqItems(): Promise<FaqItem[]> {
-  if (useVerifiedStory || !hasSupabaseConfig) {
-    return [...mockFaqItems].filter((f) => f.visible).sort((a, b) => a.order - b.order);
-  }
-  const db = await supabase();
-  const { data } = await db
-    .from("faq_items")
-    .select("*")
-    .eq("visible", true)
-    .order("order", { ascending: true });
-  return (data ?? []).map(mapFaqItem);
+  return [...mockFaqItems].filter((f) => f.visible).sort((a, b) => a.order - b.order);
 }
 
 export async function getPartnershipTypes(): Promise<PartnershipType[]> {
-  if (useVerifiedStory || !hasSupabaseConfig) {
-    return mockPartnershipTypes.filter((p) => p.visible);
-  }
-  const db = await supabase();
-  const { data } = await db.from("partnership_types").select("*").eq("visible", true);
-  return (data ?? []).map(mapPartnershipType);
+  return mockPartnershipTypes.filter((p) => p.visible);
 }
 
 export async function getLegalPage(slug: string): Promise<LegalPage | undefined> {

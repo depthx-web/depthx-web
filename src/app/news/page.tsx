@@ -23,9 +23,9 @@ export default async function NewsPage() {
     <>
       <Breadcrumb trail={[{ label: "Home", href: "/" }, { label: "News" }]} />
       <PageHero
-        eyebrow="// UPDATES"
-        title="News & Insights"
-        description="Milestones, publications, and developments from across our research programmes."
+        eyebrow="// JOURNAL"
+        title="Research, Progress & Perspective"
+        description="Detailed updates on the technologies we are developing, the evidence we are building, and the path from protected ideas to commercial operation."
       />
       {isSectionVisible(settings.sectionVisibility, "news.grid") && (
         <section className="px-8 pb-25 md:px-25">

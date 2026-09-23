@@ -41,18 +41,17 @@ export default async function HomePage() {
     <>
       <header className="flex min-h-[92vh] flex-col justify-center px-8 pb-20 pt-35 md:px-25 md:pl-25 md:pr-16">
         <div className="mb-5 flex items-center gap-2.5 font-mono text-xs tracking-widest text-amber before:h-px before:w-6 before:bg-amber">
-          RESEARCH · DEVELOPMENT · IP · COMMERCIALIZATION
+          RESEARCH-LED TECHNOLOGY DEVELOPMENT
         </div>
         <h1 className="max-w-4xl font-display text-4xl font-bold leading-tight tracking-tight md:text-7xl">
-          Research. Develop. Protect.
+          From original research
           <br />
-          <span className="text-green">Prepare for commercialization.</span>
+          <span className="text-green">to technology built for market.</span>
         </h1>
         <p className="mt-6 max-w-2xl text-lg leading-8 text-muted">
-          Depth X develops research-driven technologies, protects them through intellectual
-          property, and validates them before commercialization through specialized operating
-          companies. The autonomous aerial marketing platform is the first commercialization
-          priority.
+          Depth X turns research-led ideas into protected, validated technologies, then creates a
+          focused path to commercial operation. Our first priority is an autonomous aerial
+          marketing platform developed with specialist engineering support.
         </p>
         <div className="mt-10 flex flex-wrap gap-3.5">
           <Link

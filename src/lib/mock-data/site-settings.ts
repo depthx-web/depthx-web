@@ -2,10 +2,10 @@ import type { SiteSettings } from "@/lib/types";
 import { defaultSectionVisibility } from "@/lib/section-visibility";
 
 export const siteSettings: SiteSettings = {
-  heroHeadline: "Research. Develop. Protect.",
-  heroHeadlineAccent: "Prepare for commercialization.",
+  heroHeadline: "From original research",
+  heroHeadlineAccent: "to technology built for market.",
   heroSubtext:
-    "Depth X develops research-driven technologies, protects them through intellectual property, and validates them before commercialization through specialized operating companies.",
+    "Depth X turns research-led ideas into protected, validated technologies, then creates a focused path to commercial operation.",
   stats: [
     { label: "Patent Applications Filed", value: "02" },
     { label: "Technologies in Development", value: "02" },

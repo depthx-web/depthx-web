@@ -6,7 +6,6 @@ set hero_headline = 'Research. Develop. Protect.',
     hero_headline_accent = 'Prepare for commercialization.',
     hero_subtext = 'Depth X develops research-driven technologies, protects them through intellectual property, and validates them before commercialization through specialized operating companies. The autonomous aerial marketing platform is the first commercialization priority.',
     stats = '[{"label":"Patent Applications Filed","value":"02"},{"label":"Technologies in Development","value":"02"},{"label":"Active Prototype Priority","value":"01"},{"label":"Research Domains","value":"04"}]'::jsonb,
-    trust_bar_logos = '[]'::jsonb,
     footer_text = 'Depth X is a founder-led research, technology development, and IP commercialization company.'
 where id = 1;
 
@@ -71,8 +70,6 @@ set visible = false,
     featured = false
 where slug in ('adaptive-interaction', 'aerial-coordination', 'behavioral-engine');
 
--- Hide placeholder publications until a verifiable public publication exists.
-update publications set visible = false;
 update testimonials set visible = false;
 
 update team_members set visible = false;
@@ -85,7 +82,6 @@ values (
   true
 );
 
-update news_posts set published = false;
 insert into news_posts (title, slug, tag, excerpt, body, date, published)
 values
   (

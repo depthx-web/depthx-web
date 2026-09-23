@@ -57,10 +57,31 @@ export default async function NewsDetailPage(props: PageProps<"/news/[slug]">) {
         </div>
       )}
       <section className="px-8 py-10 md:px-25">
-        <div className="max-w-2xl text-[15px] leading-8 whitespace-pre-line text-muted">
-          {post.body}
-        </div>
+        <ArticleBody body={post.body} />
       </section>
     </>
+  );
+}
+
+function ArticleBody({ body }: { body: string }) {
+  const blocks = body.split(/\n\s*\n/).filter(Boolean);
+
+  return (
+    <article className="max-w-2xl text-[15.5px] leading-8 text-muted">
+      {blocks.map((block, index) =>
+        block.startsWith("## ") ? (
+          <h2
+            key={`${index}-${block}`}
+            className="mt-11 mb-4 font-display text-2xl font-semibold leading-tight text-text"
+          >
+            {block.slice(3)}
+          </h2>
+        ) : (
+          <p key={`${index}-${block.slice(0, 24)}`} className="mb-6">
+            {block}
+          </p>
+        ),
+      )}
+    </article>
   );
 }

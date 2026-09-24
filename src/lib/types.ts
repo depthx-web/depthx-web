@@ -78,7 +78,6 @@ export interface Project {
   developmentStage: DevelopmentStage;
   ipStatus: IpStatus;
   commercialStatus: CommercialStatus;
-  productPriority?: string;
   nextMilestone?: string;
   /** Legacy three-step value retained while existing database rows migrate. */
   readinessStage: ReadinessStage;

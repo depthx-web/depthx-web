@@ -5,11 +5,6 @@
 
 begin;
 
--- Existing hosted databases need this field before Product Priority can be
--- managed from the project form. This remains review-only and is rolled back below.
-alter table public.projects
-  add column if not exists product_priority text;
-
 -- Site settings singleton: approved homepage positioning only.
 update public.site_settings
 set
@@ -29,14 +24,12 @@ set
   status = 'pending',
   patent_number = null,
   granted_date = null,
-  product_priority = 'The autonomous multi-UAV platform is Depth X Ltd''s first commercialization priority. The smart vending system is the second technology in the pipeline and will be developed for market after the UAV platform advances through prototype engineering and validation. The two technologies are not planned for simultaneous launch.',
   overview = 'The autonomous multi-UAV platform is Depth X Ltd''s first commercialization priority. It is patent-pending and at the pre-prototype stage, with the engineering build as the next milestone. emQopter has confirmed its capability to engineer and build the complete four-UAV physical prototype. Its role is that of an external engineering collaborator.'
 where slug = 'autonomous-aerial-advertising-system'
   and (
     status is distinct from 'pending'
     or patent_number is not null
     or granted_date is not null
-    or product_priority is distinct from 'The autonomous multi-UAV platform is Depth X Ltd''s first commercialization priority. The smart vending system is the second technology in the pipeline and will be developed for market after the UAV platform advances through prototype engineering and validation. The two technologies are not planned for simultaneous launch.'
     or overview is distinct from 'The autonomous multi-UAV platform is Depth X Ltd''s first commercialization priority. It is patent-pending and at the pre-prototype stage, with the engineering build as the next milestone. emQopter has confirmed its capability to engineer and build the complete four-UAV physical prototype. Its role is that of an external engineering collaborator.'
   );
 
@@ -46,14 +39,12 @@ set
   status = 'pending',
   patent_number = null,
   granted_date = null,
-  product_priority = 'The smart vending system is the second technology in the pipeline and will be developed for market after the autonomous multi-UAV platform advances through prototype engineering and validation. The two technologies are not planned for simultaneous launch.',
   overview = 'The smart vending system is the second technology in the pipeline and will be developed for market after the autonomous multi-UAV platform advances through prototype engineering and validation. The two technologies are not planned for simultaneous launch.'
 where slug = 'smart-vending-virtual-clothing-try-on'
   and (
     status is distinct from 'pending'
     or patent_number is not null
     or granted_date is not null
-    or product_priority is distinct from 'The smart vending system is the second technology in the pipeline and will be developed for market after the autonomous multi-UAV platform advances through prototype engineering and validation. The two technologies are not planned for simultaneous launch.'
     or overview is distinct from 'The smart vending system is the second technology in the pipeline and will be developed for market after the autonomous multi-UAV platform advances through prototype engineering and validation. The two technologies are not planned for simultaneous launch.'
   );
 

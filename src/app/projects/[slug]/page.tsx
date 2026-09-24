@@ -14,7 +14,6 @@ import {
 } from "@/lib/project-status";
 import {
   EMQOPTER_STATEMENT,
-  PRODUCT_PRIORITY,
   SMART_VENDING_PROJECT_SLUG,
   UAV_PROJECT_SLUG,
 } from "@/lib/approved-public-content";
@@ -51,7 +50,6 @@ export default async function ProjectDetailPage(props: PageProps<"/projects/[slu
   const project = await getProject(slug);
   if (!project) notFound();
   const isUavProject = project.slug === UAV_PROJECT_SLUG;
-  const isSmartVendingProject = project.slug === SMART_VENDING_PROJECT_SLUG;
 
   return (
     <>
@@ -84,15 +82,7 @@ export default async function ProjectDetailPage(props: PageProps<"/projects/[slu
               <DetailBlock title="Engineering Collaboration">
                 <p>{EMQOPTER_STATEMENT}</p>
               </DetailBlock>
-              <DetailBlock title="Product Priority">
-                <p>{project.productPriority ?? PRODUCT_PRIORITY}</p>
-              </DetailBlock>
             </>
-          )}
-          {isSmartVendingProject && (
-            <DetailBlock title="Product Priority">
-              <p>{project.productPriority ?? PRODUCT_PRIORITY}</p>
-            </DetailBlock>
           )}
           {project.simulatorHtml && (
             <div className="mb-9">

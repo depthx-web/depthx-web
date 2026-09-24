@@ -99,7 +99,6 @@ function mapProject(row: Record<string, unknown>): Project {
     commercialStatus: isCommercialStatus(row.commercial_status)
       ? row.commercial_status
       : legacyCommercialStatus(legacyStatus),
-    productPriority: row.product_priority ? String(row.product_priority) : undefined,
     nextMilestone: row.next_milestone ? String(row.next_milestone) : undefined,
     readinessStage: legacyReadiness as Project["readinessStage"],
     relatedPublications: pubs.map(mapPublication),
@@ -194,7 +193,6 @@ export async function getProjects(): Promise<Project[]> {
       ? {
           ...fallback,
           ...live,
-          productPriority: live.productPriority ?? fallback.productPriority,
           nextMilestone: live.nextMilestone ?? fallback.nextMilestone,
         }
       : live;

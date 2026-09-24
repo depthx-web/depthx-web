@@ -79,13 +79,6 @@ export const RESOURCE_CONFIGS: ResourceConfig[] = [
         options: COMMERCIAL_STATUSES.map(({ adminLabel, value }) => ({ label: adminLabel, value })),
       },
       {
-        name: "product_priority",
-        label: "Product Priority",
-        type: "textarea",
-        required: true,
-        helpText: "Public sequencing text shown on the homepage, Projects page, project page, and investor page.",
-      },
-      {
         name: "next_milestone",
         label: "Next Milestone",
         type: "text",

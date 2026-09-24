@@ -16,6 +16,8 @@ export const projects: Project[] = [
       "A patent-pending multi-UAV platform for persistent aerial advertising, anonymous audience measurement, and adaptive campaign execution.",
     overview:
       "The autonomous multi-UAV platform is Depth X Ltd's first commercialization priority. It is currently at the pre-prototype stage, with the engineering build as the next milestone. emQopter has confirmed its capability to engineer and build the complete four-UAV physical prototype. Its role is that of an external engineering collaborator.",
+    engineeringCollaboration:
+      "emQopter has confirmed its capability to engineer and build the complete four-UAV physical prototype. Its role is that of an external engineering collaborator.",
     patentNumberKind: "application",
     developmentStage: "system_architecture",
     ipStatus: "patent_pending",

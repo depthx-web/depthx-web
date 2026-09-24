@@ -88,6 +88,18 @@ function mapProject(row: Record<string, unknown>): Project {
       : { _id: "", name: "", slug: "", description: "", order: 0, visible: true },
     shortDescription: String(row.short_description ?? ""),
     overview: String(row.overview ?? ""),
+    researchCollaboration:
+      row.research_collaboration === undefined
+        ? undefined
+        : row.research_collaboration
+          ? String(row.research_collaboration)
+          : null,
+    engineeringCollaboration:
+      row.engineering_collaboration === undefined
+        ? undefined
+        : row.engineering_collaboration
+          ? String(row.engineering_collaboration)
+          : null,
     patentNumber: row.patent_number ? String(row.patent_number) : undefined,
     patentNumberKind: row.patent_number_kind === "patent" ? "patent" : "application",
     filedDate: row.filed_date ? String(row.filed_date) : undefined,
@@ -185,6 +197,14 @@ export async function getProjects(): Promise<Project[]> {
       ? {
           ...fallback,
           ...live,
+          researchCollaboration:
+            live.researchCollaboration === undefined
+              ? fallback.researchCollaboration
+              : live.researchCollaboration,
+          engineeringCollaboration:
+            live.engineeringCollaboration === undefined
+              ? fallback.engineeringCollaboration
+              : live.engineeringCollaboration,
           nextMilestone: live.nextMilestone ?? fallback.nextMilestone,
         }
       : live;

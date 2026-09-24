@@ -79,6 +79,8 @@ create table projects (
   research_domain_id uuid references research_domains (id) on delete set null,
   short_description text not null default '',
   overview text not null default '',
+  research_collaboration text,
+  engineering_collaboration text,
   patent_number text,
   filed_date date,
   granted_date date,

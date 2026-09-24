@@ -13,7 +13,6 @@ import {
   shouldShowCommercialStatus,
 } from "@/lib/project-status";
 import {
-  EMQOPTER_STATEMENT,
   SMART_VENDING_PROJECT_SLUG,
   UAV_PROJECT_SLUG,
 } from "@/lib/approved-public-content";
@@ -49,7 +48,6 @@ export default async function ProjectDetailPage(props: PageProps<"/projects/[slu
   const { slug } = await props.params;
   const project = await getProject(slug);
   if (!project) notFound();
-  const isUavProject = project.slug === UAV_PROJECT_SLUG;
 
   return (
     <>
@@ -77,12 +75,15 @@ export default async function ProjectDetailPage(props: PageProps<"/projects/[slu
           <DetailBlock title="Project Status">
             <ProjectStatusLine project={project} />
           </DetailBlock>
-          {isUavProject && (
-            <>
-              <DetailBlock title="Engineering Collaboration">
-                <p>{EMQOPTER_STATEMENT}</p>
-              </DetailBlock>
-            </>
+          {project.researchCollaboration && (
+            <DetailBlock title="Research Collaboration">
+              <p>{project.researchCollaboration}</p>
+            </DetailBlock>
+          )}
+          {project.engineeringCollaboration && (
+            <DetailBlock title="Engineering Collaboration">
+              <p>{project.engineeringCollaboration}</p>
+            </DetailBlock>
           )}
           {project.simulatorHtml && (
             <div className="mb-9">

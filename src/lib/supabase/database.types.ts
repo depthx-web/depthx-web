@@ -72,6 +72,8 @@ export interface Database {
           research_domain_id: string | null;
           short_description: string;
           overview: string;
+          research_collaboration: string | null;
+          engineering_collaboration: string | null;
           patent_number: string | null;
           patent_number_kind: PatentNumberKind;
           filed_date: string | null;

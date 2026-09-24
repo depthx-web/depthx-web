@@ -56,6 +56,20 @@ export const RESOURCE_CONFIGS: ResourceConfig[] = [
       { name: "short_description", label: "Short Description", type: "textarea", required: true },
       { name: "overview", label: "Overview", type: "textarea", required: true },
       {
+        name: "research_collaboration",
+        label: "Research Collaboration",
+        type: "textarea",
+        helpText:
+          "Optional public description of research collaboration. Do not include confidential research, legal, or partner details.",
+      },
+      {
+        name: "engineering_collaboration",
+        label: "Engineering Collaboration",
+        type: "textarea",
+        helpText:
+          "Optional public description of engineering collaboration. Do not include confidential technical, legal, or commercial details.",
+      },
+      {
         name: "development_stage",
         label: "Product Development Stage",
         type: "select",

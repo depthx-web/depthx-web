@@ -71,6 +71,8 @@ export interface Project {
   researchDomain: ResearchDomain;
   shortDescription: string;
   overview: string;
+  researchCollaboration?: string | null;
+  engineeringCollaboration?: string | null;
   patentNumber?: string;
   patentNumberKind: PatentNumberKind;
   filedDate?: string;

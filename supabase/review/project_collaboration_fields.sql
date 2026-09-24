@@ -14,7 +14,7 @@ alter table public.projects
 -- The stable slug prevents a broad update. No research collaborator is asserted.
 update public.projects
 set engineering_collaboration =
-  'emQopter has confirmed its capability to engineer and build the complete four-UAV physical prototype. Its role is that of an external engineering collaborator.'
+  'emQopter GmbH is an external engineering collaborator supporting the planned prototype engineering phase.'
 where slug = 'autonomous-aerial-advertising-system';
 
 -- Review the matched project row before any separately approved execution.

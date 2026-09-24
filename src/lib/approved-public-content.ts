@@ -7,7 +7,7 @@ export const APPROVED_HERO = {
 };
 
 export const EMQOPTER_STATEMENT =
-  "emQopter has confirmed its capability to engineer and build the complete four-UAV physical prototype. Its role is that of an external engineering collaborator.";
+  "emQopter GmbH is an external engineering collaborator supporting the planned prototype engineering phase.";
 
 export const ORIGIN_STORY =
   "Depth X Ltd began with founder Marwen Ayadi's marketing background and his development of an autonomous UAV advertising concept. Designing the system and preparing the patent applications raised broader questions about the relationship between traditional and digital marketing. Those questions led to the theoretical research that shaped Depth X Ltd as an R&D and technology commercialization company.";

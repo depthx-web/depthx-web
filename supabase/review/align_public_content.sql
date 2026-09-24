@@ -24,13 +24,13 @@ set
   status = 'pending',
   patent_number = null,
   granted_date = null,
-  overview = 'The autonomous multi-UAV platform is Depth X Ltd''s first commercialization priority. It is patent-pending and at the pre-prototype stage, with the engineering build as the next milestone. emQopter has confirmed its capability to engineer and build the complete four-UAV physical prototype. Its role is that of an external engineering collaborator.'
+  overview = 'The autonomous multi-UAV platform is Depth X Ltd''s first commercialization priority. It is patent-pending and at the pre-prototype stage, with the engineering build as the next milestone.'
 where slug = 'autonomous-aerial-advertising-system'
   and (
     status is distinct from 'pending'
     or patent_number is not null
     or granted_date is not null
-    or overview is distinct from 'The autonomous multi-UAV platform is Depth X Ltd''s first commercialization priority. It is patent-pending and at the pre-prototype stage, with the engineering build as the next milestone. emQopter has confirmed its capability to engineer and build the complete four-UAV physical prototype. Its role is that of an external engineering collaborator.'
+    or overview is distinct from 'The autonomous multi-UAV platform is Depth X Ltd''s first commercialization priority. It is patent-pending and at the pre-prototype stage, with the engineering build as the next milestone.'
   );
 
 -- Second pipeline product: never write an application number or grant claim.

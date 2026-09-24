@@ -12,6 +12,27 @@
 export type UserRole = "admin" | "editor";
 export type ProjectStatus = "granted" | "pending" | "licensing";
 export type PatentNumberKind = "application" | "patent";
+export type DevelopmentStage =
+  | "research_concept"
+  | "system_architecture"
+  | "prototype_engineering"
+  | "prototype_built"
+  | "technical_validation"
+  | "pilot_preparation"
+  | "pilot"
+  | "validation_complete";
+export type IpStatus =
+  | "not_filed"
+  | "application_preparation"
+  | "ip_filed"
+  | "patent_pending"
+  | "patent_granted";
+export type CommercialStatus =
+  | "not_offered"
+  | "commercialization_planning"
+  | "available_for_licensing"
+  | "licensed"
+  | "commercial_operation";
 export type FaqCategory = "licensing" | "general";
 export type EmailCampaignStatus = "draft" | "sent" | "failed" | "scheduled";
 export type NewsletterInterest = "news" | "investment" | "research" | "partnership";
@@ -55,6 +76,10 @@ export interface Database {
           patent_number_kind: PatentNumberKind;
           filed_date: string | null;
           granted_date: string | null;
+          development_stage: DevelopmentStage;
+          ip_status: IpStatus;
+          commercial_status: CommercialStatus;
+          next_milestone: string | null;
           readiness_stage: number;
           featured: boolean;
           visible: boolean;

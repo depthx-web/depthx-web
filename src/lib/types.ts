@@ -10,6 +10,30 @@ export type ProjectStatus = "granted" | "pending" | "licensing";
 
 export type ReadinessStage = 1 | 2 | 3;
 
+export type DevelopmentStage =
+  | "research_concept"
+  | "system_architecture"
+  | "prototype_engineering"
+  | "prototype_built"
+  | "technical_validation"
+  | "pilot_preparation"
+  | "pilot"
+  | "validation_complete";
+
+export type IpStatus =
+  | "not_filed"
+  | "application_preparation"
+  | "ip_filed"
+  | "patent_pending"
+  | "patent_granted";
+
+export type CommercialStatus =
+  | "not_offered"
+  | "commercialization_planning"
+  | "available_for_licensing"
+  | "licensed"
+  | "commercial_operation";
+
 /** Whether `Project.patentNumber` is a filing/application number or a
  * patent number — an explicit admin choice, not inferred from
  * `status` (a project can be mid-licensing while still only having a
@@ -51,6 +75,11 @@ export interface Project {
   patentNumberKind: PatentNumberKind;
   filedDate?: string;
   grantedDate?: string;
+  developmentStage: DevelopmentStage;
+  ipStatus: IpStatus;
+  commercialStatus: CommercialStatus;
+  nextMilestone?: string;
+  /** Legacy three-step value retained while existing database rows migrate. */
   readinessStage: ReadinessStage;
   relatedPublications: Publication[];
   featured: boolean;

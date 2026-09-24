@@ -25,7 +25,8 @@ set name = excluded.name,
 
 insert into projects (
   title, slug, status, research_domain_id, short_description, overview,
-  patent_number, patent_number_kind, readiness_stage, featured, visible
+  patent_number, patent_number_kind, readiness_stage, development_stage,
+  ip_status, commercial_status, next_milestone, featured, visible
 )
 values (
   'Autonomous Aerial Marketing Platform',
@@ -33,10 +34,14 @@ values (
   'pending',
   (select id from research_domains where slug = 'hybrid-marketing-science'),
   'A patent-pending multi-UAV platform for persistent aerial advertising, anonymous audience measurement, and adaptive campaign execution.',
-  'Depth X is developing the system as its first commercialization priority. The project is currently pre-prototype, with the four-UAV MVP architecture and roadmap defined. emQopter GmbH is the external technical collaborator prepared to build the complete prototype. The related German and international patent applications are currently filed in founder Marwen Ayadi''s name and are intended to be assigned to Depth X after formal grant.',
+  'The autonomous multi-UAV platform is Depth X Ltd''s first commercialization priority. It is currently at the pre-prototype stage, with the engineering build as the next milestone. emQopter has confirmed its capability to engineer and build the complete four-UAV physical prototype. Its role is that of an external engineering collaborator.',
   null,
   'application',
   2,
+  'system_architecture',
+  'patent_pending',
+  'commercialization_planning',
+  'Engineering Build Next',
   true,
   true
 ), (
@@ -45,10 +50,14 @@ values (
   'pending',
   (select id from research_domains where slug = 'hybrid-marketing-science'),
   'A smart retail concept combining automated vending with AI-enabled virtual clothing try-on and an adaptive customer experience.',
-  'This technology is the second commercialization project in the Depth X pipeline. Development and launch will follow the UAV platform so resources remain focused on one market entry at a time. The related application is currently filed in founder Marwen Ayadi''s name and is intended to be assigned to Depth X after formal grant, before licensing to a specialized operating company.',
-  'DE 10 2025 004 854.8',
+  'The smart vending system is the second technology in the pipeline and will be developed for market after the autonomous multi-UAV platform advances through prototype engineering and validation. The two technologies are not planned for simultaneous launch.',
+  null,
   'application',
   2,
+  'research_concept',
+  'patent_pending',
+  'not_offered',
+  'Planned After UAV Validation',
   false,
   true
 )
@@ -62,6 +71,10 @@ set title = excluded.title,
     patent_number_kind = excluded.patent_number_kind,
     granted_date = null,
     readiness_stage = excluded.readiness_stage,
+    development_stage = excluded.development_stage,
+    ip_status = excluded.ip_status,
+    commercial_status = excluded.commercial_status,
+    next_milestone = excluded.next_milestone,
     featured = excluded.featured,
     visible = true;
 

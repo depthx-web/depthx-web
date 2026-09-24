@@ -1,21 +1,17 @@
 import Link from "next/link";
 import type { Project } from "@/lib/types";
 import { STATUS_CLASSES } from "@/lib/project-display";
-import { ReadinessBar, StatusBadge } from "@/components/ui/status-badge";
+import {
+  CommercialStatusBadge,
+  DevelopmentProgress,
+  ProjectStatusLine,
+} from "@/components/ui/status-badge";
 import { ClampedText } from "@/components/ui/clamped-text";
-import { formatDate } from "@/lib/format-date";
-import { UAV_PROJECT_SLUG } from "@/lib/approved-public-content";
+import { developmentStageLabel } from "@/lib/project-status";
 
 export function FlagshipCard({ project }: { project: Project }) {
-  const isUavProject = project.slug === UAV_PROJECT_SLUG;
   const c = STATUS_CLASSES[project.status];
-  const meta = isUavProject
-    ? "Founder-held patent applications filed"
-    : project.patentNumber
-    ? `${project.patentNumberKind === "patent" ? "Patent No." : "Application No."} ${project.patentNumber}`
-    : project.filedDate
-      ? `Filed: ${formatDate(project.filedDate)}`
-      : "";
+  const meta = project.nextMilestone ?? developmentStageLabel(project.developmentStage);
 
   return (
     <Link
@@ -28,11 +24,8 @@ export function FlagshipCard({ project }: { project: Project }) {
           {"// FLAGSHIP PROJECT"}
         </span>
         <h3 className="font-display text-[22px] leading-tight font-semibold">{project.title}</h3>
-        {isUavProject ? (
-          <span className="font-mono text-[11px] tracking-wide text-amber">PATENT-PENDING · PRE-PROTOTYPE · ENGINEERING BUILD NEXT</span>
-        ) : (
-          <StatusBadge status={project.status} />
-        )}
+        <ProjectStatusLine project={project} />
+        <CommercialStatusBadge status={project.commercialStatus} />
       </div>
       <div className="p-8.5">
         <div className="font-mono text-[11px] tracking-wide text-muted">
@@ -42,7 +35,7 @@ export function FlagshipCard({ project }: { project: Project }) {
           <ClampedText text={project.overview} lines={4} className="text-sm leading-7 text-muted" />
         </div>
         <div className="mb-4">
-          <ReadinessBar readiness={project.readinessStage} status={project.status} />
+          <DevelopmentProgress stage={project.developmentStage} accentClass={c.top} />
         </div>
         <div className="flex items-center justify-between border-t border-line pt-3.5 font-mono text-[11px] text-muted">
           <span>{meta}</span>

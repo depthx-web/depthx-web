@@ -3,10 +3,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProject, getProjects } from "@/lib/content";
 import { Breadcrumb } from "@/components/ui/page-hero";
-import { StatusBadge } from "@/components/ui/status-badge";
-import { formatDate } from "@/lib/format-date";
+import { CommercialStatusBadge, ProjectStatusLine } from "@/components/ui/status-badge";
 import { ProductSimulator } from "@/components/ui/product-simulator";
 import { pageMetadata } from "@/lib/page-metadata";
+import {
+  commercialStatusLabel,
+  developmentStageLabel,
+  ipStatusLabel,
+  shouldShowCommercialStatus,
+} from "@/lib/project-status";
 import {
   EMQOPTER_STATEMENT,
   PRODUCT_PRIORITY,
@@ -69,11 +74,11 @@ export default async function ProjectDetailPage(props: PageProps<"/projects/[slu
           <DetailBlock title="Overview">
             <p>{project.overview}</p>
           </DetailBlock>
+          <DetailBlock title="Project Status">
+            <ProjectStatusLine project={project} />
+          </DetailBlock>
           {isUavProject && (
             <>
-              <DetailBlock title="Current Stage">
-                <p className="font-mono text-sm text-amber">PATENT-PENDING · PRE-PROTOTYPE · ENGINEERING BUILD NEXT</p>
-              </DetailBlock>
               <DetailBlock title="Engineering Collaboration">
                 <p>{EMQOPTER_STATEMENT}</p>
               </DetailBlock>
@@ -110,22 +115,16 @@ export default async function ProjectDetailPage(props: PageProps<"/projects/[slu
           )}
         </div>
         <div className="sticky top-25 flex h-fit flex-col gap-4 rounded-xl border border-line bg-bg-2 p-6.5">
-          {isUavProject ? (
-            <div className="font-mono text-xs tracking-wide text-amber">PATENT-PENDING · PRE-PROTOTYPE</div>
-          ) : (
-            <StatusBadge status={project.status} />
+          <ProjectStatusLine project={project} />
+          <CommercialStatusBadge status={project.commercialStatus} />
+          <SpecRow k="DEVELOPMENT" v={developmentStageLabel(project.developmentStage)} />
+          <SpecRow k="IP STATUS" v={ipStatusLabel(project.ipStatus)} />
+          {project.nextMilestone && <SpecRow k="NEXT MILESTONE" v={project.nextMilestone} />}
+          {shouldShowCommercialStatus(project.commercialStatus) && (
+            <SpecRow k="COMMERCIAL" v={commercialStatusLabel(project.commercialStatus)} />
           )}
-          <SpecRow
-            k="IP STATUS"
-            v={isUavProject || isSmartVendingProject ? "Founder-held patent applications filed" : project.patentNumber ?? "Application filed"}
-          />
-          <SpecRow k="FILED" v={project.filedDate ? formatDate(project.filedDate) : "—"} />
-          <SpecRow
-            k="STATUS"
-            v={isUavProject ? "Pre-prototype" : project.grantedDate ? "Granted" : project.patentNumberKind === "application" ? "Application filed" : "Research stage"}
-          />
           <SpecRow k="DOMAIN" v={project.researchDomain.name} alignRight />
-          {project.status === "licensing" ? (
+          {project.commercialStatus === "available_for_licensing" ? (
             <a
               href="mailto:invest@depthx.co.uk"
               className="mt-2 w-full rounded-md bg-green px-6 py-3 text-center text-sm font-semibold text-[#06140F] hover:bg-[#5EE6B4]"

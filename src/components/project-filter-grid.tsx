@@ -1,14 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import type { Project, ProjectStatus } from "@/lib/types";
+import type { DevelopmentStage, Project } from "@/lib/types";
 import { ProjectCard } from "@/components/ui/project-card";
+import { DEVELOPMENT_STAGES } from "@/lib/project-status";
 
-const FILTERS: { key: "all" | ProjectStatus; label: string }[] = [
+const FILTERS: { key: "all" | DevelopmentStage; label: string }[] = [
   { key: "all", label: "All" },
-  { key: "granted", label: "Patent Filed" },
-  { key: "pending", label: "Prototype Stage" },
-  { key: "licensing", label: "Commercialization Pathway" },
+  ...DEVELOPMENT_STAGES.map(({ value, adminLabel }) => ({ key: value, label: adminLabel })),
 ];
 
 export function ProjectFilterGrid({
@@ -18,8 +17,9 @@ export function ProjectFilterGrid({
   projects: Project[];
   showFilters: boolean;
 }) {
-  const [active, setActive] = useState<"all" | ProjectStatus>("all");
-  const visible = active === "all" ? projects : projects.filter((p) => p.status === active);
+  const [active, setActive] = useState<"all" | DevelopmentStage>("all");
+  const visible =
+    active === "all" ? projects : projects.filter((p) => p.developmentStage === active);
 
   return (
     <>

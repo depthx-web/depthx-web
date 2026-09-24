@@ -82,6 +82,20 @@ create table projects (
   patent_number text,
   filed_date date,
   granted_date date,
+  development_stage text not null default 'research_concept' check (development_stage in (
+    'research_concept', 'system_architecture', 'prototype_engineering',
+    'prototype_built', 'technical_validation', 'pilot_preparation',
+    'pilot', 'validation_complete'
+  )),
+  ip_status text not null default 'not_filed' check (ip_status in (
+    'not_filed', 'application_preparation', 'ip_filed',
+    'patent_pending', 'patent_granted'
+  )),
+  commercial_status text not null default 'not_offered' check (commercial_status in (
+    'not_offered', 'commercialization_planning', 'available_for_licensing',
+    'licensed', 'commercial_operation'
+  )),
+  next_milestone text,
   readiness_stage smallint not null default 1 check (readiness_stage between 1 and 3),
   featured boolean not null default false,
   visible boolean not null default true,

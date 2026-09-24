@@ -17,6 +17,10 @@ export const projects: Project[] = [
     overview:
       "The autonomous multi-UAV platform is Depth X Ltd's first commercialization priority. It is currently at the pre-prototype stage, with the engineering build as the next milestone. emQopter has confirmed its capability to engineer and build the complete four-UAV physical prototype. Its role is that of an external engineering collaborator.",
     patentNumberKind: "application",
+    developmentStage: "system_architecture",
+    ipStatus: "patent_pending",
+    commercialStatus: "commercialization_planning",
+    nextMilestone: "Engineering Build Next",
     readinessStage: 2,
     relatedPublications: [],
     featured: true,
@@ -33,6 +37,10 @@ export const projects: Project[] = [
     overview:
       "The smart vending system is the second technology in the pipeline and will be developed for market after the autonomous multi-UAV platform advances through prototype engineering and validation. The two technologies are not planned for simultaneous launch.",
     patentNumberKind: "application",
+    developmentStage: "research_concept",
+    ipStatus: "patent_pending",
+    commercialStatus: "not_offered",
+    nextMilestone: "Planned After UAV Validation",
     readinessStage: 2,
     relatedPublications: [],
     featured: false,

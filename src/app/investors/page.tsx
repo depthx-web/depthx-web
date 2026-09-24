@@ -4,16 +4,15 @@ import { getFaqItems, getProjects, getSiteSettings, getTestimonials } from "@/li
 import { isSectionVisible } from "@/lib/section-visibility";
 import { Breadcrumb, PageHero, SectionHead } from "@/components/ui/page-hero";
 import { StatGrid } from "@/components/ui/stat-grid";
-import { StatusBadge } from "@/components/ui/status-badge";
+import { IpStatusBadge } from "@/components/ui/status-badge";
 import { RoleToggle } from "@/components/contact/role-toggle";
 import { FaqList } from "@/components/faq-list";
 import { mergeKeywords, pageMetadata } from "@/lib/page-metadata";
+import { commercialStatusLabel, developmentStageLabel } from "@/lib/project-status";
 import {
   EMQOPTER_STATEMENT,
   ORIGIN_STORY,
   PRODUCT_PRIORITY,
-  SMART_VENDING_PROJECT_SLUG,
-  UAV_PROJECT_SLUG,
 } from "@/lib/approved-public-content";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -75,7 +74,7 @@ export default async function InvestorsPage() {
               <table className="w-full border-collapse text-sm">
                 <thead>
                   <tr>
-                    {["Project", "Domain", "Status", "Patent / App. No.", "Readiness"].map((h) => (
+                    {["Project", "Development", "IP Status", "Commercial", "Next Milestone"].map((h) => (
                       <th
                         key={h}
                         className="border-b border-line-2 px-3 py-3.5 text-left font-mono text-[11px] tracking-wide text-muted"
@@ -86,9 +85,7 @@ export default async function InvestorsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                    {projects.map((p) => {
-                      const hidePatentNumber = p.slug === UAV_PROJECT_SLUG || p.slug === SMART_VENDING_PROJECT_SLUG;
-                      return (
+                    {projects.map((p) => (
                     <tr key={p._id} className="transition-colors hover:bg-hover">
                       <td className="border-b border-line px-3 py-4 align-middle">
                         <Link href={`/projects/${p.slug}`} className="font-display text-[14.5px] font-semibold hover:text-green">
@@ -96,20 +93,19 @@ export default async function InvestorsPage() {
                         </Link>
                       </td>
                       <td className="border-b border-line px-3 py-4 align-middle font-mono text-[11px] text-muted">
-                        {p.researchDomain.name}
+                        {developmentStageLabel(p.developmentStage)}
                       </td>
                       <td className="border-b border-line px-3 py-4 align-middle">
-                        <StatusBadge status={p.status} />
+                        <IpStatusBadge status={p.ipStatus} showAll />
                       </td>
                       <td className="border-b border-line px-3 py-4 align-middle font-mono text-[11px] text-muted">
-                        {hidePatentNumber ? "Founder-held applications filed" : p.patentNumber ?? "—"}
+                        {commercialStatusLabel(p.commercialStatus)}
                       </td>
                       <td className="border-b border-line px-3 py-4 align-middle font-mono text-[11px] text-muted">
-                        {p.readinessStage}/3
+                        {p.nextMilestone ?? "—"}
                       </td>
                     </tr>
-                      );
-                    })}
+                    ))}
                 </tbody>
               </table>
             </div>

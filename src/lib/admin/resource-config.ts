@@ -3,6 +3,8 @@
 // below, and you get a working list + create + edit UI for it. No new
 // pages, no new Server Actions.
 
+import { COMMERCIAL_STATUSES, DEVELOPMENT_STAGES, IP_STATUSES } from "@/lib/project-status";
+
 export type FieldType = "text" | "textarea" | "number" | "boolean" | "date" | "select";
 
 export interface FieldConfig {
@@ -36,25 +38,15 @@ export const RESOURCE_CONFIGS: ResourceConfig[] = [
     singularLabel: "Project",
     listColumns: [
       { name: "title", label: "Title" },
-      { name: "status", label: "Status" },
-      { name: "readiness_stage", label: "Readiness" },
+      { name: "development_stage", label: "Development" },
+      { name: "ip_status", label: "IP" },
+      { name: "commercial_status", label: "Commercial" },
       { name: "visible", label: "Visible" },
     ],
     orderBy: { column: "created_at", ascending: false },
     fields: [
       { name: "title", label: "Title", type: "text", required: true },
       { name: "slug", label: "Slug", type: "text", required: true, helpText: "Used in the URL: /projects/<slug>" },
-      {
-        name: "status",
-        label: "Status",
-        type: "select",
-        required: true,
-        options: [
-          { label: "Patent Filed", value: "granted" },
-          { label: "Prototype Stage", value: "pending" },
-          { label: "Commercialization Pathway", value: "licensing" },
-        ],
-      },
       {
         name: "research_domain_id",
         label: "Research Domain",
@@ -63,6 +55,35 @@ export const RESOURCE_CONFIGS: ResourceConfig[] = [
       },
       { name: "short_description", label: "Short Description", type: "textarea", required: true },
       { name: "overview", label: "Overview", type: "textarea", required: true },
+      {
+        name: "development_stage",
+        label: "Product Development Stage",
+        type: "select",
+        required: true,
+        options: DEVELOPMENT_STAGES.map(({ adminLabel, value }) => ({ label: adminLabel, value })),
+        helpText: "Controls product progress on the homepage, project listing, and project page.",
+      },
+      {
+        name: "ip_status",
+        label: "IP Status",
+        type: "select",
+        required: true,
+        options: IP_STATUSES.map(({ adminLabel, value }) => ({ label: adminLabel, value })),
+        helpText: "Select Patent Granted only after the legal status has been verified.",
+      },
+      {
+        name: "commercial_status",
+        label: "Commercial Status",
+        type: "select",
+        required: true,
+        options: COMMERCIAL_STATUSES.map(({ adminLabel, value }) => ({ label: adminLabel, value })),
+      },
+      {
+        name: "next_milestone",
+        label: "Next Milestone",
+        type: "text",
+        helpText: "Short public wording only. Do not include confidential technical or collaborator details.",
+      },
       {
         name: "patent_number",
         label: "Patent / Application Number",
@@ -81,17 +102,6 @@ export const RESOURCE_CONFIGS: ResourceConfig[] = [
       },
       { name: "filed_date", label: "Filed Date", type: "date" },
       { name: "granted_date", label: "Granted Date", type: "date" },
-      {
-        name: "readiness_stage",
-        label: "Readiness Stage",
-        type: "select",
-        required: true,
-        options: [
-          { label: "1 — Concept / Architecture", value: "1" },
-          { label: "2 — Patent Filing / Prototype Engineering", value: "2" },
-          { label: "3 — Physical Validation / Commercialization", value: "3" },
-        ],
-      },
       { name: "featured", label: "Featured (homepage flagship)", type: "boolean" },
       { name: "visible", label: "Visible on public site", type: "boolean" },
       {

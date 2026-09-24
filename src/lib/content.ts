@@ -19,6 +19,14 @@ import { faqItems as mockFaqItems } from "@/lib/mock-data/faq";
 import { partnershipTypes as mockPartnershipTypes } from "@/lib/mock-data/partnership-types";
 import { siteSettings as mockSiteSettings } from "@/lib/mock-data/site-settings";
 import { legalPages as mockLegalPages } from "@/lib/mock-data/legal-pages";
+import {
+  isCommercialStatus,
+  isDevelopmentStage,
+  isIpStatus,
+  legacyCommercialStatus,
+  legacyDevelopmentStage,
+  legacyIpStatus,
+} from "@/lib/project-status";
 import type {
   FaqItem,
   LegalPage,
@@ -68,11 +76,13 @@ function mapPublication(row: Record<string, unknown>): Publication {
 function mapProject(row: Record<string, unknown>): Project {
   const domainRow = row.research_domain as Record<string, unknown> | null;
   const pubs = (row.publications as Record<string, unknown>[] | null) ?? [];
+  const legacyStatus = row.status as Project["status"];
+  const legacyReadiness = Number(row.readiness_stage ?? 1);
   return {
     _id: String(row.id),
     title: String(row.title),
     slug: String(row.slug),
-    status: row.status as Project["status"],
+    status: legacyStatus,
     researchDomain: domainRow
       ? mapResearchDomain(domainRow)
       : { _id: "", name: "", slug: "", description: "", order: 0, visible: true },
@@ -82,7 +92,15 @@ function mapProject(row: Record<string, unknown>): Project {
     patentNumberKind: row.patent_number_kind === "patent" ? "patent" : "application",
     filedDate: row.filed_date ? String(row.filed_date) : undefined,
     grantedDate: row.granted_date ? String(row.granted_date) : undefined,
-    readinessStage: Number(row.readiness_stage) as Project["readinessStage"],
+    developmentStage: isDevelopmentStage(row.development_stage)
+      ? row.development_stage
+      : legacyDevelopmentStage(legacyReadiness),
+    ipStatus: isIpStatus(row.ip_status) ? row.ip_status : legacyIpStatus(legacyStatus),
+    commercialStatus: isCommercialStatus(row.commercial_status)
+      ? row.commercial_status
+      : legacyCommercialStatus(legacyStatus),
+    nextMilestone: row.next_milestone ? String(row.next_milestone) : undefined,
+    readinessStage: legacyReadiness as Project["readinessStage"],
     relatedPublications: pubs.map(mapPublication),
     featured: Boolean(row.featured),
     visible: Boolean(row.visible),
@@ -168,20 +186,22 @@ export async function getProjects(): Promise<Project[]> {
     .eq("visible", true)
     .order("created_at", { ascending: false });
   const liveProjects = (data ?? []).map(mapProject);
-  return mockProjects
-    .filter((project) => project.visible)
-    .map((project) => {
-      const live = liveProjects.find((candidate) => candidate.slug === project.slug);
-      if (!live) return project;
-      return {
-        ...live,
-        ...project,
-        patentNumber: live.patentNumber ?? project.patentNumber,
-        filedDate: live.filedDate ?? project.filedDate,
-        relatedPublications: live.relatedPublications,
-        simulatorHtml: live.simulatorHtml,
-      };
-    });
+  const fallbackBySlug = new Map(mockProjects.map((project) => [project.slug, project]));
+  const mergedLiveProjects = liveProjects.map((live) => {
+    const fallback = fallbackBySlug.get(live.slug);
+    return fallback
+      ? {
+          ...fallback,
+          ...live,
+          nextMilestone: live.nextMilestone ?? fallback.nextMilestone,
+        }
+      : live;
+  });
+  const liveSlugs = new Set(liveProjects.map((project) => project.slug));
+  const fallbackOnlyProjects = mockProjects.filter(
+    (project) => project.visible && !liveSlugs.has(project.slug),
+  );
+  return [...mergedLiveProjects, ...fallbackOnlyProjects];
 }
 
 export async function getProject(slug: string): Promise<Project | undefined> {

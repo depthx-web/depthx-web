@@ -29,12 +29,30 @@ function coerceValue(field: FieldConfig, formData: FormData): string | number | 
   return value;
 }
 
-function buildRecord(fields: FieldConfig[], formData: FormData) {
+function buildRecord(fields: FieldConfig[], formData: FormData): {
+  record: Record<string, string | number | boolean | null>;
+  error: string | null;
+} {
   const record: Record<string, string | number | boolean | null> = {};
   for (const field of fields) {
-    record[field.name] = coerceValue(field, formData);
+    const value = coerceValue(field, formData);
+    if (field.required && value === "") {
+      return { record, error: `${field.label} is required.` };
+    }
+    if (field.type === "number" && typeof value === "number" && !Number.isFinite(value)) {
+      return { record, error: `${field.label} must be a valid number.` };
+    }
+    if (
+      field.type === "select" &&
+      field.options &&
+      typeof value === "string" &&
+      !field.options.some((option) => option.value === value)
+    ) {
+      return { record, error: `${field.label} contains an invalid value.` };
+    }
+    record[field.name] = value;
   }
-  return record;
+  return { record, error: null };
 }
 
 // PUBLIC_PATHS_BY_RESOURCE: which public routes to revalidate after a write,
@@ -75,10 +93,13 @@ export async function createResourceAction(
   const config = getResourceConfig(slug);
   if (!config) return { error: "Unknown resource" };
 
+  const result = buildRecord(config.fields, formData);
+  if (result.error) return { error: result.error };
+
   const supabase = await createClient();
   const { error } = await untypedFrom(supabase)
     .from(config.table)
-    .insert(buildRecord(config.fields, formData));
+    .insert(result.record);
   if (error) return { error: error.message };
 
   revalidatePath(`/admin/${slug}`);
@@ -96,10 +117,13 @@ export async function updateResourceAction(
   const config = getResourceConfig(slug);
   if (!config) return { error: "Unknown resource" };
 
+  const result = buildRecord(config.fields, formData);
+  if (result.error) return { error: result.error };
+
   const supabase = await createClient();
   const { error } = await untypedFrom(supabase)
     .from(config.table)
-    .update(buildRecord(config.fields, formData))
+    .update(result.record)
     .eq("id", id);
   if (error) return { error: error.message };
 

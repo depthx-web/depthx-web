@@ -6,9 +6,9 @@ import { ProjectCard } from "@/components/ui/project-card";
 
 const FILTERS: { key: "all" | ProjectStatus; label: string }[] = [
   { key: "all", label: "All" },
-  { key: "granted", label: "Patent Granted" },
-  { key: "pending", label: "Patent Pending" },
-  { key: "licensing", label: "Available for Licensing" },
+  { key: "granted", label: "Patent Filed" },
+  { key: "pending", label: "Prototype Stage" },
+  { key: "licensing", label: "Commercialization Pathway" },
 ];
 
 export function ProjectFilterGrid({

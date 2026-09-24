@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
     title: "Publications",
     description:
-      "Scientific output produced alongside our applied research, shared with the academic community.",
+      "Founder-authored research preprints and publications documenting the technical concepts, architecture, and research foundations behind Depth X technologies.",
     path: "/publications",
     keywords: mergeKeywords(publications),
   });
@@ -23,9 +23,9 @@ export default async function PublicationsPage() {
     <>
       <Breadcrumb trail={[{ label: "Home", href: "/" }, { label: "Publications" }]} />
       <PageHero
-        eyebrow="// PEER-REVIEWED WORK"
+        eyebrow="// RESEARCH PAPERS & PREPRINTS"
         title="Publications"
-        description="Scientific output produced alongside our applied research, shared with the academic community."
+        description="Founder-authored research preprints and publications documenting the technical concepts, architecture, and research foundations behind Depth X technologies."
       />
       {isSectionVisible(settings.sectionVisibility, "publications.list") && (
         <section className="px-8 pb-25 md:px-25">

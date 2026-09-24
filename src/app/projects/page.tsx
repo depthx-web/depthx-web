@@ -4,11 +4,12 @@ import { isSectionVisible } from "@/lib/section-visibility";
 import { Breadcrumb, PageHero } from "@/components/ui/page-hero";
 import { ProjectFilterGrid } from "@/components/project-filter-grid";
 import { pageMetadata } from "@/lib/page-metadata";
+import { PRODUCT_PRIORITY } from "@/lib/approved-public-content";
 
 export const metadata: Metadata = pageMetadata({
   title: "Projects",
   description:
-    "Every project is tracked from validation through IP status, so you always know exactly how close a technology is to commercial deployment.",
+    "Depth X tracks each technology from concept and system architecture to patent application, prototype engineering, physical validation, and future commercialization planning.",
   path: "/projects",
 });
 
@@ -21,8 +22,11 @@ export default async function ProjectsPage() {
       <PageHero
         eyebrow="// PORTFOLIO"
         title="Current Projects"
-        description="Every project below is tracked from validation through IP status, so you always know exactly how close a technology is to commercial deployment. Filter by patent stage or browse by research domain."
+        description="Depth X tracks each technology from concept and system architecture to patent application, prototype engineering, physical validation, and future commercialization planning. Filter by project stage or browse by research domain."
       />
+      <section className="px-8 pb-10 md:px-25">
+        <p className="max-w-3xl text-sm leading-7 text-muted">{PRODUCT_PRIORITY}</p>
+      </section>
       {isSectionVisible(settings.sectionVisibility, "projects.grid") && (
         <section className="px-8 pb-25 md:px-25">
           <ProjectFilterGrid

@@ -4,13 +4,14 @@ import { getPartnershipTypes, getSiteSettings } from "@/lib/content";
 import { isSectionVisible } from "@/lib/section-visibility";
 import { Breadcrumb, PageHero, SectionHead } from "@/components/ui/page-hero";
 import { mergeKeywords, pageMetadata } from "@/lib/page-metadata";
+import { EMQOPTER_STATEMENT } from "@/lib/approved-public-content";
 
 export async function generateMetadata(): Promise<Metadata> {
   const partnershipTypes = await getPartnershipTypes();
   return pageMetadata({
     title: "Collaboration",
     description:
-      "Depth X works with specialist collaborators on prototype engineering, validation, and future commercialization.",
+      "We work closely with a small number of partners who share our commitment to scientific rigor, ethical research, and measurable validation.",
     path: "/collaboration",
     keywords: mergeKeywords(partnershipTypes),
   });
@@ -34,22 +35,13 @@ export default async function CollaborationPage() {
     <>
       <Breadcrumb trail={[{ label: "Home", href: "/" }, { label: "Collaboration" }]} />
       <PageHero
-        eyebrow="// SPECIALIST COLLABORATION"
-        title="Technical Collaboration & Validation"
-        description="Depth X remains founder-led and works with specialist external collaborators for clearly defined research, engineering, and validation scopes."
+        eyebrow="// SELECTIVE PARTNERSHIPS"
+        title="Collaboration & Validation"
+        description="We work closely with a small number of partners who share our commitment to scientific rigor, ethical research, and measurable validation."
       />
       <section className="px-8 pb-25 md:px-25">
-        <div className="mb-15 rounded-xl border border-green/40 bg-bg-2 p-7">
-          <div className="mb-2 font-mono text-[11px] tracking-widest text-green">
-            CONFIRMED TECHNICAL COLLABORATOR
-          </div>
-          <h2 className="mb-3 font-display text-2xl font-semibold">emQopter GmbH</h2>
-          <p className="max-w-3xl text-sm leading-7 text-muted">
-            emQopter has confirmed its capability and willingness to collaborate on the complete
-            four-UAV physical prototype. The next milestone is to define the build scope and then
-            validate the end-to-end system. emQopter is an external technical collaborator, not a
-            co-founder or operating partner.
-          </p>
+        <div className="mb-15 max-w-3xl border-l-2 border-amber pl-5 text-sm leading-7 text-muted">
+          {EMQOPTER_STATEMENT}
         </div>
         {showLogos && (
           <div className="flex flex-wrap gap-3.5">
@@ -65,7 +57,7 @@ export default async function CollaborationPage() {
         )}
         {isSectionVisible(settings.sectionVisibility, "collaboration.partnershipTypes") && (
           <div className="mt-15">
-            <SectionHead eyebrow="// WAYS TO COLLABORATE" title="Collaboration Types" bordered={false} />
+            <SectionHead eyebrow="// WAYS TO PARTNER" title="Partnership Types" bordered={false} />
             <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
               {partnershipTypes.map((p) => (
                 <div

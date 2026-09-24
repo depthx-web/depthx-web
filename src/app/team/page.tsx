@@ -3,6 +3,7 @@ import { getSiteSettings, getTeamMembers } from "@/lib/content";
 import { isSectionVisible } from "@/lib/section-visibility";
 import { Breadcrumb, PageHero } from "@/components/ui/page-hero";
 import { mergeKeywords, pageMetadata } from "@/lib/page-metadata";
+import { ORIGIN_STORY } from "@/lib/approved-public-content";
 
 export async function generateMetadata(): Promise<Metadata> {
   const team = await getTeamMembers();
@@ -26,6 +27,9 @@ export default async function TeamPage() {
         title="Founder-led, specialist-supported."
         description="Marwen Ayadi leads research, patents, product direction, and commercialization strategy. Depth X adds specialist external collaborators for defined technical scopes."
       />
+      <section className="px-8 pb-15 md:px-25">
+        <p className="max-w-3xl text-sm leading-7 text-muted">{ORIGIN_STORY}</p>
+      </section>
       {isSectionVisible(settings.sectionVisibility, "team.grid") && (
         <section className="px-8 pb-25 md:px-25">
           <div className="grid grid-cols-1 gap-5.5 sm:grid-cols-2 lg:grid-cols-4">

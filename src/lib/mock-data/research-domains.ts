@@ -6,7 +6,7 @@ export const researchDomains: ResearchDomain[] = [
     name: "Hybrid Physical–Digital Systems",
     slug: "hybrid-physical-digital-systems",
     description:
-      "We study how physical environments, human presence, sensing, and digital decision layers can operate as one system, then test those relationships through future prototypes and pilots.",
+      "We combine sensor fusion with real-time behavioral modeling to study how physical environments, human presence, and digital decision layers can operate as one system, with the research and architecture phase preceding prototype engineering and physical validation.",
     order: 1,
     visible: true,
   },
@@ -26,15 +26,6 @@ export const researchDomains: ResearchDomain[] = [
     description:
       "We build and test the interpretation layer that lets intelligent systems read human behavior and environmental signals and turn that reading into a real-time, real-world response.",
     order: 3,
-    visible: true,
-  },
-  {
-    _id: "domain-hybrid-marketing",
-    name: "Hybrid Marketing Science",
-    slug: "hybrid-marketing-science",
-    description:
-      "We connect physical marketing with measurement, analytics, and adaptive decision-making to develop campaigns that can learn from real-world interaction.",
-    order: 4,
     visible: true,
   },
 ];

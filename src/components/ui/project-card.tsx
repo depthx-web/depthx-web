@@ -4,10 +4,15 @@ import { STATUS_CLASSES } from "@/lib/project-display";
 import { ReadinessBar, StatusBadge } from "@/components/ui/status-badge";
 import { ClampedText } from "@/components/ui/clamped-text";
 import { formatDate } from "@/lib/format-date";
+import { SMART_VENDING_PROJECT_SLUG, UAV_PROJECT_SLUG } from "@/lib/approved-public-content";
 
 export function ProjectCard({ project }: { project: Project }) {
+  const isUavProject = project.slug === UAV_PROJECT_SLUG;
   const c = STATUS_CLASSES[project.status];
-  const meta = project.patentNumber
+  const hasVerifiedPublicIpText = project.slug === UAV_PROJECT_SLUG || project.slug === SMART_VENDING_PROJECT_SLUG;
+  const meta = hasVerifiedPublicIpText
+    ? "Founder-held patent applications filed"
+    : project.patentNumber
     ? `${project.patentNumberKind === "patent" ? "Patent No." : "Application No."} ${project.patentNumber}`
     : project.filedDate
       ? `Filed: ${formatDate(project.filedDate)}`
@@ -19,7 +24,11 @@ export function ProjectCard({ project }: { project: Project }) {
       className="group relative flex flex-col gap-4 overflow-hidden rounded-xl border border-line bg-gradient-to-b from-bg-2 to-bg-3 p-7 transition-transform duration-300 hover:-translate-y-1 hover:border-line-2"
     >
       <span className={`absolute inset-x-0 top-0 h-0.75 ${c.top}`} />
-      <StatusBadge status={project.status} />
+      {isUavProject ? (
+        <span className="font-mono text-[11px] tracking-wide text-amber">PATENT-PENDING · PRE-PROTOTYPE · ENGINEERING BUILD NEXT</span>
+      ) : (
+        <StatusBadge status={project.status} />
+      )}
       <div className="font-mono text-[11px] tracking-wide text-muted">
         {project.researchDomain.name.toUpperCase()}
       </div>

@@ -2,10 +2,10 @@ import type { FaqItem } from "@/lib/types";
 
 export const faqItems: FaqItem[] = [
   {
-    _id: "faq-patent-owner",
-    question: "Who currently owns the patent applications?",
+    _id: "faq-available-for-licensing",
+    question: 'What does "Available for Licensing" mean exactly?',
     answer:
-      "Both applications are currently filed in founder Marwen Ayadi's name. Following formal grant, the patents are intended to be assigned to Depth X.",
+      "Depth X is developing structured pathways for technology commercialization and transfer, including patent filing, prototype engineering, and later commercial operating models where appropriate. Each project is assessed on its own technical and legal stage.",
     category: "licensing",
     order: 1,
     visible: true,
@@ -21,9 +21,9 @@ export const faqItems: FaqItem[] = [
   },
   {
     _id: "faq-exclusive",
-    question: "How will the technologies reach the market?",
+    question: "Can licenses be exclusive?",
     answer:
-      "Depth X plans to validate each technology first and then license it to a specialized operating company. The UAV platform is the first commercialization priority.",
+      "Exclusivity is negotiable and depends on the project, market, and proposed terms. This is discussed during the term sheet stage.",
     category: "licensing",
     order: 3,
     visible: true,
@@ -33,7 +33,7 @@ export const faqItems: FaqItem[] = [
     question:
       "What stage should a project be at before you'll discuss investment?",
     answer:
-      "Depth X is currently pre-prototype on the UAV platform. The next milestones are prototype construction with emQopter, technical validation, and a controlled exhibition pilot.",
+      "We're open to conversations at different project stages, from early concept and system architecture through patent filing, prototype engineering, and later commercialization pathways. Documentation and terms differ by stage.",
     category: "general",
     order: 4,
     visible: true,

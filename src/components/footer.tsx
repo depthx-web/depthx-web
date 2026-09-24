@@ -64,8 +64,8 @@ export function Footer({
         </div>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-4 border-t border-line pt-6 text-[12.5px] text-muted">
-        <div>© {new Date().getFullYear()} Depth X Ltd. — All rights reserved</div>
-        <div className="font-mono">RESEARCH · DEVELOPMENT · IP · COMMERCIALIZATION</div>
+        <div>© {new Date().getFullYear()} Depth X — All rights reserved</div>
+        <div className="font-mono">RESEARCH · SYSTEM ARCHITECTURE · IP · COMMERCIALIZATION</div>
       </div>
       <div className="mt-3 text-[11.5px] leading-6 text-muted opacity-70">
         {COMPANY_LEGAL_NAME} · Registered in England & Wales, Company No. {COMPANY_NUMBER} ·{" "}

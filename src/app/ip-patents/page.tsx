@@ -8,25 +8,25 @@ import { pageMetadata } from "@/lib/page-metadata";
 export const metadata: Metadata = pageMetadata({
   title: "IP & Patents",
   description:
-    "Two patent applications are currently filed in founder Marwen Ayadi's name and are intended for assignment to Depth X after formal grant.",
+    "The patent applications are currently held by the founder, Marwen Ayadi. Assignment of the relevant rights to Depth X Ltd. is planned following formal grant and completion of the appropriate legal process.",
   path: "/ip-patents",
 });
 
 const STATUS_DEFINITIONS = [
   {
-    label: "Founder-Filed Applications",
-    color: "border-t-green",
-    desc: "Both current patent applications are filed in founder Marwen Ayadi's name. Depth X does not yet own them.",
-  },
-  {
-    label: "Patent Pending",
+    label: "Patent Applications Filed",
     color: "border-t-amber",
-    desc: "An application has been filed and is under review. Technical details are available under NDA for qualified partners.",
+    desc: "The relevant applications are currently held by the founder, Marwen Ayadi. Assignment to Depth X Ltd. is planned after formal grant and the appropriate legal process is completed.",
   },
   {
-    label: "Assignment Planned",
+    label: "Prototype Engineering",
     color: "border-t-blue",
-    desc: "Following formal grant, the patents are intended to be assigned to Depth X, subject to the required legal documentation and register updates.",
+    desc: "The next phase is prototype engineering and physical validation, followed by outdoor pilot work and future commercialization planning.",
+  },
+  {
+    label: "Commercialization Pathway",
+    color: "border-t-green",
+    desc: "Depth X develops technology systems and prepares them for future commercialization or technology transfer once the technical and legal milestones are met.",
   },
 ];
 
@@ -39,20 +39,13 @@ export default async function IpPatentsPage() {
       <Breadcrumb trail={[{ label: "Home", href: "/" }, { label: "IP & Patents" }]} />
       <PageHero
         eyebrow="// INTELLECTUAL PROPERTY"
-        title="Two applications filed. Ownership path defined."
-        description="Both patent applications are currently filed in founder Marwen Ayadi's name. Following formal grant, they are intended to be assigned to Depth X."
+        title="Founder-held patent applications, technology development, and future commercialization pathways."
+        description="The patent applications are currently held by the founder, Marwen Ayadi. Assignment of the relevant rights to Depth X Ltd. is planned following formal grant and completion of the appropriate legal process."
       />
       <section className="px-8 pb-25 md:px-25">
         {isSectionVisible(visibility, "ip.stats") && (
           <div className="mb-16">
-            <StatGrid
-              stats={[
-                { label: "Applications Filed", value: "02" },
-                { label: "Current Applicant", value: "FOUNDER" },
-                { label: "Patents Granted", value: "00" },
-                { label: "Planned Assignee", value: "DEPTH X" },
-              ]}
-            />
+            <StatGrid stats={settings.stats} />
           </div>
         )}
         {isSectionVisible(visibility, "ip.statusDefinitions") && (
@@ -84,8 +77,8 @@ export default async function IpPatentsPage() {
               Get the full portfolio in one document
             </h3>
             <p className="mb-5 max-w-xl text-sm leading-7 text-muted">
-              A single-page summary of each project&apos;s priority, application status, and planned
-              commercialization route.
+              A single-page summary of every project&apos;s status, patent number, and licensing
+              terms — built for internal review.
             </p>
             <div className="flex flex-wrap gap-3">
               <a

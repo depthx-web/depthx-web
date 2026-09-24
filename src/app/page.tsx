@@ -16,6 +16,7 @@ import { RoleToggle } from "@/components/contact/role-toggle";
 import { SectionHead } from "@/components/ui/page-hero";
 import { NewsletterSection } from "@/components/newsletter-section";
 import { Reveal } from "@/components/ui/reveal";
+import { APPROVED_HERO, PRODUCT_PRIORITY, UAV_PROJECT_SLUG } from "@/lib/approved-public-content";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
@@ -28,31 +29,22 @@ export default async function HomePage() {
     getNewsPosts(),
   ]);
   const visibility = settings.sectionVisibility;
-  const otherProjects = projects.filter((p) => p._id !== featured?._id);
+  const priorityProject = projects.find((project) => project.slug === UAV_PROJECT_SLUG) ?? featured;
+  const otherProjects = projects.filter((project) => project._id !== priorityProject?._id);
   const latestNews = newsPosts.slice(0, 3);
-  const alignedStats = [
-    { label: "Patent Applications Filed", value: "02" },
-    { label: "Technologies in Development", value: "02" },
-    { label: "Active Prototype Priority", value: "01" },
-    { label: "Research Domains", value: String(domains.length).padStart(2, "0") },
-  ];
 
   return (
     <>
       <header className="flex min-h-[92vh] flex-col justify-center px-8 pb-20 pt-35 md:px-25 md:pl-25 md:pr-16">
         <div className="mb-5 flex items-center gap-2.5 font-mono text-xs tracking-widest text-amber before:h-px before:w-6 before:bg-amber">
-          RESEARCH-LED TECHNOLOGY DEVELOPMENT
+          {APPROVED_HERO.stage}
         </div>
         <h1 className="max-w-4xl font-display text-4xl font-bold leading-tight tracking-tight md:text-7xl">
-          From original research
+          {APPROVED_HERO.headline}
           <br />
-          <span className="text-green">to technology built for market.</span>
+          <span className="text-green">{APPROVED_HERO.accent}</span>
         </h1>
-        <p className="mt-6 max-w-2xl text-lg leading-8 text-muted">
-          Depth X turns research-led ideas into protected, validated technologies, then creates a
-          focused path to commercial operation. Our first priority is an autonomous aerial
-          marketing platform developed with specialist engineering support.
-        </p>
+        <p className="mt-6 max-w-xl text-lg leading-8 text-muted">{APPROVED_HERO.description}</p>
         <div className="mt-10 flex flex-wrap gap-3.5">
           <Link
             href="/contact"
@@ -72,7 +64,7 @@ export default async function HomePage() {
       {isSectionVisible(visibility, "home.stats") && (
         <section className="px-8 pb-15 md:px-25">
           <Reveal>
-            <StatGrid stats={alignedStats} />
+            <StatGrid stats={settings.stats} />
           </Reveal>
         </section>
       )}
@@ -80,7 +72,7 @@ export default async function HomePage() {
       {isSectionVisible(visibility, "home.trustBar") && settings.trustBarLogos.length > 0 && (
         <div className="mx-8 flex flex-wrap items-center gap-7 border-y border-line py-7 md:mx-25">
           <span className="whitespace-nowrap font-mono text-xs tracking-wide text-muted">
-            COLLABORATION NETWORK
+            VALIDATED WITH
           </span>
           <div className="flex flex-1 flex-wrap gap-4">
             {settings.trustBarLogos.map((logo) =>
@@ -121,9 +113,9 @@ export default async function HomePage() {
             }
           />
           <Reveal className="grid grid-cols-1 gap-5.5 md:grid-cols-2 lg:grid-cols-3">
-            {isSectionVisible(visibility, "home.flagshipProject") && featured && (
+            {isSectionVisible(visibility, "home.flagshipProject") && priorityProject && (
               <div className="md:col-span-2 lg:col-span-3">
-                <FlagshipCard project={featured} />
+                <FlagshipCard project={priorityProject} />
               </div>
             )}
             {isSectionVisible(visibility, "home.featuredProjects") &&
@@ -131,6 +123,10 @@ export default async function HomePage() {
           </Reveal>
         </section>
       )}
+
+      <section className="px-8 pb-25 md:px-25">
+        <p className="max-w-3xl text-sm leading-7 text-muted">{PRODUCT_PRIORITY}</p>
+      </section>
 
       {isSectionVisible(visibility, "home.whatWeDo") && (
         <section className="px-8 py-25 md:px-25">

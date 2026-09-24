@@ -27,12 +27,12 @@ export function ReadinessBar({
     <div
       className="flex flex-col gap-1.5"
       role="img"
-      aria-label={`Readiness: ${readiness} of 3 stages complete`}
+      aria-label="Development stage: concept, architecture, and engineering"
     >
       <div className="flex justify-between font-mono text-[9.5px] tracking-wide text-muted">
-        <span>VALIDATION</span>
-        <span>IP FILED</span>
-        <span>COMMERCIAL</span>
+        <span>CONCEPT</span>
+        <span>ARCHITECTURE</span>
+        <span>ENGINEERING</span>
       </div>
       <div className="flex h-1 gap-0.75">
         {[1, 2, 3].map((n) => (

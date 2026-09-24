@@ -4,10 +4,14 @@ import { STATUS_CLASSES } from "@/lib/project-display";
 import { ReadinessBar, StatusBadge } from "@/components/ui/status-badge";
 import { ClampedText } from "@/components/ui/clamped-text";
 import { formatDate } from "@/lib/format-date";
+import { UAV_PROJECT_SLUG } from "@/lib/approved-public-content";
 
 export function FlagshipCard({ project }: { project: Project }) {
+  const isUavProject = project.slug === UAV_PROJECT_SLUG;
   const c = STATUS_CLASSES[project.status];
-  const meta = project.patentNumber
+  const meta = isUavProject
+    ? "Founder-held patent applications filed"
+    : project.patentNumber
     ? `${project.patentNumberKind === "patent" ? "Patent No." : "Application No."} ${project.patentNumber}`
     : project.filedDate
       ? `Filed: ${formatDate(project.filedDate)}`
@@ -24,7 +28,11 @@ export function FlagshipCard({ project }: { project: Project }) {
           {"// FLAGSHIP PROJECT"}
         </span>
         <h3 className="font-display text-[22px] leading-tight font-semibold">{project.title}</h3>
-        <StatusBadge status={project.status} />
+        {isUavProject ? (
+          <span className="font-mono text-[11px] tracking-wide text-amber">PATENT-PENDING · PRE-PROTOTYPE · ENGINEERING BUILD NEXT</span>
+        ) : (
+          <StatusBadge status={project.status} />
+        )}
       </div>
       <div className="p-8.5">
         <div className="font-mono text-[11px] tracking-wide text-muted">

@@ -9,7 +9,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
     title: "Research",
     description:
-      "We build scientific foundations first, then translate them into applied systems and protected intellectual property.",
+      "Depth X advances research-led concepts and system architecture before prototype engineering, physical validation, and future commercialization or technology transfer.",
     path: "/research",
     keywords: mergeKeywords(domains),
   });
@@ -19,20 +19,28 @@ const NUMBER_WORDS = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Sev
 
 const TIMELINE = [
   {
-    title: "Scientific Research",
-    desc: "Framing new scientific questions for emerging techno-economic environments.",
+    title: "Research and Concept Development",
+    desc: "Framing the scientific problem and technical concept before engineering work begins.",
   },
   {
-    title: "Experimental Validation",
-    desc: "Testing systems under real-world conditions to confirm feasibility.",
+    title: "System Architecture",
+    desc: "Defining the platform design, operating model, and technical boundaries.",
   },
   {
-    title: "Intellectual Property",
-    desc: "Filing and securing patents to protect validated innovations.",
+    title: "IP Filing",
+    desc: "Preparing and filing the relevant patent applications for protectable technology systems.",
   },
   {
-    title: "Spin-off Applications",
-    desc: "Licensing or spinning out technology into deployable commercial systems.",
+    title: "Prototype Engineering",
+    desc: "Building the first engineering prototype and preparing for physical validation.",
+  },
+  {
+    title: "Physical Validation",
+    desc: "Testing the prototype in controlled conditions before any outdoor pilot or commercial use.",
+  },
+  {
+    title: "Commercialization or Technology Transfer",
+    desc: "Preparing the technology for future commercial operation or licensing pathways once the technical and legal milestones are met.",
   },
 ];
 
@@ -45,8 +53,8 @@ export default async function ResearchPage() {
       <Breadcrumb trail={[{ label: "Home", href: "/" }, { label: "Research" }]} />
       <PageHero
         eyebrow="// CORE RESEARCH FOCUS"
-        title={`${NUMBER_WORDS[domains.length] ?? domains.length} domain${domains.length === 1 ? "" : "s"}. One method: depth before deployment.`}
-        description="We build scientific foundations first, then translate them into applied systems and protected intellectual property."
+        title={`${NUMBER_WORDS[domains.length] ?? domains.length} domain${domains.length === 1 ? "" : "s"}. One method: depth before commercialization.`}
+        description="Depth X advances research-led concepts and system architecture before prototype engineering, physical validation, and future commercialization or technology transfer."
       />
       {isSectionVisible(visibility, "research.domains") && (
         <section className="px-8 pb-25 md:px-25">

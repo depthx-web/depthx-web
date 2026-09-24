@@ -1,9 +1,9 @@
 import { ImageResponse } from "next/og";
-import { SITE_DESCRIPTION } from "@/lib/site";
+import { APPROVED_HERO } from "@/lib/approved-public-content";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Depth X — Research, Development, IP and Commercialization";
+export const alt = "Depth X";
 
 export default async function OpengraphImage() {
   return new ImageResponse(
@@ -30,13 +30,13 @@ export default async function OpengraphImage() {
             marginBottom: 28,
           }}
         >
-          RESEARCH · DEVELOPMENT · IP · COMMERCIALIZATION
+          {APPROVED_HERO.stage}
         </div>
         <div style={{ display: "flex", fontSize: 76, fontWeight: 700, lineHeight: 1.15 }}>
           Depth<span style={{ color: "#E8A33D" }}>X</span>
         </div>
         <div style={{ display: "flex", fontSize: 34, color: "#8CA0B8", marginTop: 24, maxWidth: 900 }}>
-          {SITE_DESCRIPTION}
+          {APPROVED_HERO.description}
         </div>
       </div>
     ),

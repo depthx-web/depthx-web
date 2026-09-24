@@ -11,7 +11,7 @@ export type ProjectStatus = "granted" | "pending" | "licensing";
 export type ReadinessStage = 1 | 2 | 3;
 
 /** Whether `Project.patentNumber` is a filing/application number or a
- * granted patent number — an explicit admin choice, not inferred from
+ * patent number — an explicit admin choice, not inferred from
  * `status` (a project can be mid-licensing while still only having a
  * filing number, for example). */
 export type PatentNumberKind = "application" | "patent";

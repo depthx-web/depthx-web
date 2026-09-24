@@ -17,9 +17,9 @@ export function Breadcrumb({ trail }: { trail: { label: string; href?: string }[
           })),
         }}
       />
-      <div className="flex items-center gap-2 px-8 pt-28 font-mono text-xs text-muted md:px-25 md:pt-28">
+      <div className="flex max-w-full flex-wrap items-center gap-2 px-8 pt-28 font-mono text-xs text-muted md:px-25 md:pt-28">
         {trail.map((item, i) => (
-          <span key={item.label} className="flex items-center gap-2">
+          <span key={item.label} className="min-w-0 max-w-full flex flex-wrap items-center gap-2 break-words">
             {i > 0 && <span className="text-line-2">/</span>}
             {item.href ? (
               <Link href={item.href} className="hover:text-text">

@@ -100,14 +100,14 @@ update team_members set keywords = 'autonomous systems lead, aerial platform res
 update team_members set keywords = 'cyber-physical systems researcher, behavioral interpretation, decision systems' where name = 'Dr. R. Lindqvist';
 update team_members set keywords = 'IP and partnerships, patent licensing, investment inquiries' where name = 'J. Tanaka';
 
-update news_posts set keywords = 'patent granted, adaptive interaction system, IP milestone, hybrid physical-digital systems' where slug = 'patent-granted-adaptive-interaction-system';
+update news_posts set keywords = 'Marwen Ayadi, autonomous UAV advertising, patent applications, marketing research, Depth X origin story' where slug = 'why-we-started-depth-x';
 update news_posts set keywords = 'aerial coordination platform, drone testing, urban airspace validation' where slug = 'aerial-coordination-platform-enters-testing';
 update news_posts set keywords = 'autonomous systems conference, published research, coordination models' where slug = 'paper-accepted-autonomous-systems-conference';
 update news_posts set keywords = 'research collaboration, cyber-physical decision systems, academic partnership' where slug = 'new-collaboration-with-research-laboratory';
 
-update testimonials set keywords = 'industrial partner testimonial, pilot deployment feedback, technical validation' where attribution_name = 'Industrial Partner';
+update testimonials set keywords = 'industrial partner testimonial, technical review, research collaboration' where attribution_name = 'Industrial Partner';
 update testimonials set keywords = 'investor testimonial, IP status documentation, investment due diligence' where attribution_name = 'Early-Stage Investor';
-update testimonials set keywords = 'research partner testimonial, academic collaboration, commercial readiness' where attribution_name = 'Research Laboratory Partner';
+update testimonials set keywords = 'research partner testimonial, academic collaboration, systems thinking' where attribution_name = 'Research Laboratory Partner';
 
 update faq_items set keywords = 'licensing status, available for licensing, patent licensing terms' where question = 'What does "Available for Licensing" mean exactly?';
 update faq_items set keywords = 'NDA process, technical documentation, licensing due diligence' where question = 'Do you require an NDA before sharing technical details?';
@@ -115,5 +115,5 @@ update faq_items set keywords = 'exclusive licensing, license terms, term sheet 
 update faq_items set keywords = 'investment stage, early-stage investment, patent portfolio investment' where question = 'What stage should a project be at before you''ll discuss investment?';
 
 update partnership_types set keywords = 'joint research partnership, shared experimental infrastructure, academic collaboration' where name = 'Joint Research';
-update partnership_types set keywords = 'experimental validation partnership, real-world testing, pilot deployment' where name = 'Experimental Validation';
+update partnership_types set keywords = 'experimental validation partnership, real-world testing, field evaluation' where name = 'Experimental Validation';
 update partnership_types set keywords = 'technology licensing partnership, patent licensing, commercial deployment' where name = 'Technology Licensing';

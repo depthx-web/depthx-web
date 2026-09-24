@@ -50,9 +50,9 @@ export const RESOURCE_CONFIGS: ResourceConfig[] = [
         type: "select",
         required: true,
         options: [
-          { label: "Patent Granted", value: "granted" },
-          { label: "Patent Pending", value: "pending" },
-          { label: "Available for Licensing", value: "licensing" },
+          { label: "Patent Filed", value: "granted" },
+          { label: "Prototype Stage", value: "pending" },
+          { label: "Commercialization Pathway", value: "licensing" },
         ],
       },
       {
@@ -75,7 +75,7 @@ export const RESOURCE_CONFIGS: ResourceConfig[] = [
         required: true,
         options: [
           { label: "Filing / Application Number", value: "application" },
-          { label: "Granted Patent Number", value: "patent" },
+          { label: "Patent Number", value: "patent" },
         ],
         helpText: "Controls whether the public page labels it \"Application No.\" or \"Patent No.\"",
       },
@@ -87,9 +87,9 @@ export const RESOURCE_CONFIGS: ResourceConfig[] = [
         type: "select",
         required: true,
         options: [
-          { label: "1 — Validation", value: "1" },
-          { label: "2 — IP Filed", value: "2" },
-          { label: "3 — Commercial", value: "3" },
+          { label: "1 — Concept / Architecture", value: "1" },
+          { label: "2 — Patent Filing / Prototype Engineering", value: "2" },
+          { label: "3 — Physical Validation / Commercialization", value: "3" },
         ],
       },
       { name: "featured", label: "Featured (homepage flagship)", type: "boolean" },

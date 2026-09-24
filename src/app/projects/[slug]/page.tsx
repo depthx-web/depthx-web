@@ -7,6 +7,12 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { formatDate } from "@/lib/format-date";
 import { ProductSimulator } from "@/components/ui/product-simulator";
 import { pageMetadata } from "@/lib/page-metadata";
+import {
+  EMQOPTER_STATEMENT,
+  PRODUCT_PRIORITY,
+  SMART_VENDING_PROJECT_SLUG,
+  UAV_PROJECT_SLUG,
+} from "@/lib/approved-public-content";
 
 export async function generateStaticParams() {
   const projects = await getProjects();
@@ -19,9 +25,15 @@ export async function generateMetadata(
   const { slug } = await props.params;
   const project = await getProject(slug);
   if (!project) return { title: "Project" };
+  const description =
+    slug === UAV_PROJECT_SLUG
+      ? "Depth X's first commercialization priority: a patent-pending, pre-prototype autonomous multi-UAV platform with engineering build next."
+      : slug === SMART_VENDING_PROJECT_SLUG
+        ? "Depth X's second technology in the pipeline, planned for market after the autonomous multi-UAV platform advances through prototype engineering and validation."
+        : project.shortDescription;
   return pageMetadata({
     title: project.title,
-    description: project.shortDescription,
+    description,
     path: `/projects/${project.slug}`,
     keywords: project.keywords,
   });
@@ -31,6 +43,8 @@ export default async function ProjectDetailPage(props: PageProps<"/projects/[slu
   const { slug } = await props.params;
   const project = await getProject(slug);
   if (!project) notFound();
+  const isUavProject = project.slug === UAV_PROJECT_SLUG;
+  const isSmartVendingProject = project.slug === SMART_VENDING_PROJECT_SLUG;
 
   return (
     <>
@@ -55,6 +69,24 @@ export default async function ProjectDetailPage(props: PageProps<"/projects/[slu
           <DetailBlock title="Overview">
             <p>{project.overview}</p>
           </DetailBlock>
+          {isUavProject && (
+            <>
+              <DetailBlock title="Current Stage">
+                <p className="font-mono text-sm text-amber">PATENT-PENDING · PRE-PROTOTYPE · ENGINEERING BUILD NEXT</p>
+              </DetailBlock>
+              <DetailBlock title="Engineering Collaboration">
+                <p>{EMQOPTER_STATEMENT}</p>
+              </DetailBlock>
+              <DetailBlock title="Product Priority">
+                <p>{PRODUCT_PRIORITY}</p>
+              </DetailBlock>
+            </>
+          )}
+          {isSmartVendingProject && (
+            <DetailBlock title="Product Priority">
+              <p>{PRODUCT_PRIORITY}</p>
+            </DetailBlock>
+          )}
           {project.simulatorHtml && (
             <div className="mb-9">
               <ProductSimulator html={project.simulatorHtml} />
@@ -78,13 +110,20 @@ export default async function ProjectDetailPage(props: PageProps<"/projects/[slu
           )}
         </div>
         <div className="sticky top-25 flex h-fit flex-col gap-4 rounded-xl border border-line bg-bg-2 p-6.5">
-          <StatusBadge status={project.status} />
+          {isUavProject ? (
+            <div className="font-mono text-xs tracking-wide text-amber">PATENT-PENDING · PRE-PROTOTYPE</div>
+          ) : (
+            <StatusBadge status={project.status} />
+          )}
           <SpecRow
-            k={project.patentNumberKind === "patent" ? "PATENT NO." : "APPLICATION NO."}
-            v={project.patentNumber ?? "Application filed"}
+            k="IP STATUS"
+            v={isUavProject || isSmartVendingProject ? "Founder-held patent applications filed" : project.patentNumber ?? "Application filed"}
           />
           <SpecRow k="FILED" v={project.filedDate ? formatDate(project.filedDate) : "—"} />
-          <SpecRow k="GRANTED" v={project.grantedDate ? formatDate(project.grantedDate) : "—"} />
+          <SpecRow
+            k="STATUS"
+            v={isUavProject ? "Pre-prototype" : project.grantedDate ? "Granted" : project.patentNumberKind === "application" ? "Application filed" : "Research stage"}
+          />
           <SpecRow k="DOMAIN" v={project.researchDomain.name} alignRight />
           {project.status === "licensing" ? (
             <a
@@ -118,9 +157,9 @@ function DetailBlock({ title, children }: { title: string; children: React.React
 
 function SpecRow({ k, v, alignRight }: { k: string; v: string; alignRight?: boolean }) {
   return (
-    <div className="flex justify-between border-b border-line py-3 text-[13px] last:border-none">
-      <span className="font-mono text-[11px] text-muted">{k}</span>
-      <span className={`font-semibold ${alignRight ? "text-right" : ""}`}>{v}</span>
+    <div className="grid grid-cols-1 gap-1 border-b border-line py-3 text-[13px] last:border-none sm:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] sm:gap-3">
+      <span className="min-w-0 font-mono text-[11px] text-muted">{k}</span>
+      <span className={`min-w-0 break-words text-left font-semibold ${alignRight ? "sm:text-right" : ""}`}>{v}</span>
     </div>
   );
 }

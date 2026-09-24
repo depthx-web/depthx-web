@@ -1,9 +1,9 @@
 import type { ProjectStatus } from "@/lib/types";
 
 export const STATUS_LABEL: Record<ProjectStatus, string> = {
-  granted: "Patent Granted",
-  pending: "Patent Pending",
-  licensing: "Available for Licensing",
+  granted: "Patent Filed",
+  pending: "Prototype Stage",
+  licensing: "Commercialization Pathway",
 };
 
 // Tailwind can't resolve interpolated class names at build time, so each

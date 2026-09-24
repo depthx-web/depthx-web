@@ -20,10 +20,10 @@ export function NewsletterSection() {
               {"// STAY UPDATED"}
             </div>
             <h3 className="mb-2.5 font-display text-2xl font-semibold md:text-3xl">
-              Get IP milestones in your inbox.
+              Get technical updates in your inbox.
             </h3>
             <p className="text-sm leading-7 text-muted">
-              Occasional updates on patent grants, new research, and licensing opportunities.
+              Occasional updates on research milestones, system architecture, and future commercialization developments.
               No spam, unsubscribe any time.
             </p>
           </div>

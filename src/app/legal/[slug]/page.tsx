@@ -17,7 +17,7 @@ export async function generateMetadata(
   if (!page) return { title: "Not found" };
   return pageMetadata({
     title: page.title,
-    description: `${page.title} for Depth X Innovations.`,
+    description: `${page.title} for Depth X.`,
     path: `/legal/${page.slug}`,
   });
 }

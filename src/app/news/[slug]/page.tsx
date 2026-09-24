@@ -4,6 +4,7 @@ import { getNewsPost, getNewsPosts } from "@/lib/content";
 import { Breadcrumb } from "@/components/ui/page-hero";
 import { formatDate } from "@/lib/format-date";
 import { pageMetadata } from "@/lib/page-metadata";
+import { ORIGIN_ARTICLE_SLUG, ORIGIN_STORY } from "@/lib/approved-public-content";
 
 export async function generateStaticParams() {
   const posts = await getNewsPosts();
@@ -16,9 +17,10 @@ export async function generateMetadata(
   const { slug } = await props.params;
   const post = await getNewsPost(slug);
   if (!post) return { title: "News" };
+  const excerpt = slug === ORIGIN_ARTICLE_SLUG ? ORIGIN_STORY : post.excerpt;
   return pageMetadata({
     title: post.title,
-    description: post.excerpt,
+    description: excerpt,
     path: `/news/${post.slug}`,
     keywords: post.keywords,
     image: post.imageUrl,
@@ -29,6 +31,7 @@ export default async function NewsDetailPage(props: PageProps<"/news/[slug]">) {
   const { slug } = await props.params;
   const post = await getNewsPost(slug);
   if (!post) notFound();
+  const body = post.slug === ORIGIN_ARTICLE_SLUG ? ORIGIN_STORY : post.body;
 
   return (
     <>
@@ -57,7 +60,7 @@ export default async function NewsDetailPage(props: PageProps<"/news/[slug]">) {
         </div>
       )}
       <section className="px-8 py-10 md:px-25">
-        <ArticleBody body={post.body} />
+        <ArticleBody body={body} />
       </section>
     </>
   );

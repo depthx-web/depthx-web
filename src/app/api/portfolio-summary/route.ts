@@ -2,6 +2,7 @@
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { getProjects, getSiteSettings } from "@/lib/content";
 import { STATUS_LABEL } from "@/lib/project-display";
+import { SMART_VENDING_PROJECT_SLUG, UAV_PROJECT_SLUG } from "@/lib/approved-public-content";
 
 export async function GET() {
   const [projects, settings] = await Promise.all([getProjects(), getSiteSettings()]);
@@ -23,9 +24,10 @@ export async function GET() {
   let y = drawHeader(page, margin, bold, regular, dark, muted, green);
 
   for (const project of projects) {
+    const hidePatentNumber = project.slug === UAV_PROJECT_SLUG || project.slug === SMART_VENDING_PROJECT_SLUG;
     const lines = [
       `${project.title} | ${project.researchDomain.name}`,
-      `Status: ${STATUS_LABEL[project.status]}    Patent / application: ${project.patentNumber ?? "—"}    Readiness: ${project.readinessStage}/3`,
+      `Status: ${STATUS_LABEL[project.status]}    Patent / application: ${hidePatentNumber ? "Founder-held applications filed" : project.patentNumber ?? "—"}    Readiness: ${project.readinessStage}/3`,
       `Summary: ${project.shortDescription}`,
       `Overview: ${project.overview}`,
     ];

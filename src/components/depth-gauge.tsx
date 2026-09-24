@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from "react";
 
 const TICKS = [
   "0m — CONCEPT",
-  "240m — VALIDATION",
+  "240m — ARCHITECTURE",
   "580m — IP FILED",
-  "1200m — DEPLOYED",
+  "1200m — ENGINEERING",
 ] as const;
 
 const TRACK_TOP = 96;

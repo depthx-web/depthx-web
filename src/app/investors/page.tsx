@@ -8,23 +8,30 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { RoleToggle } from "@/components/contact/role-toggle";
 import { FaqList } from "@/components/faq-list";
 import { mergeKeywords, pageMetadata } from "@/lib/page-metadata";
+import {
+  EMQOPTER_STATEMENT,
+  ORIGIN_STORY,
+  PRODUCT_PRIORITY,
+  SMART_VENDING_PROJECT_SLUG,
+  UAV_PROJECT_SLUG,
+} from "@/lib/approved-public-content";
 
 export async function generateMetadata(): Promise<Metadata> {
   const [testimonials, faqItems] = await Promise.all([getTestimonials(), getFaqItems()]);
   return pageMetadata({
     title: "For Investors",
     description:
-      "Depth X develops a research-driven technology portfolio with a clear path from founder-filed IP to validated products and specialized commercial operations.",
+      "A clear starting point for evaluating Depth X — current IP status, licensing model, and how to start a conversation.",
     path: "/investors",
     keywords: mergeKeywords([...testimonials, ...faqItems]),
   });
 }
 
-const COMMERCIALIZATION_STEPS = [
-  { n: "01", title: "Research & IP", desc: "Depth X develops the concept and protects the underlying invention." },
-  { n: "02", title: "Prototype & Validation", desc: "Specialist collaborators help build and validate the complete system." },
-  { n: "03", title: "Company Ownership", desc: "The founder plans to assign the patents to Depth X following formal grant." },
-  { n: "04", title: "Commercial Operation", desc: "Depth X plans to license the technology to a specialized operating company." },
+const LICENSING_STEPS = [
+  { n: "01", title: "Initial Inquiry", desc: "Share your interest and use case via the form below or direct email." },
+  { n: "02", title: "NDA & Technical Review", desc: "We share full technical documentation under a mutual NDA." },
+  { n: "03", title: "Term Sheet", desc: "We agree on scope, exclusivity, and commercial terms." },
+  { n: "04", title: "License Agreement", desc: "Formal agreement signed and technology transfer begins." },
 ];
 
 export default async function InvestorsPage() {
@@ -42,20 +49,18 @@ export default async function InvestorsPage() {
       <PageHero
         eyebrow="// INVESTOR OVERVIEW"
         eyebrowColor="var(--color-green)"
-        title="A research portfolio with a defined path to market."
-        description="Depth X develops and protects new technologies, validates them through prototypes and pilots, and prepares them for commercialization through specialized operating companies."
+        title="Technology development and commercialization pathways."
+        description="A clear starting point for evaluating Depth X — the company’s research model, current patent filing status, and future commercialization roadmap."
       />
       <section className="px-8 pb-25 md:px-25">
+        <div className="mb-17 grid gap-5 md:grid-cols-2">
+          <div className="border-l-2 border-green pl-5 text-sm leading-7 text-muted">{PRODUCT_PRIORITY}</div>
+          <div className="border-l-2 border-amber pl-5 text-sm leading-7 text-muted">{EMQOPTER_STATEMENT}</div>
+        </div>
+        <p className="mb-17 max-w-3xl text-sm leading-7 text-muted">{ORIGIN_STORY}</p>
         {isSectionVisible(visibility, "investors.stats") && (
           <div className="mb-17">
-            <StatGrid
-              stats={[
-                { label: "Patent Applications Filed", value: "02" },
-                { label: "Technologies in Development", value: "02" },
-                { label: "First Commercialization Priority", value: "UAV" },
-                { label: "Current Patent Applicant", value: "FOUNDER" },
-              ]}
-            />
+            <StatGrid stats={settings.stats} />
           </div>
         )}
 
@@ -81,7 +86,9 @@ export default async function InvestorsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {projects.map((p) => (
+                    {projects.map((p) => {
+                      const hidePatentNumber = p.slug === UAV_PROJECT_SLUG || p.slug === SMART_VENDING_PROJECT_SLUG;
+                      return (
                     <tr key={p._id} className="transition-colors hover:bg-hover">
                       <td className="border-b border-line px-3 py-4 align-middle">
                         <Link href={`/projects/${p.slug}`} className="font-display text-[14.5px] font-semibold hover:text-green">
@@ -95,13 +102,14 @@ export default async function InvestorsPage() {
                         <StatusBadge status={p.status} />
                       </td>
                       <td className="border-b border-line px-3 py-4 align-middle font-mono text-[11px] text-muted">
-                        {p.patentNumber ?? "—"}
+                        {hidePatentNumber ? "Founder-held applications filed" : p.patentNumber ?? "—"}
                       </td>
                       <td className="border-b border-line px-3 py-4 align-middle font-mono text-[11px] text-muted">
                         {p.readinessStage}/3
                       </td>
                     </tr>
-                  ))}
+                      );
+                    })}
                 </tbody>
               </table>
             </div>
@@ -110,9 +118,9 @@ export default async function InvestorsPage() {
 
         {isSectionVisible(visibility, "investors.licensingProcess") && (
           <>
-            <SectionHead eyebrow="// HOW IT WORKS" title="Commercialization Path" bordered={false} />
+            <SectionHead eyebrow="// HOW IT WORKS" title="Licensing Process" bordered={false} />
             <div className="mb-17 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {COMMERCIALIZATION_STEPS.map((s) => (
+              {LICENSING_STEPS.map((s) => (
                 <div
                   key={s.n}
                   className="rounded-xl border border-line bg-bg-2 p-5.5 transition-all duration-300 hover:-translate-y-1.5 hover:border-line-2 hover:shadow-[0_12px_32px_-12px_rgba(0,0,0,0.5)]"
@@ -133,8 +141,8 @@ export default async function InvestorsPage() {
                 Get the one-page portfolio summary
               </h4>
               <p className="text-[13.5px] text-muted">
-                Current project priorities, patent application status, and the planned route to
-                commercialization.
+                Status, patent numbers, and licensing terms for every project — built for internal
+                review.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
@@ -186,7 +194,7 @@ export default async function InvestorsPage() {
 
         {isSectionVisible(visibility, "investors.faq") && (
           <>
-            <SectionHead eyebrow="// COMMON QUESTIONS" title="IP & Commercialization FAQ" bordered={false} />
+            <SectionHead eyebrow="// COMMON QUESTIONS" title="Licensing FAQ" bordered={false} />
             <FaqList items={faqItems} />
           </>
         )}

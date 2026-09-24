@@ -27,11 +27,27 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-const LICENSING_STEPS = [
-  { n: "01", title: "Initial Inquiry", desc: "Share your interest and use case via the form below or direct email." },
-  { n: "02", title: "NDA & Technical Review", desc: "We share full technical documentation under a mutual NDA." },
-  { n: "03", title: "Term Sheet", desc: "We agree on scope, exclusivity, and commercial terms." },
-  { n: "04", title: "License Agreement", desc: "Formal agreement signed and technology transfer begins." },
+const DEVELOPMENT_STEPS = [
+  {
+    n: "01",
+    title: "Research & System Architecture",
+    desc: "Define the problem, system boundaries, technical concept, and evidence required for development.",
+  },
+  {
+    n: "02",
+    title: "Prototype Engineering",
+    desc: "Translate the documented architecture into an integrated engineering prototype.",
+  },
+  {
+    n: "03",
+    title: "Technical Validation",
+    desc: "Evaluate the prototype under controlled conditions against clearly defined criteria.",
+  },
+  {
+    n: "04",
+    title: "Commercialization Planning",
+    desc: "Review the technical evidence, legal position, and operating requirements before selecting a route to market.",
+  },
 ];
 
 export default async function InvestorsPage() {
@@ -114,9 +130,13 @@ export default async function InvestorsPage() {
 
         {isSectionVisible(visibility, "investors.licensingProcess") && (
           <>
-            <SectionHead eyebrow="// HOW IT WORKS" title="Licensing Process" bordered={false} />
+            <SectionHead
+              eyebrow="// STAGE-GATED PATHWAY"
+              title="Development & Commercialization Pathway"
+              bordered={false}
+            />
             <div className="mb-17 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {LICENSING_STEPS.map((s) => (
+              {DEVELOPMENT_STEPS.map((s) => (
                 <div
                   key={s.n}
                   className="rounded-xl border border-line bg-bg-2 p-5.5 transition-all duration-300 hover:-translate-y-1.5 hover:border-line-2 hover:shadow-[0_12px_32px_-12px_rgba(0,0,0,0.5)]"

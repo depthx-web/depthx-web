@@ -24,7 +24,7 @@ export const SECTION_GROUPS = [
     keys: [
       { key: "investors.stats", label: "Stats row" },
       { key: "investors.portfolioTable", label: "Portfolio table" },
-      { key: "investors.licensingProcess", label: "Licensing process steps" },
+      { key: "investors.licensingProcess", label: "Development pathway steps" },
       { key: "investors.pdfSummaryCta", label: "PDF summary CTA" },
       { key: "investors.contactToggle", label: "Start the Conversation toggle" },
       { key: "investors.testimonials", label: "Testimonials" },

@@ -44,17 +44,31 @@ function supabase(): SupabaseClient {
   return createPublicClient() as unknown as SupabaseClient;
 }
 
+const LEGAL_NAME_PLACEHOLDER = "__DEPTHX_LEGAL_NAME__";
+
+/**
+ * Keep the registered company name legally exact while normalizing the
+ * public brand in CMS-managed copy. This is presentation-only and never
+ * writes the normalized value back to Supabase.
+ */
+function normalizeBrand(value: unknown): string {
+  return String(value ?? "")
+    .replaceAll("Depth X Ltd.", LEGAL_NAME_PLACEHOLDER)
+    .replaceAll("Depth X", "DepthX")
+    .replaceAll(LEGAL_NAME_PLACEHOLDER, "Depth X Ltd.");
+}
+
 // ---------- row -> app-type mappers ----------
 
 function mapResearchDomain(row: Record<string, unknown>): ResearchDomain {
   return {
     _id: String(row.id),
-    name: String(row.name),
+    name: normalizeBrand(row.name),
     slug: String(row.slug),
-    description: String(row.description ?? ""),
+    description: normalizeBrand(row.description),
     icon: row.icon ? String(row.icon) : undefined,
     order: Number(row.order ?? 0),
-    keywords: row.keywords ? String(row.keywords) : undefined,
+    keywords: row.keywords ? normalizeBrand(row.keywords) : undefined,
     visible: row.visible === undefined ? true : Boolean(row.visible),
   };
 }
@@ -63,12 +77,12 @@ function mapPublication(row: Record<string, unknown>): Publication {
   const relatedProject = row.related_project as { slug?: string } | null | undefined;
   return {
     _id: String(row.id),
-    title: String(row.title),
-    venue: String(row.venue ?? ""),
+    title: normalizeBrand(row.title),
+    venue: normalizeBrand(row.venue),
     year: Number(row.year),
-    abstract: String(row.abstract ?? ""),
+    abstract: normalizeBrand(row.abstract),
     relatedProjectSlug: relatedProject?.slug,
-    keywords: row.keywords ? String(row.keywords) : undefined,
+    keywords: row.keywords ? normalizeBrand(row.keywords) : undefined,
     visible: row.visible === undefined ? true : Boolean(row.visible),
   };
 }
@@ -80,25 +94,25 @@ function mapProject(row: Record<string, unknown>): Project {
   const legacyReadiness = Number(row.readiness_stage ?? 1);
   return {
     _id: String(row.id),
-    title: String(row.title),
+    title: normalizeBrand(row.title),
     slug: String(row.slug),
     status: legacyStatus,
     researchDomain: domainRow
       ? mapResearchDomain(domainRow)
       : { _id: "", name: "", slug: "", description: "", order: 0, visible: true },
-    shortDescription: String(row.short_description ?? ""),
-    overview: String(row.overview ?? ""),
+    shortDescription: normalizeBrand(row.short_description),
+    overview: normalizeBrand(row.overview),
     researchCollaboration:
       row.research_collaboration === undefined
         ? undefined
         : row.research_collaboration
-          ? String(row.research_collaboration)
+          ? normalizeBrand(row.research_collaboration)
           : null,
     engineeringCollaboration:
       row.engineering_collaboration === undefined
         ? undefined
         : row.engineering_collaboration
-          ? String(row.engineering_collaboration)
+          ? normalizeBrand(row.engineering_collaboration)
           : null,
     patentNumber: row.patent_number ? String(row.patent_number) : undefined,
     patentNumberKind: row.patent_number_kind === "patent" ? "patent" : "application",
@@ -111,28 +125,28 @@ function mapProject(row: Record<string, unknown>): Project {
     commercialStatus: isCommercialStatus(row.commercial_status)
       ? row.commercial_status
       : legacyCommercialStatus(legacyStatus),
-    nextMilestone: row.next_milestone ? String(row.next_milestone) : undefined,
+    nextMilestone: row.next_milestone ? normalizeBrand(row.next_milestone) : undefined,
     readinessStage: legacyReadiness as Project["readinessStage"],
     relatedPublications: pubs.map(mapPublication),
     featured: Boolean(row.featured),
     visible: Boolean(row.visible),
-    keywords: row.keywords ? String(row.keywords) : undefined,
-    simulatorHtml: row.simulator_html ? String(row.simulator_html) : undefined,
+    keywords: row.keywords ? normalizeBrand(row.keywords) : undefined,
+    simulatorHtml: row.simulator_html ? normalizeBrand(row.simulator_html) : undefined,
   };
 }
 
 function mapNewsPost(row: Record<string, unknown>): NewsPost {
   return {
     _id: String(row.id),
-    title: String(row.title),
+    title: normalizeBrand(row.title),
     slug: String(row.slug),
-    tag: String(row.tag ?? ""),
-    excerpt: String(row.excerpt ?? ""),
-    body: String(row.body ?? ""),
+    tag: normalizeBrand(row.tag),
+    excerpt: normalizeBrand(row.excerpt),
+    body: normalizeBrand(row.body),
     date: String(row.date),
     published: Boolean(row.published),
     imageUrl: row.image_url ? String(row.image_url) : undefined,
-    keywords: row.keywords ? String(row.keywords) : undefined,
+    keywords: row.keywords ? normalizeBrand(row.keywords) : undefined,
   };
 }
 
@@ -140,21 +154,28 @@ function mapLegalPage(row: Record<string, unknown>): LegalPage {
   return {
     _id: String(row.id),
     slug: String(row.slug),
-    title: String(row.title),
-    body: String(row.body ?? ""),
+    title: normalizeBrand(row.title),
+    body: normalizeBrand(row.body),
     updatedAt: String(row.updated_at),
   };
 }
 
 function mapSiteSettings(row: Record<string, unknown>): SiteSettings {
   return {
-    heroHeadline: String(row.hero_headline ?? ""),
-    heroHeadlineAccent: String(row.hero_headline_accent ?? ""),
-    heroSubtext: String(row.hero_subtext ?? ""),
+    heroHeadline: normalizeBrand(row.hero_headline),
+    heroHeadlineAccent: normalizeBrand(row.hero_headline_accent),
+    heroSubtext: normalizeBrand(row.hero_subtext),
     logoUrl: row.logo_url ? String(row.logo_url) : undefined,
-    stats: (row.stats as SiteSettings["stats"]) ?? [],
-    trustBarLogos: (row.trust_bar_logos as SiteSettings["trustBarLogos"]) ?? [],
-    footerText: String(row.footer_text ?? ""),
+    stats: ((row.stats as SiteSettings["stats"]) ?? []).map((stat) => ({
+      ...stat,
+      label: normalizeBrand(stat.label),
+      value: normalizeBrand(stat.value),
+    })),
+    trustBarLogos: ((row.trust_bar_logos as SiteSettings["trustBarLogos"]) ?? []).map((logo) => ({
+      ...logo,
+      name: normalizeBrand(logo.name),
+    })),
+    footerText: normalizeBrand(row.footer_text),
     contactEmails: {
       investor: String(row.contact_email_investor ?? ""),
       researcher: String(row.contact_email_researcher ?? ""),

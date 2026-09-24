@@ -5,7 +5,7 @@ import { Breadcrumb, PageHero } from "@/components/ui/page-hero";
 import { ManageForm } from "@/app/newsletter/manage/manage-form";
 import type { NewsletterInterest } from "@/lib/supabase/database.types";
 
-export const metadata: Metadata = { title: "Manage Subscription · Depth X" };
+export const metadata: Metadata = { title: "Manage Subscription · DepthX" };
 
 export default async function ManageSubscriptionPage(
   props: PageProps<"/newsletter/manage">,
@@ -41,7 +41,7 @@ export default async function ManageSubscriptionPage(
         description={
           email
             ? `Choose what you'd like to hear about at ${email}.`
-            : "Choose what you'd like to hear about from Depth X."
+            : "Choose what you'd like to hear about from DepthX."
         }
       />
       <section className="px-8 pb-25 md:px-25">

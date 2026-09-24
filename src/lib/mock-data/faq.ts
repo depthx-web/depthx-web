@@ -5,7 +5,7 @@ export const faqItems: FaqItem[] = [
     _id: "faq-available-for-licensing",
     question: 'What does "Available for Licensing" mean exactly?',
     answer:
-      "Depth X is developing structured pathways for technology commercialization and transfer, including patent filing, prototype engineering, and later commercial operating models where appropriate. Each project is assessed on its own technical and legal stage.",
+      "DepthX is developing structured pathways for technology commercialization and transfer, including patent filing, prototype engineering, and later commercial operating models where appropriate. Each project is assessed on its own technical and legal stage.",
     category: "licensing",
     order: 1,
     visible: true,

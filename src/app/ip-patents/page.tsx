@@ -26,7 +26,7 @@ const STATUS_DEFINITIONS = [
   {
     label: "Commercialization Pathway",
     color: "border-t-green",
-    desc: "Depth X develops technology systems and prepares them for future commercialization or technology transfer once the technical and legal milestones are met.",
+    desc: "DepthX develops technology systems and prepares them for future commercialization or technology transfer once the technical and legal milestones are met.",
   },
 ];
 

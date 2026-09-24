@@ -4,7 +4,7 @@ import { hasSupabaseConfig } from "@/lib/supabase/env";
 import { sendEmail } from "@/lib/email/send";
 import { appendEmailFooter } from "@/lib/email/template";
 
-const FAREWELL_BODY = `You've been unsubscribed from Depth X updates and won't receive further marketing emails from us.
+const FAREWELL_BODY = `You've been unsubscribed from DepthX updates and won't receive further marketing emails from us.
 
 If that was a mistake, you're welcome to subscribe again any time from our homepage.`;
 
@@ -48,7 +48,7 @@ function unsubscribePageHtml(): string {
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Unsubscribed — Depth X</title>
+<title>Unsubscribed — DepthX</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
   body { font-family: system-ui, sans-serif; background: #0a1220; color: #e8edf4; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 24px; text-align: center; }
@@ -58,7 +58,7 @@ function unsubscribePageHtml(): string {
 <body>
   <div>
     <h1 style="font-size: 20px;">You've been unsubscribed.</h1>
-    <p style="color: #8ca0b8;">You won't receive further emails from the Depth X newsletter. <a href="/">Return to the site</a>.</p>
+    <p style="color: #8ca0b8;">You won't receive further emails from the DepthX newsletter. <a href="/">Return to the site</a>.</p>
   </div>
 </body>
 </html>`;

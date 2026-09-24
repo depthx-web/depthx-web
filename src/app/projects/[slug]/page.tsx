@@ -32,9 +32,9 @@ export async function generateMetadata(
   if (!project) return { title: "Project" };
   const description =
     slug === UAV_PROJECT_SLUG
-      ? "Depth X's first commercialization priority: a patent-pending, pre-prototype autonomous multi-UAV platform with engineering build next."
+      ? "DepthX's first commercialization priority: a patent-pending, pre-prototype autonomous multi-UAV platform with engineering build next."
       : slug === SMART_VENDING_PROJECT_SLUG
-        ? "Depth X's second technology in the pipeline, planned for market after the autonomous multi-UAV platform advances through prototype engineering and validation."
+        ? "DepthX's second technology in the pipeline, planned for market after the autonomous multi-UAV platform advances through prototype engineering and validation."
         : project.shortDescription;
   return pageMetadata({
     title: project.title,

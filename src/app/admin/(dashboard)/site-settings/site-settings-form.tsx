@@ -29,7 +29,7 @@ export function SiteSettingsForm({ settings }: { settings: SiteSettingsRow }) {
           defaultValue={settings.logo_url ?? ""}
         />
         <p className="text-xs text-muted">
-          Shown in the nav bar and footer in place of the &quot;DepthX&quot; text wordmark. Leave
+          Shown in the nav bar and footer in place of the &quot;DEPTH X LTD.&quot; text wordmark. Leave
           empty to keep the text version.
         </p>
       </Section>

@@ -56,9 +56,9 @@ insert into team_members (name, role, bio, "order") values
   ('J. Tanaka', 'IP & Partnerships Lead', 'Manages the patent pipeline and serves as the primary point of contact for licensing and investment inquiries.', 4);
 
 insert into news_posts (title, slug, tag, excerpt, body, date, published) values
-  ('Why Depth X began', 'why-we-started-depth-x', 'COMPANY',
-   'Depth X Ltd began with founder Marwen Ayadi''s marketing background and his development of an autonomous UAV advertising concept.',
-   'Depth X Ltd began with founder Marwen Ayadi''s marketing background and his development of an autonomous UAV advertising concept. Designing the system and preparing the patent applications raised broader questions about the relationship between traditional and digital marketing. Those questions led to the theoretical research that shaped Depth X Ltd as an R&D and technology commercialization company.',
+  ('Why DepthX began', 'why-we-started-depth-x', 'COMPANY',
+   'DepthX began with founder Marwen Ayadi''s marketing background and his development of an autonomous UAV advertising concept.',
+   'DepthX began with founder Marwen Ayadi''s marketing background and his development of an autonomous UAV advertising concept. Designing the system and preparing the patent applications raised broader questions about the relationship between traditional and digital marketing. Those questions led to the theoretical research that shaped DepthX as an R&D and technology commercialization company.',
    '2026-08-01', true),
   ('Concept update: hybrid physical–digital systems', 'concept-update-hybrid-physical-digital-systems', 'RESEARCH',
    'Our research programme continues to refine system architecture and early-stage concept validation across physical and digital interaction models.',
@@ -79,11 +79,11 @@ insert into news_posts (title, slug, tag, excerpt, body, date, published) values
 
 insert into testimonials (quote, attribution_name, attribution_role) values
   ('The technical review process was rigorous and provided a clear view of the research direction and technical challenges.', 'Industrial Partner', 'Research Review'),
-  ('Depth X''s documentation of IP status made our investment committee review straightforward — every project''s stage was clear from day one.', 'Early-Stage Investor', ''),
+  ('DepthX''s documentation of IP status made our investment committee review straightforward — every project''s stage was clear from day one.', 'Early-Stage Investor', ''),
   ('A rare combination of academic rigor and systems thinking in the same research team.', 'Research Laboratory Partner', '');
 
 insert into faq_items (question, answer, category, "order") values
-  ('What does "Available for Licensing" mean exactly?', 'The technology may be at a research, architecture, or early validation stage, and Depth X is open to discussing future technology-transfer and commercialization pathways with qualified partners.', 'licensing', 1),
+  ('What does "Available for Licensing" mean exactly?', 'The technology may be at a research, architecture, or early validation stage, and DepthX is open to discussing future technology-transfer and commercialization pathways with qualified partners.', 'licensing', 1),
   ('Do you require an NDA before sharing technical details?', 'Yes — full technical documentation is shared only after a mutual NDA is signed, following an initial inquiry and fit assessment.', 'licensing', 2),
   ('Can licenses be exclusive?', 'Exclusivity is negotiable and depends on the project, market, and proposed terms. This is discussed during the term sheet stage.', 'licensing', 3),
   ('What stage should a project be at before you''ll discuss investment?', 'We''re open to conversations at any project stage — from concept and systems architecture through prototype engineering and later commercialization pathways — but documentation and terms differ by stage.', 'general', 4);
@@ -96,7 +96,7 @@ insert into partnership_types (name, description) values
 update site_settings set
   hero_headline = 'Researching technologies.',
   hero_headline_accent = 'Building protected systems. Preparing them for market.',
-  hero_subtext = 'Depth X is an R&D and technology commercialization company. Our first commercialization priority is a patent-pending autonomous multi-UAV platform for adaptive outdoor advertising and anonymous audience measurement. The platform is currently at the pre-prototype stage, with the engineering build as the next milestone.',
+  hero_subtext = 'DepthX is an R&D and technology commercialization company. Our first commercialization priority is a patent-pending autonomous multi-UAV platform for adaptive outdoor advertising and anonymous audience measurement. The platform is currently at the pre-prototype stage, with the engineering build as the next milestone.',
   stats = '[
     {"label": "Research domains", "value": "03"},
     {"label": "Current focus", "value": "Concept & architecture"},

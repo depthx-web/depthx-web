@@ -87,7 +87,7 @@ export function NewsletterSection() {
                     required
                     className="mt-0.5 h-3.5 w-3.5 shrink-0 accent-green"
                   />
-                  I agree to receive marketing emails from Depth X about IP milestones and
+                  I agree to receive marketing emails from DepthX about IP milestones and
                   research updates. You can unsubscribe at any time — see our{" "}
                   <Link href="/legal/privacy-policy" className="underline hover:text-text">
                     Privacy Policy

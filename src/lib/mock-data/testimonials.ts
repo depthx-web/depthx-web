@@ -12,7 +12,7 @@ export const testimonials: Testimonial[] = [
   {
     _id: "testimonial-investor",
     quote:
-      "Depth X's documentation of IP status made our investment committee review straightforward — every project's stage was clear from day one.",
+      "DepthX's documentation of IP status made our investment committee review straightforward — every project's stage was clear from day one.",
     attributionName: "Early-Stage Investor",
     attributionRole: "",
     visible: true,

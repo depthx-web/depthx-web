@@ -17,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
     title: "For Investors",
     description:
-      "A clear starting point for evaluating Depth X — current IP status, licensing model, and how to start a conversation.",
+      "A clear starting point for evaluating DepthX — current IP status, licensing model, and how to start a conversation.",
     path: "/investors",
     keywords: mergeKeywords([...testimonials, ...faqItems]),
   });
@@ -62,7 +62,7 @@ export default async function InvestorsPage() {
         eyebrow="// INVESTOR OVERVIEW"
         eyebrowColor="var(--color-green)"
         title="Technology development and commercialization pathways."
-        description="A clear starting point for evaluating Depth X — the company’s research model, current patent filing status, and future commercialization roadmap."
+        description="A clear starting point for evaluating DepthX — the company’s research model, current patent filing status, and future commercialization roadmap."
       />
       <section className="px-8 pb-25 md:px-25">
         {isSectionVisible(visibility, "investors.stats") && (

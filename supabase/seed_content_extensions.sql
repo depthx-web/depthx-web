@@ -5,7 +5,7 @@ insert into legal_pages (slug, title, body) values
 
 1. Who we are
 
-Depth X Ltd. ("Depth X", "we", "us", "our") is a company registered in England & Wales, company number 16162223, with its registered office at 71-75 Shelton Street, London, Covent Garden, London, England, WC2H 9JQ. This policy explains how we collect, use, and protect personal data when you use depthx.co.uk (the "Site").
+Depth X Ltd. ("DepthX", "we", "us", "our") is a company registered in England & Wales, company number 16162223, with its registered office at 71-75 Shelton Street, London, Covent Garden, London, England, WC2H 9JQ. This policy explains how we collect, use, and protect personal data when you use depthx.co.uk (the "Site").
 
 2. What data we collect
 
@@ -53,7 +53,7 @@ By accessing or using depthx.co.uk (the "Site"), you agree to these Terms of Use
 
 2. Purpose of the Site
 
-The Site is provided to share information about Depth X''s research, patent portfolio, and licensing opportunities, and to allow investors, researchers, and commercial partners to get in touch. Nothing on the Site constitutes an offer to license any technology, an investment solicitation, or legal or financial advice; any such arrangement would be subject to a separate, signed agreement.
+The Site is provided to share information about DepthX''s research, patent portfolio, and licensing opportunities, and to allow investors, researchers, and commercial partners to get in touch. Nothing on the Site constitutes an offer to license any technology, an investment solicitation, or legal or financial advice; any such arrangement would be subject to a separate, signed agreement.
 
 3. Intellectual property
 
@@ -100,7 +100,7 @@ update team_members set keywords = 'autonomous systems lead, aerial platform res
 update team_members set keywords = 'cyber-physical systems researcher, behavioral interpretation, decision systems' where name = 'Dr. R. Lindqvist';
 update team_members set keywords = 'IP and partnerships, patent licensing, investment inquiries' where name = 'J. Tanaka';
 
-update news_posts set keywords = 'Marwen Ayadi, autonomous UAV advertising, patent applications, marketing research, Depth X origin story' where slug = 'why-we-started-depth-x';
+update news_posts set keywords = 'Marwen Ayadi, autonomous UAV advertising, patent applications, marketing research, DepthX origin story' where slug = 'why-we-started-depth-x';
 update news_posts set keywords = 'aerial coordination platform, drone testing, urban airspace validation' where slug = 'aerial-coordination-platform-enters-testing';
 update news_posts set keywords = 'autonomous systems conference, published research, coordination models' where slug = 'paper-accepted-autonomous-systems-conference';
 update news_posts set keywords = 'research collaboration, cyber-physical decision systems, academic partnership' where slug = 'new-collaboration-with-research-laboratory';

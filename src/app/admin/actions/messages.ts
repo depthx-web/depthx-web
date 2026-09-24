@@ -27,7 +27,7 @@ export async function replyToMessageAction(
 
   const result = await sendEmail({
     to: message.email,
-    subject: "Re: your message to Depth X",
+    subject: "Re: your message to DepthX",
     text: appendEmailFooter(body),
   });
   if (!result.ok) return { error: result.error };

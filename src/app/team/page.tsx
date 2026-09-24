@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
     title: "Team",
     description:
-      "Depth X is founder-led and works with specialist external collaborators where each project needs technical depth.",
+      "DepthX is founder-led and works with specialist external collaborators where each project needs technical depth.",
     path: "/team",
     keywords: mergeKeywords(team),
   });
@@ -25,7 +25,7 @@ export default async function TeamPage() {
       <PageHero
         eyebrow="// FOUNDER-LED R&D"
         title="Founder-led, specialist-supported."
-        description="Marwen Ayadi leads research, patents, product direction, and commercialization strategy. Depth X adds specialist external collaborators for defined technical scopes."
+        description="Marwen Ayadi leads research, patents, product direction, and commercialization strategy. DepthX adds specialist external collaborators for defined technical scopes."
       />
       <section className="px-8 pb-15 md:px-25">
         <p className="max-w-3xl text-sm leading-7 text-muted">{ORIGIN_STORY}</p>

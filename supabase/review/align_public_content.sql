@@ -10,12 +10,12 @@ update public.site_settings
 set
   hero_headline = 'Researching technologies.',
   hero_headline_accent = 'Building protected systems. Preparing them for market.',
-  hero_subtext = 'Depth X is an R&D and technology commercialization company. Our first commercialization priority is a patent-pending autonomous multi-UAV platform for adaptive outdoor advertising and anonymous audience measurement. The platform is currently at the pre-prototype stage, with the engineering build as the next milestone.'
+  hero_subtext = 'DepthX is an R&D and technology commercialization company. Our first commercialization priority is a patent-pending autonomous multi-UAV platform for adaptive outdoor advertising and anonymous audience measurement. The platform is currently at the pre-prototype stage, with the engineering build as the next milestone.'
 where id = 1
   and (
     hero_headline is distinct from 'Researching technologies.'
     or hero_headline_accent is distinct from 'Building protected systems. Preparing them for market.'
-    or hero_subtext is distinct from 'Depth X is an R&D and technology commercialization company. Our first commercialization priority is a patent-pending autonomous multi-UAV platform for adaptive outdoor advertising and anonymous audience measurement. The platform is currently at the pre-prototype stage, with the engineering build as the next milestone.'
+    or hero_subtext is distinct from 'DepthX is an R&D and technology commercialization company. Our first commercialization priority is a patent-pending autonomous multi-UAV platform for adaptive outdoor advertising and anonymous audience measurement. The platform is currently at the pre-prototype stage, with the engineering build as the next milestone.'
   );
 
 -- First priority: never write an application number or ownership claim.
@@ -24,13 +24,13 @@ set
   status = 'pending',
   patent_number = null,
   granted_date = null,
-  overview = 'The autonomous multi-UAV platform is Depth X Ltd''s first commercialization priority. It is patent-pending and at the pre-prototype stage, with the engineering build as the next milestone.'
+  overview = 'The autonomous multi-UAV platform is DepthX''s first commercialization priority. It is patent-pending and at the pre-prototype stage, with the engineering build as the next milestone.'
 where slug = 'autonomous-aerial-advertising-system'
   and (
     status is distinct from 'pending'
     or patent_number is not null
     or granted_date is not null
-    or overview is distinct from 'The autonomous multi-UAV platform is Depth X Ltd''s first commercialization priority. It is patent-pending and at the pre-prototype stage, with the engineering build as the next milestone.'
+    or overview is distinct from 'The autonomous multi-UAV platform is DepthX''s first commercialization priority. It is patent-pending and at the pre-prototype stage, with the engineering build as the next milestone.'
   );
 
 -- Second pipeline product: never write an application number or grant claim.
@@ -51,12 +51,12 @@ where slug = 'smart-vending-virtual-clothing-try-on'
 -- Preserved origin article: replace the legally inaccurate origin narrative.
 update public.news_posts
 set
-  excerpt = 'Depth X Ltd began with founder Marwen Ayadi''s marketing background and his development of an autonomous UAV advertising concept.',
-  body = 'Depth X Ltd began with founder Marwen Ayadi''s marketing background and his development of an autonomous UAV advertising concept. Designing the system and preparing the patent applications raised broader questions about the relationship between traditional and digital marketing. Those questions led to the theoretical research that shaped Depth X Ltd as an R&D and technology commercialization company.'
+  excerpt = 'DepthX began with founder Marwen Ayadi''s marketing background and his development of an autonomous UAV advertising concept.',
+  body = 'DepthX began with founder Marwen Ayadi''s marketing background and his development of an autonomous UAV advertising concept. Designing the system and preparing the patent applications raised broader questions about the relationship between traditional and digital marketing. Those questions led to the theoretical research that shaped DepthX as an R&D and technology commercialization company.'
 where slug = 'why-we-started-depth-x'
   and (
-    excerpt is distinct from 'Depth X Ltd began with founder Marwen Ayadi''s marketing background and his development of an autonomous UAV advertising concept.'
-    or body is distinct from 'Depth X Ltd began with founder Marwen Ayadi''s marketing background and his development of an autonomous UAV advertising concept. Designing the system and preparing the patent applications raised broader questions about the relationship between traditional and digital marketing. Those questions led to the theoretical research that shaped Depth X Ltd as an R&D and technology commercialization company.'
+    excerpt is distinct from 'DepthX began with founder Marwen Ayadi''s marketing background and his development of an autonomous UAV advertising concept.'
+    or body is distinct from 'DepthX began with founder Marwen Ayadi''s marketing background and his development of an autonomous UAV advertising concept. Designing the system and preparing the patent applications raised broader questions about the relationship between traditional and digital marketing. Those questions led to the theoretical research that shaped DepthX as an R&D and technology commercialization company.'
   );
 
 -- Review the affected rows before committing. Do not run COMMIT until founder approval.

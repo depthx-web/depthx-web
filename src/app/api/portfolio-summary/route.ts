@@ -7,7 +7,7 @@ export async function GET() {
   const [projects, settings] = await Promise.all([getProjects(), getSiteSettings()]);
 
   const pdf = await PDFDocument.create();
-  pdf.setTitle("Depth X — Portfolio Summary");
+  pdf.setTitle("DepthX — Portfolio Summary");
   pdf.setAuthor("Depth X Ltd.");
 
   const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
@@ -102,7 +102,7 @@ function drawHeader(
   green: ReturnType<typeof rgb>,
 ): number {
   let y = page.getHeight() - margin;
-  page.drawText("Depth X", { x: margin, y, size: 22, font: bold, color: dark });
+  page.drawText("DEPTH X LTD.", { x: margin, y, size: 22, font: bold, color: dark });
   page.drawText("X", {
     x: margin + bold.widthOfTextAtSize("Depth ", 22),
     y,

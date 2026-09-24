@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
     title: "Publications",
     description:
-      "Founder-authored research preprints and publications documenting the technical concepts, architecture, and research foundations behind Depth X technologies.",
+      "Founder-authored research preprints and publications documenting the technical concepts, architecture, and research foundations behind DepthX technologies.",
     path: "/publications",
     keywords: mergeKeywords(publications),
   });
@@ -25,7 +25,7 @@ export default async function PublicationsPage() {
       <PageHero
         eyebrow="// RESEARCH PAPERS & PREPRINTS"
         title="Publications"
-        description="Founder-authored research preprints and publications documenting the technical concepts, architecture, and research foundations behind Depth X technologies."
+        description="Founder-authored research preprints and publications documenting the technical concepts, architecture, and research foundations behind DepthX technologies."
       />
       {isSectionVisible(settings.sectionVisibility, "publications.list") && (
         <section className="px-8 pb-25 md:px-25">

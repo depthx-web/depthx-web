@@ -9,7 +9,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
     title: "Research",
     description:
-      "Depth X advances research-led concepts and system architecture before prototype engineering, physical validation, and future commercialization or technology transfer.",
+      "DepthX advances research-led concepts and system architecture before prototype engineering, physical validation, and future commercialization or technology transfer.",
     path: "/research",
     keywords: mergeKeywords(domains),
   });
@@ -54,7 +54,7 @@ export default async function ResearchPage() {
       <PageHero
         eyebrow="// CORE RESEARCH FOCUS"
         title={`${NUMBER_WORDS[domains.length] ?? domains.length} domain${domains.length === 1 ? "" : "s"}. One method: depth before commercialization.`}
-        description="Depth X advances research-led concepts and system architecture before prototype engineering, physical validation, and future commercialization or technology transfer."
+        description="DepthX advances research-led concepts and system architecture before prototype engineering, physical validation, and future commercialization or technology transfer."
       />
       {isSectionVisible(visibility, "research.domains") && (
         <section className="px-8 pb-25 md:px-25">

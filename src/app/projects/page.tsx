@@ -8,7 +8,7 @@ import { pageMetadata } from "@/lib/page-metadata";
 export const metadata: Metadata = pageMetadata({
   title: "Projects",
   description:
-    "Depth X tracks each technology from concept and system architecture to patent application, prototype engineering, physical validation, and future commercialization planning.",
+    "DepthX tracks each technology from concept and system architecture to patent application, prototype engineering, physical validation, and future commercialization planning.",
   path: "/projects",
 });
 export const dynamic = "force-dynamic";
@@ -22,7 +22,7 @@ export default async function ProjectsPage() {
       <PageHero
         eyebrow="// PORTFOLIO"
         title="Current Projects"
-        description="Depth X tracks each technology from concept and system architecture to patent application, prototype engineering, physical validation, and future commercialization planning. Filter by project stage or browse by research domain."
+        description="DepthX tracks each technology from concept and system architecture to patent application, prototype engineering, physical validation, and future commercialization planning. Filter by project stage or browse by research domain."
       />
       {isSectionVisible(settings.sectionVisibility, "projects.grid") && (
         <section className="px-8 pb-25 md:px-25">

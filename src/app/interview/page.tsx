@@ -5,7 +5,7 @@ import { getCurrentProfile } from "@/lib/admin/auth";
 
 export const metadata: Metadata = pageMetadata({
   title: "Interviews",
-  description: "Capture exhibition and customer discovery interview data for the Depth X team.",
+  description: "Capture exhibition and customer discovery interview data for the DepthX team.",
   path: "/interview",
 });
 

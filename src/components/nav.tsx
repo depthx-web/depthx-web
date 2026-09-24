@@ -94,10 +94,13 @@ export function Nav({
         <Link href="/" className="flex items-center font-display text-lg font-bold tracking-wide">
           {logoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element -- arbitrary admin-supplied URL
-            <img src={logoUrl} alt="Depth X" className="h-7 w-auto" />
+            <img src={logoUrl} alt="DEPTH X LTD." className="h-7 w-auto" />
           ) : (
             <>
-              Depth<span className="text-amber">X</span>
+              DEPTH&nbsp;<span className="text-amber">X</span>
+              <span className="ml-1 text-[0.58em] font-semibold tracking-widest text-muted">
+                LTD.
+              </span>
             </>
           )}
         </Link>

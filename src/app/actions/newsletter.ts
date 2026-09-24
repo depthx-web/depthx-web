@@ -13,7 +13,7 @@ export type NewsletterActionState = { error: string | null; success?: boolean };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const WELCOME_BODY = `Thanks for subscribing to Depth X updates.
+const WELCOME_BODY = `Thanks for subscribing to DepthX updates.
 
 You'll hear from us occasionally when there's meaningful progress — a prototype milestone, a research update, an IP milestone, or a commercialization opportunity. No spam, no noise.`;
 
@@ -61,7 +61,7 @@ export async function subscribeNewsletterAction(
   const unsubscribeUrl = `${SITE_URL}/api/newsletter/unsubscribe?id=${id}`;
   await sendEmail({
     to: email,
-    subject: "Welcome to Depth X updates",
+    subject: "Welcome to DepthX updates",
     text: appendEmailFooter(
       `${WELCOME_BODY}\n\nManage what you hear about any time: ${manageUrl}`,
       { unsubscribeUrl },

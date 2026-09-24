@@ -27,7 +27,7 @@ const ROLES: Record<
   company: {
     label: "Companies & Industry",
     tag: "FOR COMPANIES & INDUSTRIAL PARTNERS",
-    title: "Bring Depth X technology into your operations",
+    title: "Bring DepthX technology into your operations",
     desc: "Explore joint development, future field trials, or technology-transfer pathways aligned with the next development stages.",
     colorClass: "border-amber text-amber",
     btnClass: "border border-amber/40 bg-amber/10 text-amber hover:bg-amber/20",

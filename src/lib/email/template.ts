@@ -5,7 +5,7 @@ const COMPANY_NUMBER = "16162223";
 const COMPANY_ADDRESS = "71-75 Shelton Street, London, Covent Garden, London, England, WC2H 9JQ";
 
 const SIGNATURE = `—
-Depth X
+DepthX
 ${SITE_URL}
 office@depthx.co.uk`;
 

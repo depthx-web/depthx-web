@@ -5,7 +5,7 @@ export const siteSettings: SiteSettings = {
   heroHeadline: "Researching technologies.",
   heroHeadlineAccent: "Building protected systems. Preparing them for market.",
   heroSubtext:
-    "Depth X is an R&D and technology commercialization company. Our first commercialization priority is a patent-pending autonomous multi-UAV platform for adaptive outdoor advertising and anonymous audience measurement. The platform is currently at the pre-prototype stage, with the engineering build as the next milestone.",
+    "DepthX is an R&D and technology commercialization company. Our first commercialization priority is a patent-pending autonomous multi-UAV platform for adaptive outdoor advertising and anonymous audience measurement. The platform is currently at the pre-prototype stage, with the engineering build as the next milestone.",
   stats: [
     { label: "Research domains", value: "03" },
     { label: "Current focus", value: "Concept & architecture" },

@@ -42,10 +42,13 @@ export function Footer({
           <Link href="/" className="mb-3.5 inline-flex items-center font-display text-lg font-bold">
             {settings.logoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element -- arbitrary admin-supplied URL
-              <img src={settings.logoUrl} alt="Depth X" className="h-7 w-auto" />
+              <img src={settings.logoUrl} alt="DEPTH X LTD." className="h-7 w-auto" />
             ) : (
               <>
-                Depth<span className="text-amber">X</span>
+                DEPTH&nbsp;<span className="text-amber">X</span>
+                <span className="ml-1 text-[0.58em] font-semibold tracking-widest text-muted">
+                  LTD.
+                </span>
               </>
             )}
           </Link>
@@ -64,7 +67,7 @@ export function Footer({
         </div>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-4 border-t border-line pt-6 text-[12.5px] text-muted">
-        <div>© {new Date().getFullYear()} Depth X — All rights reserved</div>
+        <div>© {new Date().getFullYear()} DepthX — All rights reserved</div>
         <div className="font-mono">RESEARCH · SYSTEM ARCHITECTURE · IP · COMMERCIALIZATION</div>
       </div>
       <div className="mt-3 text-[11.5px] leading-6 text-muted opacity-70">

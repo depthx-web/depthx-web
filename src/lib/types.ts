@@ -176,7 +176,7 @@ export interface SiteSettings {
   /** Second line of the hero title, rendered in the brand accent color. */
   heroHeadlineAccent: string;
   heroSubtext: string;
-  /** Site-wide logo image. Falls back to the "DepthX" text wordmark when unset. */
+  /** Site-wide logo image. Falls back to the "DEPTH X LTD." text wordmark when unset. */
   logoUrl?: string;
   stats: SiteStat[];
   trustBarLogos: TrustBarLogo[];

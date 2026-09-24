@@ -15,7 +15,7 @@ export const projects: Project[] = [
     shortDescription:
       "A patent-pending multi-UAV platform for persistent aerial advertising, anonymous audience measurement, and adaptive campaign execution.",
     overview:
-      "Depth X is developing the system as its first commercialization priority. The project is currently pre-prototype, with the four-UAV MVP architecture and roadmap defined. emQopter GmbH is the external technical collaborator prepared to build the complete prototype. The related German and international patent applications are currently filed in founder Marwen Ayadi's name and are intended to be assigned to Depth X after formal grant.",
+      "The autonomous multi-UAV platform is Depth X Ltd's first commercialization priority. It is currently at the pre-prototype stage, with the engineering build as the next milestone. emQopter has confirmed its capability to engineer and build the complete four-UAV physical prototype. Its role is that of an external engineering collaborator.",
     patentNumberKind: "application",
     readinessStage: 2,
     relatedPublications: [],
@@ -31,8 +31,7 @@ export const projects: Project[] = [
     shortDescription:
       "A smart retail concept combining automated vending with AI-enabled virtual clothing try-on and an adaptive customer experience.",
     overview:
-      "This technology is the second commercialization project in the Depth X pipeline. Development and launch will follow the UAV platform so resources remain focused on one market entry at a time. The related application is currently filed in founder Marwen Ayadi's name and is intended to be assigned to Depth X after formal grant, before licensing to a specialized operating company.",
-    patentNumber: "DE 10 2025 004 854.8",
+      "The smart vending system is the second technology in the pipeline and will be developed for market after the autonomous multi-UAV platform advances through prototype engineering and validation. The two technologies are not planned for simultaneous launch.",
     patentNumberKind: "application",
     readinessStage: 2,
     relatedPublications: [],

@@ -166,15 +166,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   const db = await supabase();
   const { data } = await db.from("site_settings").select("*").eq("id", 1).single();
   if (!data) return mockSiteSettings;
-  const live = mapSiteSettings(data);
-  return {
-    ...live,
-    heroHeadline: mockSiteSettings.heroHeadline,
-    heroHeadlineAccent: mockSiteSettings.heroHeadlineAccent,
-    heroSubtext: mockSiteSettings.heroSubtext,
-    stats: mockSiteSettings.stats,
-    footerText: mockSiteSettings.footerText,
-  };
+  return mapSiteSettings(data);
 }
 
 export async function getProjects(): Promise<Project[]> {

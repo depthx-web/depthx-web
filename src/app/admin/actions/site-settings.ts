@@ -30,7 +30,7 @@ export async function updateSiteSettingsAction(
   );
 
   const supabase = await createClient();
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("site_settings")
     .update({
       hero_headline: String(formData.get("hero_headline") || ""),
@@ -45,9 +45,12 @@ export async function updateSiteSettingsAction(
       trust_bar_logos: trustBarLogos,
       section_visibility: sectionVisibility,
     })
-    .eq("id", 1);
+    .eq("id", 1)
+    .select("id")
+    .single();
 
   if (error) return { error: error.message };
+  if (!data) return { error: "Site settings could not be updated." };
 
   // Site settings feed almost every page (nav, footer, home).
   revalidatePath("/", "layout");

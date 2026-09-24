@@ -41,11 +41,11 @@ export default async function HomePage() {
           {APPROVED_HERO.stage}
         </div>
         <h1 className="max-w-4xl font-display text-4xl font-bold leading-tight tracking-tight md:text-7xl">
-          {APPROVED_HERO.headline}
+          {settings.heroHeadline}
           <br />
-          <span className="text-green">{APPROVED_HERO.accent}</span>
+          <span className="text-green">{settings.heroHeadlineAccent}</span>
         </h1>
-        <p className="mt-6 max-w-xl text-lg leading-8 text-muted">{APPROVED_HERO.description}</p>
+        <p className="mt-6 max-w-xl text-lg leading-8 text-muted">{settings.heroSubtext}</p>
         <div className="mt-10 flex flex-wrap gap-3.5">
           <Link
             href="/contact"

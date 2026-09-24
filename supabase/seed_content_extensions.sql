@@ -57,7 +57,7 @@ The Site is provided to share information about Depth X''s research, patent port
 
 3. Intellectual property
 
-All content on the Site — including research descriptions, patent summaries, text, and design — is the property of Depth X Ltd. or its licensors and is protected by copyright and other intellectual property laws, unless otherwise stated. Patents referenced on the Site are the property of Depth X Ltd. and are protected independently of this Site''s content. You may view and share Site content for personal, non-commercial reference, but may not reproduce, redistribute, or create derivative works from it without our written permission.
+All content on the Site — including research descriptions, patent summaries, text, and design — is the property of Depth X Ltd. or its licensors and is protected by copyright and other intellectual property laws, unless otherwise stated. The patent applications referenced on this website are currently held by the company''s founder. Assignment of the relevant rights to Depth X Ltd. is planned following formal grant and completion of the appropriate legal process. You may view and share Site content for personal, non-commercial reference, but may not reproduce, redistribute, or create derivative works from it without our written permission.
 
 4. Interactive demonstrations
 

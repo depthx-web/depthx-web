@@ -20,6 +20,8 @@ export const projects: Project[] = [
     developmentStage: "system_architecture",
     ipStatus: "patent_pending",
     commercialStatus: "commercialization_planning",
+    productPriority:
+      "The autonomous multi-UAV platform is Depth X Ltd's first commercialization priority. The smart vending system is the second technology in the pipeline and will be developed for market after the UAV platform advances through prototype engineering and validation. The two technologies are not planned for simultaneous launch.",
     nextMilestone: "Engineering Build Next",
     readinessStage: 2,
     relatedPublications: [],
@@ -40,6 +42,8 @@ export const projects: Project[] = [
     developmentStage: "research_concept",
     ipStatus: "patent_pending",
     commercialStatus: "not_offered",
+    productPriority:
+      "The smart vending system is the second technology in the pipeline and will be developed for market after the autonomous multi-UAV platform advances through prototype engineering and validation. The two technologies are not planned for simultaneous launch.",
     nextMilestone: "Planned After UAV Validation",
     readinessStage: 2,
     relatedPublications: [],

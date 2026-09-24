@@ -19,6 +19,8 @@ import {
   UAV_PROJECT_SLUG,
 } from "@/lib/approved-public-content";
 
+export const dynamic = "force-dynamic";
+
 export async function generateStaticParams() {
   const projects = await getProjects();
   return projects.map((p) => ({ slug: p.slug }));
@@ -83,13 +85,13 @@ export default async function ProjectDetailPage(props: PageProps<"/projects/[slu
                 <p>{EMQOPTER_STATEMENT}</p>
               </DetailBlock>
               <DetailBlock title="Product Priority">
-                <p>{PRODUCT_PRIORITY}</p>
+                <p>{project.productPriority ?? PRODUCT_PRIORITY}</p>
               </DetailBlock>
             </>
           )}
           {isSmartVendingProject && (
             <DetailBlock title="Product Priority">
-              <p>{PRODUCT_PRIORITY}</p>
+              <p>{project.productPriority ?? PRODUCT_PRIORITY}</p>
             </DetailBlock>
           )}
           {project.simulatorHtml && (

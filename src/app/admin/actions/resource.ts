@@ -76,6 +76,9 @@ const DETAIL_ROUTE_BY_RESOURCE: Record<string, string> = {
 };
 
 function revalidatePublicPaths(slug: string, formData?: FormData) {
+  if (slug === "projects") {
+    revalidatePath("/", "layout");
+  }
   (PUBLIC_PATHS_BY_RESOURCE[slug] ?? []).forEach((path) => revalidatePath(path));
   const detailRoute = DETAIL_ROUTE_BY_RESOURCE[slug];
   const recordSlug = formData?.get("slug");

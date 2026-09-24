@@ -1,6 +1,6 @@
 -- REVIEW ONLY — DO NOT RUN WITHOUT SEPARATE FOUNDER AND DATABASE APPROVAL.
 --
--- Purpose: add independent development, IP, and commercial status fields to
+-- Purpose: add independent development, IP, commercial status, priority, and milestone fields to
 -- project records. This file is intentionally outside supabase/migrations and
 -- ends with ROLLBACK so inspection or an accidental console run does not apply
 -- the proposed changes.
@@ -11,6 +11,7 @@ alter table public.projects
   add column if not exists development_stage text,
   add column if not exists ip_status text,
   add column if not exists commercial_status text,
+  add column if not exists product_priority text,
   add column if not exists next_milestone text;
 
 do $$
@@ -49,6 +50,7 @@ update public.projects
 set development_stage = 'system_architecture',
     ip_status = 'patent_pending',
     commercial_status = 'commercialization_planning',
+    product_priority = 'The autonomous multi-UAV platform is Depth X Ltd''s first commercialization priority. The smart vending system is the second technology in the pipeline and will be developed for market after the UAV platform advances through prototype engineering and validation. The two technologies are not planned for simultaneous launch.',
     next_milestone = 'Engineering Build Next'
 where slug in ('autonomous-aerial-advertising-system', 'aerial-coordination');
 
@@ -57,6 +59,7 @@ update public.projects
 set development_stage = 'research_concept',
     ip_status = 'patent_pending',
     commercial_status = 'not_offered',
+    product_priority = 'The smart vending system is the second technology in the pipeline and will be developed for market after the autonomous multi-UAV platform advances through prototype engineering and validation. The two technologies are not planned for simultaneous launch.',
     next_milestone = 'Planned After UAV Validation'
 where slug in ('smart-vending-virtual-clothing-try-on', 'adaptive-interaction');
 
@@ -67,6 +70,6 @@ where slug in ('smart-vending-virtual-clothing-try-on', 'adaptive-interaction');
 -- Recovery after an approved execution:
 --   1. Restore project values from the pre-execution export, or set them to null.
 --   2. Drop the three named check constraints.
---   3. Drop the four added columns only after confirming no application depends on them.
+--   3. Drop the five added columns only after confirming no application depends on them.
 
 rollback;

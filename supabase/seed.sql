@@ -13,26 +13,26 @@ insert into research_domains (id, name, slug, description, "order") values
 insert into projects (
   id, title, slug, status, research_domain_id, short_description, overview,
   patent_number, filed_date, granted_date, development_stage, ip_status,
-  commercial_status, next_milestone, readiness_stage, featured, visible
+  commercial_status, product_priority, next_milestone, readiness_stage, featured, visible
 ) values
   ('22222222-2222-2222-2222-222222222201', 'Adaptive interaction system for smart commercial environments', 'adaptive-interaction', 'pending',
    '11111111-1111-1111-1111-111111111101',
    'A research-led platform concept for integrating physical presence and digital decision-making inside commercial environments.',
   'This system is the second technology in the pipeline. It will be developed for market after the autonomous multi-UAV platform advances through prototype engineering and validation; the two technologies are not planned for simultaneous launch.',
    null, '2024-01-15', null, 'research_concept', 'patent_pending',
-   'not_offered', 'Planned After UAV Validation', 2, true, true),
+   'not_offered', 'The smart vending system is the second technology in the pipeline and will be developed for market after the autonomous multi-UAV platform advances through prototype engineering and validation. The two technologies are not planned for simultaneous launch.', 'Planned After UAV Validation', 2, true, true),
   ('22222222-2222-2222-2222-222222222202', 'Distributed semi-autonomous aerial coordination platform', 'aerial-coordination', 'pending',
    '11111111-1111-1111-1111-111111111102',
    'A coordination concept for distributed aerial platforms capable of operating safely and efficiently within complex urban and public environments.',
   'This is the first commercialization priority: a patent-pending autonomous multi-UAV platform at the pre-prototype stage, with the engineering build as the next milestone. emQopter has confirmed its capability to engineer and build the complete four-UAV physical prototype. Its role is that of an external engineering collaborator.',
    null, '2026-03-01', null, 'system_architecture', 'patent_pending',
-   'commercialization_planning', 'Engineering Build Next', 2, false, true),
+   'commercialization_planning', 'The autonomous multi-UAV platform is Depth X Ltd''s first commercialization priority. The smart vending system is the second technology in the pipeline and will be developed for market after the UAV platform advances through prototype engineering and validation. The two technologies are not planned for simultaneous launch.', 'Engineering Build Next', 2, false, true),
   ('22222222-2222-2222-2222-222222222203', 'Real-time behavioral interpretation engine for intelligent systems', 'behavioral-engine', 'pending',
    '11111111-1111-1111-1111-111111111103',
    'A research concept focused on interpreting behavioral and environmental signals in real time within cyber-physical systems.',
    'This concept explores how intelligent systems can interpret behavioral and environmental signals in real time while preserving a clear distinction between research development, patent filing, and any future commercialization pathway.',
    null, '2023-06-01', null, 'research_concept', 'not_filed',
-   'not_offered', 'Research Definition', 2, false, true);
+   'not_offered', null, 'Research Definition', 2, false, true);
 
 insert into publications (title, venue, year, abstract, related_project_id) values
   ('Real-time behavioral signal interpretation in cyber-physical environments', 'Journal of Applied Systems Research', 2026,

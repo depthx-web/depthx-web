@@ -19,6 +19,7 @@ import { Reveal } from "@/components/ui/reveal";
 import { APPROVED_HERO, PRODUCT_PRIORITY, UAV_PROJECT_SLUG } from "@/lib/approved-public-content";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const [settings, projects, featured, domains, newsPosts] = await Promise.all([
@@ -30,6 +31,7 @@ export default async function HomePage() {
   ]);
   const visibility = settings.sectionVisibility;
   const priorityProject = projects.find((project) => project.slug === UAV_PROJECT_SLUG) ?? featured;
+  const productPriority = priorityProject?.productPriority ?? PRODUCT_PRIORITY;
   const otherProjects = projects.filter((project) => project._id !== priorityProject?._id);
   const latestNews = newsPosts.slice(0, 3);
 
@@ -125,7 +127,7 @@ export default async function HomePage() {
       )}
 
       <section className="px-8 pb-25 md:px-25">
-        <p className="max-w-3xl text-sm leading-7 text-muted">{PRODUCT_PRIORITY}</p>
+        <p className="max-w-3xl text-sm leading-7 text-muted">{productPriority}</p>
       </section>
 
       {isSectionVisible(visibility, "home.whatWeDo") && (

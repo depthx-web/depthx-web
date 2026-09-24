@@ -13,7 +13,10 @@ import {
   EMQOPTER_STATEMENT,
   ORIGIN_STORY,
   PRODUCT_PRIORITY,
+  UAV_PROJECT_SLUG,
 } from "@/lib/approved-public-content";
+
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const [testimonials, faqItems] = await Promise.all([getTestimonials(), getFaqItems()]);
@@ -41,6 +44,8 @@ export default async function InvestorsPage() {
     getFaqItems(),
   ]);
   const visibility = settings.sectionVisibility;
+  const priorityProject = projects.find((project) => project.slug === UAV_PROJECT_SLUG);
+  const productPriority = priorityProject?.productPriority ?? PRODUCT_PRIORITY;
 
   return (
     <>
@@ -53,7 +58,7 @@ export default async function InvestorsPage() {
       />
       <section className="px-8 pb-25 md:px-25">
         <div className="mb-17 grid gap-5 md:grid-cols-2">
-          <div className="border-l-2 border-green pl-5 text-sm leading-7 text-muted">{PRODUCT_PRIORITY}</div>
+          <div className="border-l-2 border-green pl-5 text-sm leading-7 text-muted">{productPriority}</div>
           <div className="border-l-2 border-amber pl-5 text-sm leading-7 text-muted">{EMQOPTER_STATEMENT}</div>
         </div>
         <p className="mb-17 max-w-3xl text-sm leading-7 text-muted">{ORIGIN_STORY}</p>

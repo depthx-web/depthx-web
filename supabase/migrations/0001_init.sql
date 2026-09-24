@@ -95,6 +95,7 @@ create table projects (
     'not_offered', 'commercialization_planning', 'available_for_licensing',
     'licensed', 'commercial_operation'
   )),
+  product_priority text,
   next_milestone text,
   readiness_stage smallint not null default 1 check (readiness_stage between 1 and 3),
   featured boolean not null default false,

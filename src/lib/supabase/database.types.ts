@@ -79,6 +79,7 @@ export interface Database {
           development_stage: DevelopmentStage;
           ip_status: IpStatus;
           commercial_status: CommercialStatus;
+          product_priority: string | null;
           next_milestone: string | null;
           readiness_stage: number;
           featured: boolean;

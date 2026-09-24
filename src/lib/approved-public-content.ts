@@ -12,12 +12,8 @@ export const EMQOPTER_STATEMENT =
 export const ORIGIN_STORY =
   "Depth X Ltd began with founder Marwen Ayadi's marketing background and his development of an autonomous UAV advertising concept. Designing the system and preparing the patent applications raised broader questions about the relationship between traditional and digital marketing. Those questions led to the theoretical research that shaped Depth X Ltd as an R&D and technology commercialization company.";
 
-export const ORIGIN_ARTICLE_EXCERPT =
-  "Depth X began with the founder's marketing background and the development of an autonomous UAV advertising concept. The resulting patent work later led to broader research into traditional and digital marketing.";
-
 export const FOUNDER_IP_STATEMENT =
   "The patent applications are currently held by the founder, Marwen Ayadi. Assignment of the relevant rights to Depth X Ltd. is planned following formal grant and completion of the appropriate legal process.";
 
 export const UAV_PROJECT_SLUG = "autonomous-aerial-advertising-system";
 export const SMART_VENDING_PROJECT_SLUG = "smart-vending-virtual-clothing-try-on";
-export const ORIGIN_ARTICLE_SLUG = "why-we-started-depth-x";

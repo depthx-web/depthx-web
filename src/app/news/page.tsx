@@ -6,6 +6,8 @@ import { Breadcrumb, PageHero } from "@/components/ui/page-hero";
 import { formatDate } from "@/lib/format-date";
 import { mergeKeywords, pageMetadata } from "@/lib/page-metadata";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(): Promise<Metadata> {
   const posts = await getNewsPosts();
   return pageMetadata({

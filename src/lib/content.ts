@@ -20,6 +20,11 @@ import { partnershipTypes as mockPartnershipTypes } from "@/lib/mock-data/partne
 import { siteSettings as mockSiteSettings } from "@/lib/mock-data/site-settings";
 import { legalPages as mockLegalPages } from "@/lib/mock-data/legal-pages";
 import {
+  ORIGIN_ARTICLE_EXCERPT,
+  ORIGIN_ARTICLE_SLUG,
+  ORIGIN_STORY,
+} from "@/lib/approved-public-content";
+import {
   isCommercialStatus,
   isDevelopmentStage,
   isIpStatus,
@@ -122,7 +127,7 @@ function mapProject(row: Record<string, unknown>): Project {
 }
 
 function mapNewsPost(row: Record<string, unknown>): NewsPost {
-  return {
+  return applyApprovedNewsContent({
     _id: String(row.id),
     title: String(row.title),
     slug: String(row.slug),
@@ -133,6 +138,15 @@ function mapNewsPost(row: Record<string, unknown>): NewsPost {
     published: Boolean(row.published),
     imageUrl: row.image_url ? String(row.image_url) : undefined,
     keywords: row.keywords ? String(row.keywords) : undefined,
+  });
+}
+
+function applyApprovedNewsContent(post: NewsPost): NewsPost {
+  if (post.slug !== ORIGIN_ARTICLE_SLUG) return post;
+  return {
+    ...post,
+    excerpt: ORIGIN_ARTICLE_EXCERPT,
+    body: ORIGIN_STORY,
   };
 }
 
@@ -263,7 +277,10 @@ export async function getTeamMembers(): Promise<TeamMember[]> {
 
 export async function getNewsPosts(): Promise<NewsPost[]> {
   if (!hasSupabaseConfig) {
-    return mockNewsPosts.filter((n) => n.published).sort((a, b) => (a.date < b.date ? 1 : -1));
+    return mockNewsPosts
+      .filter((n) => n.published)
+      .map(applyApprovedNewsContent)
+      .sort((a, b) => (a.date < b.date ? 1 : -1));
   }
   const db = await supabase();
   const { data } = await db

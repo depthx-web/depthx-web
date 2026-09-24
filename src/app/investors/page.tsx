@@ -9,10 +9,6 @@ import { RoleToggle } from "@/components/contact/role-toggle";
 import { FaqList } from "@/components/faq-list";
 import { mergeKeywords, pageMetadata } from "@/lib/page-metadata";
 import { commercialStatusLabel, developmentStageLabel } from "@/lib/project-status";
-import {
-  EMQOPTER_STATEMENT,
-  ORIGIN_STORY,
-} from "@/lib/approved-public-content";
 
 export const dynamic = "force-dynamic";
 
@@ -69,10 +65,6 @@ export default async function InvestorsPage() {
         description="A clear starting point for evaluating Depth X — the company’s research model, current patent filing status, and future commercialization roadmap."
       />
       <section className="px-8 pb-25 md:px-25">
-        <div className="mb-17">
-          <div className="border-l-2 border-amber pl-5 text-sm leading-7 text-muted">{EMQOPTER_STATEMENT}</div>
-        </div>
-        <p className="mb-17 max-w-3xl text-sm leading-7 text-muted">{ORIGIN_STORY}</p>
         {isSectionVisible(visibility, "investors.stats") && (
           <div className="mb-17">
             <StatGrid stats={settings.stats} />
